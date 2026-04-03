@@ -115,7 +115,7 @@ function ApplicationModal({ job, onClose, onBack }) {
           {submitSuccess && (
             <div className="mb-6 p-4 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700">
               <CheckCircle2 size={18} className="flex-shrink-0" />
-              <span className="text-sm">Application submitted! We'll be in touch soon.</span>
+              <span className="text-sm">Application submitted! We{"'"}ll be in touch soon.</span>
             </div>
           )}
           {submitError && (

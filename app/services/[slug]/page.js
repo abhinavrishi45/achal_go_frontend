@@ -1,4 +1,4 @@
-"use client";
+// Server component: generateStaticParams provided below for static export
 
 // ─────────────────────────────────────────────────────────────
 // ACHAL INTERNATIONAL — Dynamic Service Page
@@ -579,7 +579,49 @@ const MOCK_DATA = {
   },
 };
 
-export default function ServicePage() {
+// Server helper: provide slugs for static export
+export async function generateStaticParams() {
+  try {
+    const res = await fetch(`${API_BASE}/api/services/public`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.map((s) => ({ slug: s.slug }));
+  } catch (e) {
+    console.error("generateStaticParams error:", e);
+    return [];
+  }
+}
+
+// Server page: fetch service/page data per slug and render the UI
+export default async function ServicePage({ params }) {
+  const slug = params?.slug;
+  let page = null;
+  let service = null;
+
+  try {
+    const r = await fetch(`${API_BASE}/api/service-pages/slug/${encodeURIComponent(slug)}`);
+    if (r.ok) {
+      page = await r.json();
+      service = page?.service ?? null;
+    } else if (r.status === 404) {
+      const sr = await fetch(`${API_BASE}/api/services/slug/${encodeURIComponent(slug)}`);
+      if (sr.ok) {
+        service = await sr.json();
+        const pr = await fetch(`${API_BASE}/api/service-pages/service/${service.id}`);
+        if (pr.ok) page = await pr.json();
+      } else {
+        // not found on backend, fall back to preview mock data
+        page = null;
+      }
+    } else {
+      // unknown error, fall back to preview
+      page = null;
+    }
+  } catch (e) {
+    console.error("Error fetching service page on server:", e);
+    page = null;
+  }
+
   const {
     heroSection,
     secondHeroSection,
@@ -588,20 +630,29 @@ export default function ServicePage() {
     galleryItems,
     coverageSection,
     fullDetailsSection,
-  } = MOCK_DATA;
+  } = page || {};
 
-  const pageName = heroSection?.heading || "Service";
+  const pageName = service?.name || page?.name || heroSection?.heading || "Service";
+
+  // Render UI (use MOCK_DATA as fallback when needed)
+  const useHero = heroSection ?? MOCK_DATA.heroSection;
+  const useSecond = secondHeroSection ?? MOCK_DATA.secondHeroSection;
+  const usePortfolio = portfolioSections ?? MOCK_DATA.portfolioSections;
+  const usePricing = pricingPlans ?? MOCK_DATA.pricingPlans;
+  const useGallery = galleryItems ?? MOCK_DATA.galleryItems;
+  const useCoverage = coverageSection ?? MOCK_DATA.coverageSection;
+  const useFullDetails = fullDetailsSection ?? MOCK_DATA.fullDetailsSection;
 
   return (
     <>
       <style>{PAGE_STYLES}</style>
       <main className="svc-page">
-        <HeroSection heroSection={heroSection} pageName={pageName} pageDescription={null} />
-        <SummarySection secondHeroSection={secondHeroSection} />
-        <PortfolioSection portfolioSections={portfolioSections} />
-        <PricingSection pricingPlans={pricingPlans} />
-        <GallerySection galleryItems={galleryItems} />
-        <DetailsSection coverageSection={coverageSection} fullDetailsSection={fullDetailsSection} />
+        <HeroSection heroSection={useHero} pageName={pageName} pageDescription={null} />
+        <SummarySection secondHeroSection={useSecond} />
+        <PortfolioSection portfolioSections={usePortfolio} />
+        <PricingSection pricingPlans={usePricing} />
+        <GallerySection galleryItems={useGallery} />
+        <DetailsSection coverageSection={useCoverage} fullDetailsSection={useFullDetails} />
         <CTASection pageName={pageName} />
       </main>
     </>
