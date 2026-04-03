@@ -443,7 +443,7 @@ export default function CareersPage() {
               </h1>
 
               <p className="text-base md:text-lg text-white/70 font-light leading-relaxed mb-12 max-w-xl">
-                Join a team transforming India's infrastructure — from civil engineering to smart mobility, hospitality to green energy. Build something that lasts.
+                Join a team transforming India{"'"}s infrastructure — from civil engineering to smart mobility, hospitality to green energy. Build something that lasts.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -562,7 +562,7 @@ export default function CareersPage() {
             {!loading && error && (
               <div className="border border-red-200 bg-red-50 p-10 text-center">
                 <AlertCircle size={32} className="mx-auto mb-4 text-red-500" />
-                <p className="font-semibold text-red-700 mb-2">Couldn't load jobs</p>
+                <p className="font-semibold text-red-700 mb-2">Couldn{"'"}t load jobs</p>
                 <p className="text-sm text-red-500 mb-6">{error}</p>
                 <button onClick={fetchJobs} className="btn-gold text-xs py-2 px-6">Try Again</button>
               </div>
