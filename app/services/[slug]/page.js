@@ -581,14 +581,23 @@ const MOCK_DATA = {
 
 // Server helper: provide slugs for static export
 export async function generateStaticParams() {
+  const fallback = [
+    { slug: "civil-engineering" },
+    { slug: "cargo-service" },
+    { slug: "demo-service" },
+    { slug: "ev-charging-station" },
+    { slug: "parking-service" },
+    { slug: "restaurant-service" },
+  ];
   try {
     const res = await fetch(`${API_BASE}/api/services/public`);
-    if (!res.ok) return [];
+    if (!res.ok) return fallback;
     const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return fallback;
     return data.map((s) => ({ slug: s.slug }));
   } catch (e) {
-    console.error("generateStaticParams error:", e);
-    return [];
+    console.warn("generateStaticParams error, using fallback:", e);
+    return fallback;
   }
 }
 
