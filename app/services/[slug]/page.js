@@ -573,103 +573,92 @@ const MOCK_DATA = {
 
 // This page is dynamic; static param generation removed so it's handled at runtime.
 
-// Server page: fetch service/page data per slug and render the UI
+// Server page: fetch real service data from API using service ID
 export default async function ServicePage({ params }) {
   const slug = params?.slug;
-  let page = null;
   let service = null;
 
   try {
-    const r = await fetch(`${API_BASE}/api/service-pages/slug/${encodeURIComponent(slug)}`);
-    if (r.ok) {
-      const ct = String(r.headers.get("content-type") || "").toLowerCase();
-      if (ct.includes("application/json") || ct.includes("/json")) {
+    // Step 1: Get service by slug to find the service ID
+    const slugRes = await fetch(`${API_BASE}/api/services/slug/${encodeURIComponent(slug)}`, {
+      cache: 'no-store',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (slugRes.ok) {
+      const contentType = String(slugRes.headers.get("content-type") || "").toLowerCase();
+      if (contentType.includes("application/json")) {
         try {
-          page = await r.json();
-          service = page?.service ?? null;
+          service = await slugRes.json();
         } catch (err) {
-          console.error("Error parsing service page JSON, falling back:", err);
-          page = null;
+          console.error("Error parsing service data:", err);
+          service = null;
         }
       } else {
-        const txt = await r.text();
-        console.warn("Service page: non-JSON response, ignoring:", txt);
-        page = null;
+        console.warn("Service endpoint returned non-JSON:", contentType);
+        service = null;
       }
-    } else if (r.status === 404) {
-      const sr = await fetch(`${API_BASE}/api/services/slug/${encodeURIComponent(slug)}`);
-      if (sr.ok) {
-        const sct = String(sr.headers.get("content-type") || "").toLowerCase();
-        if (sct.includes("application/json") || sct.includes("/json")) {
-          try {
-            service = await sr.json();
-          } catch (err) {
-            console.error("Error parsing service JSON, cannot find service:", err);
-            page = null;
-          }
-        } else {
-          const txt = await sr.text();
-          console.warn("Service lookup: non-JSON response, treating as not found:", txt);
-          page = null;
-        }
+    } else {
+      console.warn(`Service not found: ${slugRes.status}`);
+      service = null;
+    }
 
-        if (service) {
-          const pr = await fetch(`${API_BASE}/api/service-pages/service/${service.id}`);
-          if (pr.ok) {
-            const pct = String(pr.headers.get("content-type") || "").toLowerCase();
-            if (pct.includes("application/json") || pct.includes("/json")) {
-              try {
-                page = await pr.json();
-              } catch (err) {
-                console.error("Error parsing service-pages JSON, continuing without page:", err);
-                page = null;
-              }
-            } else {
-              const txt = await pr.text();
-              console.warn("Service-pages: non-JSON response, ignoring:", txt);
-              page = null;
+    // Step 2: If we have a service with ID, fetch detailed data from /api/services/:id
+    if (service?.id) {
+      try {
+        const detailRes = await fetch(`${API_BASE}/api/services/${service.id}`, {
+          cache: 'no-store',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (detailRes.ok) {
+          const contentType = String(detailRes.headers.get("content-type") || "").toLowerCase();
+          if (contentType.includes("application/json")) {
+            try {
+              const detailedService = await detailRes.json();
+              // Merge detailed data if it has additional fields
+              service = { ...service, ...detailedService };
+            } catch (err) {
+              console.error("Error parsing detailed service data:", err);
+              // Keep using service data from step 1
             }
           }
         }
-      } else {
-        // not found on backend, fall back to preview mock data
-        page = null;
+      } catch (e) {
+        console.warn("Error fetching detailed service data:", e);
+        // Continue with service data from step 1
       }
-    } else {
-      // unknown error, fall back to preview
-      page = null;
     }
   } catch (e) {
-    console.error("Error fetching service page on server:", e);
-    page = null;
+    console.error("Error fetching service from API:", e);
+    service = null;
   }
 
-  const {
-    heroSection,
-    secondHeroSection,
-    portfolioSections,
-    pricingPlans,
-    galleryItems,
-    coverageSection,
-    fullDetailsSection,
-  } = page || {};
+  // Extract sections from API data
+  const heroSection = service?.heroSection;
+  const secondHeroSection = service?.secondHeroSection;
+  const portfolioSections = service?.portfolioSections;
+  const pricingPlans = service?.pricingPlans;
+  const galleryItems = service?.galleryItems;
+  const coverageSection = service?.coverageSection;
+  const fullDetailsSection = service?.fullDetailsSection;
 
-  const pageName = service?.name || page?.name || heroSection?.heading || "Service";
+  const pageName = service?.name || "Service";
 
-  // Render UI (use MOCK_DATA as fallback when needed)
-  const useHero = heroSection ?? MOCK_DATA.heroSection;
-  const useSecond = secondHeroSection ?? MOCK_DATA.secondHeroSection;
-  const usePortfolio = portfolioSections ?? MOCK_DATA.portfolioSections;
-  const usePricing = pricingPlans ?? MOCK_DATA.pricingPlans;
-  const useGallery = galleryItems ?? MOCK_DATA.galleryItems;
-  const useCoverage = coverageSection ?? MOCK_DATA.coverageSection;
-  const useFullDetails = fullDetailsSection ?? MOCK_DATA.fullDetailsSection;
+  // Use real API data, with MOCK_DATA as fallback only if API call completely fails
+  const useHero = heroSection || (service ? null : MOCK_DATA.heroSection);
+  const useSecond = secondHeroSection || (service ? null : MOCK_DATA.secondHeroSection);
+  const usePortfolio = portfolioSections || (service ? null : MOCK_DATA.portfolioSections);
+  const usePricing = pricingPlans || (service ? null : MOCK_DATA.pricingPlans);
+  const useGallery = galleryItems || (service ? null : MOCK_DATA.galleryItems);
+  const useCoverage = coverageSection || (service ? null : MOCK_DATA.coverageSection);
+  const useFullDetails = fullDetailsSection || (service ? null : MOCK_DATA.fullDetailsSection);
 
   return (
     <>
       <style>{PAGE_STYLES}</style>
       <main className="svc-page">
-        <HeroSection heroSection={useHero} pageName={pageName} pageDescription={null} />
+        <HeroSection heroSection={useHero} pageName={pageName} pageDescription={service?.description} />
         <SummarySection secondHeroSection={useSecond} />
         <PortfolioSection portfolioSections={usePortfolio} />
         <PricingSection pricingPlans={usePricing} />
