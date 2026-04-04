@@ -1,51 +1,44 @@
-name: 🚀 Deploy Next.js to FTP Server
+name: 🚀 Deploy Next.js to Server (SFTP)
 
 on:
   push:
     branches:
-      - main  # Trigger deploy on main branch
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
+      # 1. Checkout
       - name: 🧰 Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js
+      # 2. Setup Node
       - name: ⚡ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.14.0' # Match your local Node.js version
+          node-version: '22.14.0'
 
-      # Step 3: Install dependencies
+      # 3. Install deps
       - name: 📦 Install dependencies
         run: npm ci
 
-      # Step 4: Build Next.js project
+      # 4. Build
       - name: 🏗️ Build Next.js
         run: npm run build
 
-    # ✅ IMPORTANT (only if using output: "export")
-      # - name: 📤 Export static files
-      #   run: npm run export
+      # ⚠️ If using static export
+      - name: 📤 Export static files
+        run: npm run export
 
-      # Step 5: Upload `out` folder via FTPS (clean remote folder first, preserve .htaccess)
-      - name: 📂 Deploy `out` folder to FTP server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      # 5. Deploy via SFTP
+      - name: 🚀 Upload via SFTP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          host: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT }}
-          protocol: ftps
-          local-dir: ./out/           # Only upload the static export
-          server-dir: /               # Remote folder (adjust if needed)
-          #delete-remote-dir: true     # Clean remote folder before upload
-          exclude: |
-            **/.git*
-            **/.github/**
-            **/README.md
-            .htaccess                 # Keep .htaccess on the server
+          port: 22
+          source: "out/*"
+          target: "/"
