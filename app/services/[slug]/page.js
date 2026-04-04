@@ -8,7 +8,7 @@
 
 import React from "react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://achal-backend-trial.tannis.in";
 
 function safeParseJSON(v) {
   if (!v) return null;

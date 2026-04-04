@@ -3,7 +3,7 @@ import BlogPostClient from "../../../components/blog/BlogPostClient";
 // Provide static params so `output: export` can include generated pages.
 export async function generateStaticParams() {
   const fallback = [{ slug: "welcome-to-our-blog" }];
-  const API_BASE = process.env.API_BASE || "http://localhost:5000";
+  const API_BASE = process.env.API_BASE || "http://achal-backend-trial.tannis.in";
   try {
     const res = await fetch(`${API_BASE}/api/blogs/public`);
     if (!res.ok) return fallback;
@@ -22,7 +22,7 @@ export default async function BlogPostPage({ params }) {
   let relatedBlogs = [];
 
   try {
-    const res = await fetch(`http://localhost:5000/api/blogs/slug/${slug}`);
+    const res = await fetch(`http://achal-backend-trial.tannis.in/api/blogs/slug/${slug}`);
     if (res.ok) {
       blog = await res.json();
     }
@@ -31,7 +31,7 @@ export default async function BlogPostPage({ params }) {
   }
 
   try {
-    const r = await fetch("http://localhost:5000/api/blogs/public");
+    const r = await fetch("http://achal-backend-trial.tannis.in/api/blogs/public");
     if (r.ok) {
       const all = await r.json();
       relatedBlogs = all.filter((b) => b.slug !== slug).slice(0, 3);

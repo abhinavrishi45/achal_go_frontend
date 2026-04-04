@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://achal-backend-trial.tannis.in';
 
 const TYPE_LABELS = {
   'full-time': 'Full-time',
@@ -18,10 +18,10 @@ const TYPE_LABELS = {
 };
 
 const TYPE_COLORS = {
-  'full-time':  'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  'part-time':  'bg-sky-50 text-sky-700 border border-sky-200',
+  'full-time': 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  'part-time': 'bg-sky-50 text-sky-700 border border-sky-200',
   'internship': 'bg-amber-50 text-amber-700 border border-amber-200',
-  'contract':   'bg-violet-50 text-violet-700 border border-violet-200',
+  'contract': 'bg-violet-50 text-violet-700 border border-violet-200',
 };
 
 function timeAgo(dateStr) {
@@ -30,7 +30,7 @@ function timeAgo(dateStr) {
   const d = Math.floor(diff / 86400000);
   if (d === 0) return 'Today';
   if (d === 1) return 'Yesterday';
-  if (d < 7)  return `${d} days ago`;
+  if (d < 7) return `${d} days ago`;
   if (d < 30) return `${Math.floor(d / 7)}w ago`;
   return `${Math.floor(d / 30)}mo ago`;
 }
@@ -136,7 +136,7 @@ function ApplicationModal({ job, onClose, onBack }) {
                 <label className={labelClass}>Years of Experience</label>
                 <select name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} className={inputClass} style={{ cursor: 'pointer' }}>
                   <option value="">Select experience</option>
-                  {['0-1','1-3','3-5','5-10','10+'].map(v => <option key={v} value={v}>{v} years</option>)}
+                  {['0-1', '1-3', '3-5', '5-10', '10+'].map(v => <option key={v} value={v}>{v} years</option>)}
                 </select>
               </div>
             </div>
@@ -343,7 +343,7 @@ export default function CareersPage() {
   useEffect(() => { fetchJobs(); }, [fetchJobs]);
 
   const allLocations = [...new Set(jobs.map(j => j.location).filter(Boolean))];
-  const allTypes    = [...new Set(jobs.map(j => j.employmentType).filter(Boolean))];
+  const allTypes = [...new Set(jobs.map(j => j.employmentType).filter(Boolean))];
 
   const filtered = jobs.filter(j => {
     const matchSearch = !searchQuery ||
@@ -351,24 +351,24 @@ export default function CareersPage() {
       (j.shortDescription || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (j.location || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchType = filterType === 'all' || j.employmentType === filterType;
-    const matchLoc  = filterLocation === 'all' || j.location === filterLocation;
+    const matchLoc = filterLocation === 'all' || j.location === filterLocation;
     return matchSearch && matchType && matchLoc;
   });
 
   const benefits = [
-    { icon: Heart,     title: 'Health & Wellness',  desc: 'Comprehensive health insurance, mental health support, and wellness programs for you and your family.' },
-    { icon: TrendingUp,title: 'Career Growth',       desc: 'Continuous learning, certifications, mentorship, and clear advancement paths at every level.' },
-    { icon: Globe,     title: 'Flexible Work',       desc: 'Hybrid work options, flexible hours, and supportive leave policies that respect your life outside work.' },
-    { icon: Award,     title: 'Recognition',         desc: 'Performance bonuses, spot awards, and a culture that celebrates outstanding contributions.' },
-    { icon: BookOpen,  title: 'Learning Budget',     desc: 'Annual learning budget for courses, conferences, and certifications to keep your skills sharp.' },
-    { icon: Zap,       title: 'Impact at Scale',     desc: 'Work on infrastructure and solutions that shape real communities across India and beyond.' },
+    { icon: Heart, title: 'Health & Wellness', desc: 'Comprehensive health insurance, mental health support, and wellness programs for you and your family.' },
+    { icon: TrendingUp, title: 'Career Growth', desc: 'Continuous learning, certifications, mentorship, and clear advancement paths at every level.' },
+    { icon: Globe, title: 'Flexible Work', desc: 'Hybrid work options, flexible hours, and supportive leave policies that respect your life outside work.' },
+    { icon: Award, title: 'Recognition', desc: 'Performance bonuses, spot awards, and a culture that celebrates outstanding contributions.' },
+    { icon: BookOpen, title: 'Learning Budget', desc: 'Annual learning budget for courses, conferences, and certifications to keep your skills sharp.' },
+    { icon: Zap, title: 'Impact at Scale', desc: 'Work on infrastructure and solutions that shape real communities across India and beyond.' },
   ];
 
   const values = [
-    { icon: Target,      title: 'Innovation',    desc: 'We embrace creative solutions to complex industrial challenges.' },
-    { icon: CheckCircle2,title: 'Integrity',     desc: 'Transparency and honesty in every decision we make.' },
-    { icon: Users,       title: 'Collaboration', desc: 'The best outcomes come from diverse minds working together.' },
-    { icon: Sparkles,    title: 'Excellence',    desc: 'We hold ourselves to the highest professional standards.' },
+    { icon: Target, title: 'Innovation', desc: 'We embrace creative solutions to complex industrial challenges.' },
+    { icon: CheckCircle2, title: 'Integrity', desc: 'Transparency and honesty in every decision we make.' },
+    { icon: Users, title: 'Collaboration', desc: 'The best outcomes come from diverse minds working together.' },
+    { icon: Sparkles, title: 'Excellence', desc: 'We hold ourselves to the highest professional standards.' },
   ];
 
   const selectClass = "px-4 py-3 border border-stone-300 bg-white text-slate-700 text-sm focus:outline-none focus:border-yellow-700 transition-all cursor-pointer";
@@ -467,9 +467,9 @@ export default function CareersPage() {
           <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-stone-200">
             {[
               { value: loading ? '—' : `${jobs.length}+`, label: 'Open Positions' },
-              { value: '12+',  label: 'Departments' },
+              { value: '12+', label: 'Departments' },
               { value: '200+', label: 'Specialists' },
-              { value: '12+',  label: 'Years Building' },
+              { value: '12+', label: 'Years Building' },
             ].map(({ value, label }) => (
               <div key={label} className="stat-card">
                 <div className="playfair text-4xl md:text-5xl font-black leading-tight mb-1.5" style={{ color: '#c8a96e' }}>{value}</div>
