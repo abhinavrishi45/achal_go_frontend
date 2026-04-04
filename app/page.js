@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { PremiumCarousel } from "./components/premium-carousel";
 
 const SLIDES = [
   {
@@ -515,7 +514,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <PremiumCarousel/>
+        {/* <PremiumCarousel/> */}
 
         {/* ── CTA ── */}
         <section className="relative px-6 md:px-16 py-24 md:py-32 bg-slate-900 text-center overflow-hidden">
@@ -535,23 +534,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── FOOTER BAR ── */}
-        {/* <div className="footer-responsive" style={{ background: "#060e1c", padding: "32px 64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div className="playfair" style={{ fontSize: 20, fontWeight: 900, color: "var(--gold)" }}>
-            ACHAL <span style={{ color: "white" }}>INTERNATIONAL</span>
-          </div>
-          <div style={{ display: "flex", gap: 32 }}>
-            {["About", "Services", "Projects", "Careers", "Contact"].map((link) => (
-              <a key={link} style={{ fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase", color: "rgba(255,255,255,.4)", cursor: "pointer", textDecoration: "none" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--gold)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,.4)")}
-              >
-                {link}
-              </a>
-            ))}
-          </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,.3)" }}>© 2025 Achal International Pvt. Ltd.</div>
-        </div> */}
+        
 
       </main>
     </>

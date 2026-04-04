@@ -1,12 +1,6 @@
-// Server component: generateStaticParams provided below for static export
-
-// ─────────────────────────────────────────────────────────────
-// ACHAL INTERNATIONAL — Dynamic Service Page
-// Matches brand: Navy · Gold · Playfair Display · DM Sans
-// All sections driven by API data (admin-panel managed)
-// ─────────────────────────────────────────────────────────────
 
 import React from "react";
+export const dynamic = "force-dynamic";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://achal-backend-trial.tannis.in";
 
@@ -35,8 +29,6 @@ const PAGE_STYLES = `
     --border: #e5e0d8;
     --slate:  #0f172a;
   }
-
-  /* ── Base ── */
   .svc-page { font-family: 'DM Sans', sans-serif; color: var(--navy); background: var(--white); overflow-x: hidden; }
   .playfair { font-family: 'Playfair Display', serif; }
 
@@ -579,27 +571,7 @@ const MOCK_DATA = {
   },
 };
 
-// Server helper: provide slugs for static export
-export async function generateStaticParams() {
-  const fallback = [
-    { slug: "civil-engineering" },
-    { slug: "cargo-service" },
-    { slug: "demo-service" },
-    { slug: "ev-charging-station" },
-    { slug: "parking-service" },
-    { slug: "restaurant-service" },
-  ];
-  try {
-    const res = await fetch(`${API_BASE}/api/services/public`);
-    if (!res.ok) return fallback;
-    const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) return fallback;
-    return data.map((s) => ({ slug: s.slug }));
-  } catch (e) {
-    console.warn("generateStaticParams error, using fallback:", e);
-    return fallback;
-  }
-}
+// This page is dynamic; static param generation removed so it's handled at runtime.
 
 // Server page: fetch service/page data per slug and render the UI
 export default async function ServicePage({ params }) {
@@ -610,14 +582,55 @@ export default async function ServicePage({ params }) {
   try {
     const r = await fetch(`${API_BASE}/api/service-pages/slug/${encodeURIComponent(slug)}`);
     if (r.ok) {
-      page = await r.json();
-      service = page?.service ?? null;
+      const ct = String(r.headers.get("content-type") || "").toLowerCase();
+      if (ct.includes("application/json") || ct.includes("/json")) {
+        try {
+          page = await r.json();
+          service = page?.service ?? null;
+        } catch (err) {
+          console.error("Error parsing service page JSON, falling back:", err);
+          page = null;
+        }
+      } else {
+        const txt = await r.text();
+        console.warn("Service page: non-JSON response, ignoring:", txt);
+        page = null;
+      }
     } else if (r.status === 404) {
       const sr = await fetch(`${API_BASE}/api/services/slug/${encodeURIComponent(slug)}`);
       if (sr.ok) {
-        service = await sr.json();
-        const pr = await fetch(`${API_BASE}/api/service-pages/service/${service.id}`);
-        if (pr.ok) page = await pr.json();
+        const sct = String(sr.headers.get("content-type") || "").toLowerCase();
+        if (sct.includes("application/json") || sct.includes("/json")) {
+          try {
+            service = await sr.json();
+          } catch (err) {
+            console.error("Error parsing service JSON, cannot find service:", err);
+            page = null;
+          }
+        } else {
+          const txt = await sr.text();
+          console.warn("Service lookup: non-JSON response, treating as not found:", txt);
+          page = null;
+        }
+
+        if (service) {
+          const pr = await fetch(`${API_BASE}/api/service-pages/service/${service.id}`);
+          if (pr.ok) {
+            const pct = String(pr.headers.get("content-type") || "").toLowerCase();
+            if (pct.includes("application/json") || pct.includes("/json")) {
+              try {
+                page = await pr.json();
+              } catch (err) {
+                console.error("Error parsing service-pages JSON, continuing without page:", err);
+                page = null;
+              }
+            } else {
+              const txt = await pr.text();
+              console.warn("Service-pages: non-JSON response, ignoring:", txt);
+              page = null;
+            }
+          }
+        }
       } else {
         // not found on backend, fall back to preview mock data
         page = null;
