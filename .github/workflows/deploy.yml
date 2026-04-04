@@ -28,9 +28,7 @@ jobs:
       - name: 🏗️ Build Next.js
         run: npm run build
 
-      # ⚠️ If using static export
-      - name: 📤 Export static files
-        run: npm run export
+      # ⚠️ Using `output: 'export'` in next.config.mjs — no separate `next export` step needed
 
       # 5. Deploy via SFTP
       - name: 🚀 Upload via SFTP
