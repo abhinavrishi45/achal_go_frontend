@@ -2,7 +2,7 @@
 import React from "react";
 export const dynamic = "force-dynamic";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://achal-backend-trial.tannis.in";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://achal-backend-trial.tannis.in";
 
 function safeParseJSON(v) {
   if (!v) return null;

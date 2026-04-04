@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://achal-backend-trial.tannis.in';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
 const TYPE_LABELS = {
   'full-time': 'Full-time',

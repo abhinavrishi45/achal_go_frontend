@@ -81,7 +81,7 @@ export function Menus({ isScrolled }) {
 
   React.useEffect(() => {
     let mounted = true
-    const API = process.env.NEXT_PUBLIC_BACKEND_URL || "http://achal-backend-trial.tannis.in"
+    const API = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
     async function load() {
       try {
         const res = await fetch(`${API}/api/services`)

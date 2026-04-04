@@ -16,7 +16,7 @@ export default function BlogPage() {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://achal-backend-trial.tannis.in/api/blogs/public");
+      const response = await fetch("https://achal-backend-trial.tannis.in/api/blogs/public");
       if (response.ok) {
         const data = await response.json();
         setBlogs(data);

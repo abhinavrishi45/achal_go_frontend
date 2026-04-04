@@ -7,7 +7,7 @@ export default async function BlogPostPage({ params }) {
   let relatedBlogs = [];
 
   try {
-    const res = await fetch(`http://achal-backend-trial.tannis.in/api/blogs/slug/${slug}`);
+    const res = await fetch(`https://achal-backend-trial.tannis.in/api/blogs/slug/${slug}`);
     if (res.ok) {
       const contentType = String(res.headers.get("content-type") || "").toLowerCase();
       if (contentType.includes("application/json") || contentType.includes("/json")) {
@@ -26,7 +26,7 @@ export default async function BlogPostPage({ params }) {
   }
 
   try {
-    const r = await fetch("http://achal-backend-trial.tannis.in/api/blogs/public");
+    const r = await fetch("https://achal-backend-trial.tannis.in/api/blogs/public");
     if (r.ok) {
       const contentType = String(r.headers.get("content-type") || "").toLowerCase();
       if (contentType.includes("application/json") || contentType.includes("/json")) {

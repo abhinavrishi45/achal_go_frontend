@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://achal-backend-trial.tannis.in';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://achal-backend-trial.tannis.in';
 
 export default function GetQuotePage() {
   const [form, setForm] = useState({ name: '', email: '', contactNumber: '', subject: '', service: '', description: '' });

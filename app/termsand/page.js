@@ -392,7 +392,7 @@ export default function TermsAndRules() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [expandedId, setExpandedId] = useState(null)
-  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || "http://achal-backend-trial.tannis.in"
+  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
 
   injectStyles()
 
