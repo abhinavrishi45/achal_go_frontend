@@ -476,13 +476,13 @@ function CTASection({ pageName }) {
 
 // Server page: fetch service page data from API using service slug
 export default async function ServicePage({ params }) {
-  const slug = params?.slug;
+  const { slug } = await params;
   let page = null;
   let service = null;
 
   try {
     // Fetch complete service page data by slug
-    const pageRes = await fetch(`${API_BASE}/api/service-pages/slug/${encodeURIComponent(slug)}`, {
+    const pageRes = await fetch(`${API_BASE}/api/service-pages/slug/${slug}`, {
       cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     });
@@ -494,6 +494,7 @@ export default async function ServicePage({ params }) {
           page = await pageRes.json();
           // Extract service info if available in the page data
           service = page?.service || { name: page?.name };
+          console.log("Fetched service page data:", { slug, page, service });
         } catch (err) {
           console.error("Error parsing service page data:", err);
           page = null;

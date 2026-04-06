@@ -18,28 +18,7 @@ const menuItems = [
   { name: "Contact", href: "#" },
 ]
 
-const components = [
-  {
-    title: "Civil Engineering",
-    href: "/services/civil-engineering",
-    description: "Precision structural development & large-scale infrastructure with BIM modelling.",
-  },
-  {
-    title: "Construction",
-    href: "/services/construction",
-    description: "Turnkey construction with zero-defect delivery standards.",
-  },
-  {
-    title: "Freight & Logistics",
-    href: "/services/freight-logistics",
-    description: "End-to-end cargo management across road, rail, and sea.",
-  },
-  {
-    title: "Road & Highway",
-    href: "/services/road-highway",
-    description: "Highway design, widening, and pavement rehabilitation projects.",
-  },
-]
+
 
 const SVC_ICONS = ["⚙", "🏗", "🚢", "🛣", "🏭", "🌐", "⚡", "🔧", "🏛", "🚛"]
 
@@ -109,8 +88,7 @@ export function Menus({ isScrolled }) {
     isScrolled ? "text-gray-800 hover:text-blue-600" : "text-white hover:text-white/80"
   )
 
-  const serviceList = svcList.length ? svcList : components
-
+  const serviceList = svcList.length ? svcList : []
   return (
     <div className="flex items-center gap-0">
 
@@ -135,12 +113,12 @@ export function Menus({ isScrolled }) {
             >
               {/* 2-col service grid */}
               <ul className=" w-xl p-5">
-                {serviceList.map((svc, i) => (
+                {serviceList.map((svcList, i) => (
                   <ServiceDropdownItem
-                    key={svc.slug || svc.title || i}
-                    title={svc.name || svc.title}
-                    href={svc.slug ? `/services/${svc.slug}` : svc.href}
-                    description={svc.shortDescription || svc.description}
+                    key={svcList.slug || svcList.title || i}
+                    title={svcList.name || svcList.title}
+                    href={svcList.slug ? `/services/${svcList.slug}` : svcList.href}
+                    description={svcList.shortDescription || svcList.description}
                     index={i}
                   />
                 ))}
@@ -328,10 +306,6 @@ const Header = () => {
       </nav>
     </header>
   )
-}
-
-export function ModeToggle() {
-  return null
 }
 
 export { Header }

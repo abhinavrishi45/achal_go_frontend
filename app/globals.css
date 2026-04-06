@@ -17,22 +17,7 @@
   --ring: #0a0a0a;
 }
 
-/* Dark Theme */
-html.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --primary: #ffffff;
-  --primary-foreground: #0a0a0a;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #ededed;
-  --muted: #2a2a2a;
-  --muted-foreground: #a8a8a8;
-  --accent: #ffffff;
-  --accent-foreground: #0a0a0a;
-  --border: #2a2a2a;
-  --input: #2a2a2a;
-  --ring: #ffffff;
-}
+
 
 @theme inline {
   --color-background: var(--background);
@@ -54,10 +39,6 @@ html.dark {
 
 html {
   color-scheme: light;
-}
-
-html.dark {
-  color-scheme: dark;
 }
 
 body {
