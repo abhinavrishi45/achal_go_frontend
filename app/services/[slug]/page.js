@@ -470,200 +470,89 @@ function CTASection({ pageName }) {
 //     return <ServicePageUI ... />;
 //   }
 
-// ── Preview / Artifact export (uses mock data) ────────────────
-const MOCK_DATA = {
-  heroSection: {
-    backgroundImage:
-      "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1400&q=80",
-    heading: "Civil Engineering",
-    shortDescription:
-      "Precision structural development & large-scale infrastructure with BIM modelling, sustainable materials, and zero-defect delivery standards.",
-  },
-  secondHeroSection: {
-    mainTitle: "Engineering Excellence Across India",
-    singleTitle: "What We Offer",
-    descriptions:
-      "ACHAL's civil engineering division specialises in bridges, industrial structures, highways, and township planning with a fully integrated BIM workflow. Our certified engineers bring global best-practice to every project in Bihar and beyond.",
-    bullets: JSON.stringify([
-      "BIM (Building Information Modelling) enabled project planning",
-      "ISO 9001-certified quality management systems",
-      "In-house structural & geotechnical engineering teams",
-      "Turnkey project delivery from design to handover",
-      "Green construction materials & sustainable practices",
-    ]),
-  },
-  portfolioSections: [
-    {
-      image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=900&q=80",
-      projectName: "Patna Highway Overpass",
-      location: "Patna, Bihar",
-      tag: "Infrastructure",
-      projectDescription: "800 m flyover completed 3 months ahead of schedule.",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=900&q=80",
-      projectName: "Industrial Warehouse Complex",
-      location: "Muzaffarpur, Bihar",
-      tag: "Industrial",
-      projectDescription: "60,000 sq ft pre-engineered steel structure.",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1513828583688-c52646db42da?w=900&q=80",
-      projectName: "Township Infrastructure",
-      location: "Gaya, Bihar",
-      tag: "Township",
-      projectDescription: "Integrated roads, drainage & utility planning.",
-    },
-  ],
-  pricingPlans: [
-    {
-      title: "Consultation",
-      price: "₹25K",
-      benefits: JSON.stringify([
-        "Initial site assessment",
-        "Feasibility study",
-        "Conceptual design",
-        "30-min expert call",
-      ]),
-    },
-    {
-      title: "Full Project",
-      price: "Custom",
-      featured: true,
-      benefits: JSON.stringify([
-        "End-to-end project management",
-        "BIM-enabled design",
-        "Structural engineering",
-        "On-site supervision",
-        "Post-handover support",
-      ]),
-    },
-    {
-      title: "Advisory Retainer",
-      price: "₹80K/mo",
-      benefits: JSON.stringify([
-        "Monthly site audits",
-        "Technical advisory",
-        "Progress reporting",
-        "Priority response SLA",
-      ]),
-    },
-  ],
-  galleryItems: [
-    { image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80", title: "Bridge Construction" },
-    { image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&q=80", title: "Foundation Works" },
-    { image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80", title: "Steel Erection" },
-    { image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80", title: "Site Survey" },
-    { image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80", title: "Quality Inspection" },
-    { image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80", title: "Completed Project" },
-  ],
-  coverageSection: {
-    title: "Our Service Coverage",
-    countriesCovered: "India (pan-national), Bangladesh, Nepal",
-    availableServices: "Civil Design, Structural Engineering, Project Management, Site Supervision",
-    turnaround: "Project kick-off within 7 working days of contract signing",
-  },
-  fullDetailsSection: {
-    image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=900&q=80",
-    title: "Why Our Civil Engineering Stands Apart",
-    description:
-      "Every project at ACHAL is overseen by a licensed structural engineer with a minimum of 10 years' site experience. We combine digital-twin modelling with rigorous on-ground quality checks — delivering structures that outlast their design life by decades. Our zero-compromise philosophy on material quality and workmanship is the reason 78% of our civil clients return for their next project.",
-  },
-};
+
 
 // This page is dynamic; static param generation removed so it's handled at runtime.
 
-// Server page: fetch real service data from API using service ID
+// Server page: fetch service page data from API using service slug
 export default async function ServicePage({ params }) {
   const slug = params?.slug;
+  let page = null;
   let service = null;
 
   try {
-    // Step 1: Get service by slug to find the service ID
-    const slugRes = await fetch(`${API_BASE}/api/services/slug/${encodeURIComponent(slug)}`, {
+    // Fetch complete service page data by slug
+    const pageRes = await fetch(`${API_BASE}/api/service-pages/slug/${encodeURIComponent(slug)}`, {
       cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     });
 
-    if (slugRes.ok) {
-      const contentType = String(slugRes.headers.get("content-type") || "").toLowerCase();
+    if (pageRes.ok) {
+      const contentType = String(pageRes.headers.get("content-type") || "").toLowerCase();
       if (contentType.includes("application/json")) {
         try {
-          service = await slugRes.json();
+          page = await pageRes.json();
+          // Extract service info if available in the page data
+          service = page?.service || { name: page?.name };
         } catch (err) {
-          console.error("Error parsing service data:", err);
-          service = null;
+          console.error("Error parsing service page data:", err);
+          page = null;
         }
       } else {
-        console.warn("Service endpoint returned non-JSON:", contentType);
-        service = null;
+        console.warn("Service page endpoint returned non-JSON:", contentType);
+        page = null;
       }
+    } else if (pageRes.status === 404) {
+      console.warn(`Service page not found for slug: ${slug}`);
+      page = null;
     } else {
-      console.warn(`Service not found: ${slugRes.status}`);
-      service = null;
-    }
-
-    // Step 2: If we have a service with ID, fetch detailed data from /api/services/:id
-    if (service?.id) {
-      try {
-        const detailRes = await fetch(`${API_BASE}/api/services/${service.id}`, {
-          cache: 'no-store',
-          headers: { 'Accept': 'application/json' }
-        });
-
-        if (detailRes.ok) {
-          const contentType = String(detailRes.headers.get("content-type") || "").toLowerCase();
-          if (contentType.includes("application/json")) {
-            try {
-              const detailedService = await detailRes.json();
-              // Merge detailed data if it has additional fields
-              service = { ...service, ...detailedService };
-            } catch (err) {
-              console.error("Error parsing detailed service data:", err);
-              // Keep using service data from step 1
-            }
-          }
-        }
-      } catch (e) {
-        console.warn("Error fetching detailed service data:", e);
-        // Continue with service data from step 1
-      }
+      console.warn(`Error fetching service page: ${pageRes.status}`);
+      page = null;
     }
   } catch (e) {
-    console.error("Error fetching service from API:", e);
-    service = null;
+    console.error("Error fetching service page from API:", e);
+    page = null;
   }
 
   // Extract sections from API data
-  const heroSection = service?.heroSection;
-  const secondHeroSection = service?.secondHeroSection;
-  const portfolioSections = service?.portfolioSections;
-  const pricingPlans = service?.pricingPlans;
-  const galleryItems = service?.galleryItems;
-  const coverageSection = service?.coverageSection;
-  const fullDetailsSection = service?.fullDetailsSection;
+  const heroSection = page?.heroSection;
+  const secondHeroSection = page?.secondHeroSection;
+  const portfolioSections = page?.portfolioSections;
+  const pricingPlans = page?.pricingPlans;
+  const galleryItems = page?.galleryItems;
+  const coverageSection = page?.coverageSection;
+  const fullDetailsSection = page?.fullDetailsSection;
 
-  const pageName = service?.name || "Service";
+  const pageName = service?.name || page?.name || "Service";
 
-  // Use real API data, with MOCK_DATA as fallback only if API call completely fails
-  const useHero = heroSection || (service ? null : MOCK_DATA.heroSection);
-  const useSecond = secondHeroSection || (service ? null : MOCK_DATA.secondHeroSection);
-  const usePortfolio = portfolioSections || (service ? null : MOCK_DATA.portfolioSections);
-  const usePricing = pricingPlans || (service ? null : MOCK_DATA.pricingPlans);
-  const useGallery = galleryItems || (service ? null : MOCK_DATA.galleryItems);
-  const useCoverage = coverageSection || (service ? null : MOCK_DATA.coverageSection);
-  const useFullDetails = fullDetailsSection || (service ? null : MOCK_DATA.fullDetailsSection);
+  if (!page) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600 bg-white">
+        <div style={{ textAlign: "center", padding: "40px" }}>
+          <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}>
+            Service Page Not Found
+          </h1>
+          <p style={{ fontSize: "16px", marginBottom: "24px" }}>
+            The service page for "{slug}" could not be loaded.
+          </p>
+          <a href="/services" style={{ color: "#c8a96e", textDecoration: "underline" }}>
+            ← Back to Services
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
       <style>{PAGE_STYLES}</style>
       <main className="svc-page">
-        <HeroSection heroSection={useHero} pageName={pageName} pageDescription={service?.description} />
-        <SummarySection secondHeroSection={useSecond} />
-        <PortfolioSection portfolioSections={usePortfolio} />
-        <PricingSection pricingPlans={usePricing} />
-        <GallerySection galleryItems={useGallery} />
-        <DetailsSection coverageSection={useCoverage} fullDetailsSection={useFullDetails} />
+        <HeroSection heroSection={heroSection} pageName={pageName} pageDescription={page?.description} />
+        <SummarySection secondHeroSection={secondHeroSection} />
+        <PortfolioSection portfolioSections={portfolioSections} />
+        <PricingSection pricingPlans={pricingPlans} />
+        <GallerySection galleryItems={galleryItems} />
+        <DetailsSection coverageSection={coverageSection} fullDetailsSection={fullDetailsSection} />
         <CTASection pageName={pageName} />
       </main>
     </>
