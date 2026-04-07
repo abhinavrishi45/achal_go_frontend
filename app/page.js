@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from 'next/navigation';
+
 
 const SLIDES = [
   {
@@ -125,6 +127,7 @@ export default function Home() {
   const [statNums, setStatNums] = useState(STATS.map(() => 0));
   const statsRef = useRef(null);
   const statsAnimated = useRef(false);
+  const router = useRouter();
 
   // Auto-slide
   useEffect(() => {
@@ -528,8 +531,8 @@ export default function Home() {
               Experience the standard of ACHAL INTERNATIONAL. Professionalism that stands the test of time.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-primary px-12 py-3 text-sm">Get In Touch</button>
-              <button className="btn-outline px-12 py-3 text-sm">View Capabilities</button>
+              <button onClick={() => router.push('/contact')} className="btn-primary px-12 py-3 text-sm">Get In Touch</button>
+              {/* <button className="btn-outline px-12 py-3 text-sm">View Capabilities</button> */}
             </div>
           </div>
         </section>

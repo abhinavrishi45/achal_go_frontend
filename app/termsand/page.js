@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState, useRef } from "react"
-
+import { useTheme } from "next-themes"
 import { FileText, Search, X, ChevronDown, Shield, Calendar, Tag, ChevronRight, AlertCircle, Layers } from "lucide-react"
 
 // ─── Inject global styles ────────────────────────────────────────────────────
@@ -22,6 +22,20 @@ const STYLES = `
     --shadow-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
     --shadow-hover: 0 2px 8px rgba(0,0,0,.07), 0 8px 28px rgba(0,0,0,.10);
     --transition: 220ms cubic-bezier(.4,0,.2,1);
+  }
+  .dark-terms {
+    --ink:        #f0f0f2;
+    --ink-2:      #b4b4bc;
+    --ink-3:      #6a6a74;
+    --rule:       #2e2e36;
+    --bg:         #111114;
+    --surface:    #1a1a20;
+    --accent:     #4f83f7;
+    --accent-dim: #1a2640;
+    --warn:       #d97706;
+    --warn-dim:   #2d1f06;
+    --shadow-card: 0 1px 3px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.3);
+    --shadow-hover: 0 2px 8px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.4);
   }
 
   .tnr-root {
@@ -370,6 +384,7 @@ function TermCard({ item, serviceName, expanded, onToggle }) {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function TermsAndRules() {
+  const { theme } = useTheme()
   const [terms, setTerms] = useState([])
   const [services, setServices] = useState([])
   const [selectedService, setSelectedService] = useState(null)
@@ -432,8 +447,10 @@ export default function TermsAndRules() {
     return text.toLowerCase().includes(query.toLowerCase())
   })
 
+  const isDark = theme === "dark"
+
   return (
-    <div className="tnr-root">
+    <div className={`tnr-root${isDark ? " dark-terms" : ""}`}>
       <div className="tnr-inner">
 
         {/* ── Header ── */}

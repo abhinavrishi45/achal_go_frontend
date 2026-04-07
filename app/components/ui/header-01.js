@@ -308,4 +308,8 @@ const Header = () => {
   )
 }
 
+export function ModeToggle() {
+  return null
+}
+
 export { Header }
