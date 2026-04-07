@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "ACHAL PROJECTS PVT LTD",
   description: "Premium services in civil engineering, parking, restaurant, cargo, and EV charging across India",
+  icons: {
+    icon: "/final-logo.png",
+  },
 };
 
 export default function RootLayout({ children }) {
