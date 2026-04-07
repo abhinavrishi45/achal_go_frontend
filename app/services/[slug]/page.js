@@ -1,6 +1,6 @@
 import React from "react";
 export const dynamic = "force-dynamic";
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://achal-backend-trial.tannis.in";
 
@@ -207,7 +207,9 @@ function HeroSection({ heroSection, pageName, pageDescription }) {
         <h1>{heading}</h1>
         {sub && <p>{sub}</p>}
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <button onClick={() => router.push('/get-quote')} className="btn-primary px-12 py-3 text-sm cursor-pointer">Request a Quote</button>
+          <Link href="/get-quote" className="btn-gold px-12 py-3 text-sm" style={{ display: "inline-block", textDecoration: "none" }}>
+            Request a Quote
+          </Link>
           <button className="btn-ghost">Learn More</button>
         </div>
       </div>
@@ -327,7 +329,9 @@ function PricingSection({ pricingPlans }) {
                     ))}
                   </ul>
                 )}
-                <button className="svc-plan-btn">Get Started</button>
+                <Link href="/get-quote" style={{ display: "block", textDecoration: "none" }}>
+                  <button className="svc-plan-btn">Get Started</button>
+                </Link>
               </div>
             );
           })}
@@ -442,8 +446,12 @@ function CTASection({ pageName }) {
         reliability and precision that defines ACHAL.
       </p>
       <div className="svc-cta-btns">
-        <button className="btn-gold">Get In Touch</button>
-        <button className="btn-ghost">View All Services</button>
+        <Link href="/get-quote" className="btn-gold" style={{ display: "inline-block", textDecoration: "none" }}>
+          Get In Touch
+        </Link>
+        <Link href="/services" className="btn-ghost" style={{ display: "inline-block", textDecoration: "none" }}>
+          View All Services
+        </Link>
       </div>
     </section>
   );
@@ -479,7 +487,7 @@ export default async function ServicePage({ params }) {
   const { slug } = await params;
   let page = null;
   let service = null;
-  
+
 
 
   try {
