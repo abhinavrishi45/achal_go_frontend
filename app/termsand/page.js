@@ -1,191 +1,278 @@
 "use client"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
-import { FileText, Search, X, ChevronDown, Shield, Calendar, Tag, ChevronRight, AlertCircle, Layers } from "lucide-react"
+import {
+  FileText, Search, X, ChevronDown, Shield,
+  Calendar, Tag, AlertCircle, Layers, Phone,
+} from "lucide-react"
 
-// ─── Inject global styles ────────────────────────────────────────────────────
+const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
+
+// ─── Styles ──────────────────────────────────────────────────────────────────
 const STYLES = `
-  :root {
-    --ink:        #0f0f10;
-    --ink-2:      #3a3a40;
-    --ink-3:      #72727a;
-    --rule:       #e4e4e8;
-    --bg:         #f8f8f6;
-    --surface:    #ffffff;
-    --accent:     #1a56db;
-    --accent-dim: #dce8ff;
-    --warn:       #b45309;
-    --warn-dim:   #fef3c7;
-    --radius-card: 14px;
-    --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --shadow-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
-    --shadow-hover: 0 2px 8px rgba(0,0,0,.07), 0 8px 28px rgba(0,0,0,.10);
-    --transition: 220ms cubic-bezier(.4,0,.2,1);
-  }
-  .dark-terms {
-    --ink:        #f0f0f2;
-    --ink-2:      #b4b4bc;
-    --ink-3:      #6a6a74;
-    --rule:       #2e2e36;
-    --bg:         #111114;
-    --surface:    #1a1a20;
-    --accent:     #4f83f7;
-    --accent-dim: #1a2640;
-    --warn:       #d97706;
-    --warn-dim:   #2d1f06;
-    --shadow-card: 0 1px 3px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.3);
-    --shadow-hover: 0 2px 8px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.4);
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
 
   .tnr-root {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    background: #faf9f6;
+    color: #0a1628;
     min-height: 100vh;
-    padding-top: 96px;
-    padding-bottom: 80px;
-    transition: background var(--transition), color var(--transition);
   }
-  .tnr-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
-  /* ── Header ── */
-  .tnr-header {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    padding-bottom: 28px;
-    border-bottom: 1.5px solid var(--rule);
-    margin-bottom: 32px;
-    gap: 16px;
-    flex-wrap: wrap;
+  /* ── HERO ── */
+  .tnr-hero {
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a6b 55%, #0d1f40 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 112px 64px 64px;
   }
-  .tnr-title-group {}
-  .tnr-eyebrow {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 11px; font-weight: 600; letter-spacing: .08em;
-    text-transform: uppercase; color: var(--accent);
-    background: var(--accent-dim);
-    padding: 4px 10px; border-radius: 20px;
-    margin-bottom: 12px;
+  .tnr-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: .04;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(200,169,110,.8) 60px, rgba(200,169,110,.8) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(200,169,110,.8) 60px, rgba(200,169,110,.8) 61px);
+  }
+  .tnr-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .tnr-hero-inner {
+    position: relative;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  .tnr-eyebrow-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .tnr-eyebrow-line {
+    display: block;
+    width: 24px; height: 1px;
+    background: #c8a96e;
+  }
+  .tnr-eyebrow-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .3em;
+    color: #c8a96e;
+    text-transform: uppercase;
   }
   .tnr-h1 {
-    font-family: var(--font-display);
-    font-size: clamp(32px, 4vw, 46px);
-    font-weight: 400;
-    letter-spacing: -.02em;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 900;
+    color: white;
     line-height: 1.1;
-    color: var(--ink);
+    letter-spacing: -.01em;
+    margin: 0 0 16px;
+  }
+  .tnr-h1 em { font-style: normal; color: #c8a96e; }
+  .tnr-hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,.55);
+    line-height: 1.7;
+    font-weight: 300;
+    max-width: 440px;
     margin: 0;
   }
-  .tnr-h1 em { font-style: normal; color: var(--ink-2); }
-  .tnr-count {
-    font-size: 13px; color: var(--ink-3);
-    background: var(--rule);
-    padding: 4px 12px; border-radius: 20px;
-    font-variant-numeric: tabular-nums;
-    align-self: flex-end;
+  .tnr-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    color: #c8a96e;
+    border: 1px solid rgba(200,169,110,.3);
+    padding: 6px 14px;
+    margin-top: 28px;
   }
 
-  /* ── Controls ── */
-  .tnr-controls {
-    display: flex; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 32px;
+  /* ── Controls bar ── */
+  .tnr-controls-bar {
+    background: white;
+    border-bottom: 1px solid #e7e0d4;
+    padding: 20px 64px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 16px rgba(10,22,40,.06);
+  }
+  .tnr-controls-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
     align-items: center;
   }
+
+  /* search */
   .tnr-search-wrap {
-    flex: 1; min-width: 220px;
+    flex: 1;
+    min-width: 220px;
     position: relative;
-    display: flex; align-items: center;
+    display: flex;
+    align-items: center;
   }
   .tnr-search-icon {
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-    color: var(--ink-3); pointer-events: none;
+    position: absolute; left: 14px;
+    color: #9ca3af;
+    pointer-events: none;
     display: flex;
   }
   .tnr-search-input {
-    width: 100%; padding: 10px 40px 10px 40px;
-    border: 1.5px solid var(--rule);
-    border-radius: 10px;
-    font-family: var(--font-body); font-size: 15px;
-    background: var(--surface); color: var(--ink);
+    width: 100%;
+    padding: 11px 40px 11px 42px;
+    border: 1px solid #e7e0d4;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: #fafaf8;
+    color: #0a1628;
     outline: none;
-    transition: border-color var(--transition), box-shadow var(--transition);
+    transition: border-color .2s;
   }
-  .tnr-search-input::placeholder { color: var(--ink-3); }
-  .tnr-search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .tnr-search-input::placeholder { color: #9ca3af; }
+  .tnr-search-input:focus { border-color: #c8a96e; }
   .tnr-search-clear {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    position: absolute; right: 12px;
     background: none; border: none; cursor: pointer; padding: 2px;
-    color: var(--ink-3); display: flex; border-radius: 4px;
-    transition: color var(--transition);
+    color: #9ca3af; display: flex;
+    transition: color .2s;
   }
-  .tnr-search-clear:hover { color: var(--ink); }
+  .tnr-search-clear:hover { color: #0a1628; }
 
-  .tnr-select-wrap { position: relative; display: flex; align-items: center; }
+  /* select */
+  .tnr-select-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
   .tnr-select-icon {
-    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-    color: var(--ink-3); pointer-events: none; display: flex;
+    position: absolute; left: 12px;
+    color: #9ca3af; pointer-events: none; display: flex;
   }
   .tnr-select-chevron {
-    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-    color: var(--ink-3); pointer-events: none; display: flex;
+    position: absolute; right: 10px;
+    color: #9ca3af; pointer-events: none; display: flex;
   }
   .tnr-select {
-    padding: 10px 36px 10px 36px;
-    border: 1.5px solid var(--rule); border-radius: 10px;
-    font-family: var(--font-body); font-size: 15px;
-    background: var(--surface); color: var(--ink);
-    appearance: none; cursor: pointer; outline: none;
+    padding: 11px 36px 11px 36px;
+    border: 1px solid #e7e0d4;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: #fafaf8;
+    color: #0a1628;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
     min-width: 180px;
-    transition: border-color var(--transition), box-shadow var(--transition);
+    transition: border-color .2s;
   }
-  .tnr-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .tnr-select:focus { border-color: #c8a96e; }
 
+  /* reset btn */
   .tnr-reset-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 16px;
-    border: 1.5px solid var(--rule); border-radius: 10px;
-    font-family: var(--font-body); font-size: 15px; font-weight: 500;
-    background: var(--surface); color: var(--ink-2);
-    cursor: pointer; white-space: nowrap;
-    transition: border-color var(--transition), color var(--transition), background var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 20px;
+    border: 1px solid rgba(10,22,40,.2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: transparent;
+    color: #0a1628;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    white-space: nowrap;
   }
-  .tnr-reset-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+  .tnr-reset-btn:hover { border-color: #0a1628; background: #f5f3ef; }
+
+  /* ── Body ── */
+  .tnr-body {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 48px 64px 80px;
+  }
+  @media (max-width: 768px) {
+    .tnr-hero { padding: 100px 24px 48px; }
+    .tnr-controls-bar { padding: 16px 24px; }
+    .tnr-body { padding: 32px 24px 64px; }
+  }
 
   /* ── Alert ── */
   .tnr-alert {
-    display: flex; align-items: flex-start; gap: 10px;
-    background: var(--warn-dim); border: 1px solid var(--warn);
-    border-radius: 10px; padding: 12px 16px;
-    color: var(--warn); font-size: 14px; font-weight: 500;
-    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 12px 16px;
+    color: #b91c1c;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 28px;
   }
 
   /* ── Loading ── */
   .tnr-loading {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 16px; padding: 80px 0; color: var(--ink-3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 80px 0;
+    color: #9ca3af;
   }
   .tnr-spinner {
     width: 32px; height: 32px;
-    border: 2px solid var(--rule);
-    border-top-color: var(--accent);
+    border: 2px solid #e7e0d4;
+    border-top-color: #c8a96e;
     border-radius: 50%;
     animation: tnr-spin .7s linear infinite;
   }
   @keyframes tnr-spin { to { transform: rotate(360deg); } }
+  .tnr-loading-label { font-size: 13px; letter-spacing: .05em; }
 
   /* ── Empty ── */
   .tnr-empty {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 14px; padding: 80px 0; color: var(--ink-3); text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 80px 0;
+    color: #9ca3af;
+    text-align: center;
   }
   .tnr-empty-icon {
-    width: 56px; height: 56px;
-    background: var(--rule); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
+    width: 64px; height: 64px;
+    background: #f5f3ef;
+    border: 1px solid #e7e0d4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c8a96e;
   }
-  .tnr-empty h3 { font-size: 16px; font-weight: 600; color: var(--ink-2); margin: 0; }
-  .tnr-empty p { font-size: 14px; margin: 0; max-width: 280px; }
+  .tnr-empty h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #0a1628;
+    margin: 0;
+  }
+  .tnr-empty p { font-size: 13px; margin: 0; max-width: 300px; line-height: 1.7; }
 
   /* ── Grid ── */
   .tnr-grid {
@@ -197,87 +284,161 @@ const STYLES = `
 
   /* ── Card ── */
   .tnr-card {
-    background: var(--surface);
-    border: 1.5px solid var(--rule);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-card);
-    transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+    background: white;
+    border: 1px solid #e7e0d4;
+    transition: border-color .25s, box-shadow .25s, transform .25s;
     overflow: hidden;
     cursor: pointer;
+    position: relative;
   }
-  .tnr-card:hover {
-    box-shadow: var(--shadow-hover);
-    border-color: color-mix(in srgb, var(--accent) 30%, var(--rule));
-    transform: translateY(-1px);
+  .tnr-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: #c8a96e;
+    transform: scaleX(0);
+    transition: transform .25s;
   }
+  .tnr-card:hover { border-color: #c8a96e; box-shadow: 0 4px 24px rgba(10,22,40,.08); transform: translateY(-1px); }
+  .tnr-card:hover::after { transform: scaleX(1); }
+
   .tnr-card-header {
-    display: flex; align-items: flex-start; justify-content: space-between;
-    padding: 20px 20px 16px; gap: 12px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 24px 20px;
+    gap: 12px;
   }
   .tnr-card-meta { flex: 1; min-width: 0; }
+
   .tnr-card-service {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 12px; font-weight: 600; letter-spacing: .06em;
-    text-transform: uppercase; color: var(--accent);
-    margin-bottom: 6px;
-  }
-  .tnr-card-title {
-    font-family: var(--font-display);
-    font-size: 20px; font-weight: 500;
-    line-height: 1.3; letter-spacing: -.01em;
-    color: var(--ink); margin: 0;
-  }
-  .tnr-card-date {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 13px; color: var(--ink-3);
-    white-space: nowrap; flex-shrink: 0;
-    margin-top: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #c8a96e;
+    margin-bottom: 8px;
   }
 
-  .tnr-card-divider { height: 1px; background: var(--rule); margin: 0 20px; }
+  .tnr-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #0a1628;
+    margin: 0;
+  }
+
+  .tnr-card-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    color: #9ca3af;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .tnr-accent-bar {
+    width: 100%; height: 0.5px;
+    background: #e7e0d4;
+    margin: 0 24px;
+    width: calc(100% - 48px);
+  }
 
   .tnr-card-body {
-    padding: 16px 20px;
-    font-size: 15px; line-height: 1.75;
-    color: var(--ink-2);
+    padding: 20px 24px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #4b5563;
     overflow: hidden;
     transition: max-height .35s cubic-bezier(.4,0,.2,1);
   }
-  .tnr-card-body.collapsed { max-height: 90px; -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%); mask-image: linear-gradient(to bottom, black 40%, transparent 100%); }
-  .tnr-card-body.expanded  { max-height: 9999px; -webkit-mask-image: none; mask-image: none; }
+  .tnr-card-body.collapsed {
+    max-height: 96px;
+    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  }
+  .tnr-card-body.expanded {
+    max-height: 9999px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 
   .tnr-card-body p { margin: 0 0 10px; }
   .tnr-card-body p:last-child { margin-bottom: 0; }
   .tnr-card-body ul, .tnr-card-body ol { margin: 0 0 10px 18px; }
   .tnr-card-body li { margin-bottom: 4px; }
   .tnr-card-body h2, .tnr-card-body h3 {
-    font-family: var(--font-display);
-    font-size: 16px; font-weight: 600;
-    color: var(--ink); margin: 14px 0 6px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 700;
+    color: #0a1628; margin: 14px 0 6px;
   }
-  .tnr-card-body strong { font-weight: 600; color: var(--ink); }
-  .tnr-card-body a { color: var(--accent); text-decoration: none; }
+  .tnr-card-body strong { font-weight: 600; color: #0a1628; }
+  .tnr-card-body a { color: #c8a96e; text-decoration: none; }
   .tnr-card-body a:hover { text-decoration: underline; }
 
   .tnr-card-footer {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 20px 16px; gap: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px 20px;
+    gap: 12px;
   }
+
   .tnr-read-more-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 13.5px; font-weight: 600; letter-spacing: .02em;
-    color: var(--accent);
-    background: none; border: none; cursor: pointer;
-    padding: 0; transition: gap var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #0a1628;
+    background: none;
+    border: 1px solid rgba(10,22,40,.2);
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: border-color .2s, background .2s, color .2s;
+    font-family: 'DM Sans', sans-serif;
   }
-  .tnr-read-more-btn:hover { gap: 8px; }
-  .tnr-read-more-btn svg { transition: transform var(--transition); }
+  .tnr-read-more-btn:hover { border-color: #c8a96e; color: #c8a96e; }
+  .tnr-read-more-btn.open { background: #0a1628; color: #c8a96e; border-color: #0a1628; }
+  .tnr-read-more-btn svg { transition: transform .25s; }
   .tnr-read-more-btn.open svg { transform: rotate(180deg); }
 
   .tnr-card-id {
-    font-size: 12px; color: var(--ink-3);
-    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    color: #9ca3af;
+    text-transform: uppercase;
   }
+
+  /* ── CTA bar ── */
+  .tnr-cta-bar {
+    background: #0a1628;
+    padding: 32px 64px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  @media (max-width: 768px) { .tnr-cta-bar { padding: 28px 24px; } }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tnr-fade-up { animation: fadeUp .35s ease forwards; }
 `
 
 function injectStyles() {
@@ -296,16 +457,16 @@ function Spinner() {
   return (
     <div className="tnr-loading">
       <div className="tnr-spinner" />
-      <span style={{ fontSize: 13 }}>Loading terms…</span>
+      <span className="tnr-loading-label">Loading terms…</span>
     </div>
   )
 }
 
 function Empty({ query, service }) {
   return (
-    <div className="tnr-empty">
+    <div className="tnr-empty tnr-fade-up">
       <div className="tnr-empty-icon">
-        <FileText size={22} />
+        <FileText size={24} />
       </div>
       <h3>No terms found</h3>
       <p>
@@ -332,11 +493,16 @@ function TermCard({ item, serviceName, expanded, onToggle }) {
   const dateStr = formatDate(item.effectiveDate)
 
   return (
-    <article className="tnr-card" onClick={hasContent ? onToggle : undefined} role={hasContent ? "button" : undefined} aria-expanded={expanded}>
+    <article
+      className="tnr-card tnr-fade-up"
+      onClick={hasContent ? onToggle : undefined}
+      role={hasContent ? "button" : undefined}
+      aria-expanded={expanded}
+    >
       <div className="tnr-card-header">
         <div className="tnr-card-meta">
           <div className="tnr-card-service">
-            <Tag size={10} />
+            <Tag size={9} />
             {serviceName}
           </div>
           <h3 className="tnr-card-title">
@@ -345,7 +511,7 @@ function TermCard({ item, serviceName, expanded, onToggle }) {
         </div>
         {dateStr && (
           <div className="tnr-card-date">
-            <Calendar size={11} />
+            <Calendar size={10} />
             {dateStr}
           </div>
         )}
@@ -353,19 +519,20 @@ function TermCard({ item, serviceName, expanded, onToggle }) {
 
       {hasContent && (
         <>
-          <div className="tnr-card-divider" />
+          <div style={{ height: "0.5px", background: "#e7e0d4", margin: "0 24px" }} />
           <div
             className={`tnr-card-body ${expanded ? "expanded" : "collapsed"}`}
             dangerouslySetInnerHTML={{ __html: item.termsText || item.content || "" }}
           />
+          <div style={{ height: "0.5px", background: "#e7e0d4", margin: "0 24px" }} />
           <div className="tnr-card-footer">
             <button
               className={`tnr-read-more-btn ${expanded ? "open" : ""}`}
-              onClick={e => { e.stopPropagation(); onToggle(); }}
+              onClick={e => { e.stopPropagation(); onToggle() }}
               aria-label={expanded ? "Show less" : "Read more"}
             >
               {expanded ? "Show less" : "Read more"}
-              <ChevronDown size={13} />
+              <ChevronDown size={12} />
             </button>
             <span className="tnr-card-id">ID #{item.id}</span>
           </div>
@@ -384,7 +551,6 @@ function TermCard({ item, serviceName, expanded, onToggle }) {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function TermsAndRules() {
-  const { theme } = useTheme()
   const [terms, setTerms] = useState([])
   const [services, setServices] = useState([])
   const [selectedService, setSelectedService] = useState(null)
@@ -392,11 +558,9 @@ export default function TermsAndRules() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [expandedId, setExpandedId] = useState(null)
-  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
 
   injectStyles()
 
-  // initial load
   useEffect(() => {
     let mounted = true
     async function load() {
@@ -422,7 +586,6 @@ export default function TermsAndRules() {
     return () => { mounted = false }
   }, [apiBase])
 
-  // filter by service
   useEffect(() => {
     if (!selectedService) return
     let mounted = true;
@@ -439,7 +602,7 @@ export default function TermsAndRules() {
       }
     })()
     return () => { mounted = false }
-  }, [selectedService, apiBase])
+  }, [selectedService])
 
   const filtered = terms.filter(t => {
     if (!t) return false
@@ -447,32 +610,35 @@ export default function TermsAndRules() {
     return text.toLowerCase().includes(query.toLowerCase())
   })
 
-  const isDark = theme === "dark"
-
   return (
-    <div className={`tnr-root${isDark ? " dark-terms" : ""}`}>
-      <div className="tnr-inner">
+    <div className="tnr-root">
 
-        {/* ── Header ── */}
-        <header className="tnr-header">
-          <div className="tnr-title-group">
-            <div className="tnr-eyebrow">
-              <Shield size={10} />
-              Legal
-            </div>
-            <h1 className="tnr-h1">
-              Terms <em>&amp; Conditions</em>
-            </h1>
+      {/* ── HERO ── */}
+      <section className="tnr-hero">
+        <div className="tnr-hero-inner">
+          <div className="tnr-eyebrow-row">
+            <span className="tnr-eyebrow-line" />
+            <span className="tnr-eyebrow-label">Legal</span>
           </div>
+          <h1 className="tnr-h1">
+            Terms <em>&amp; Conditions</em>
+          </h1>
+          <p className="tnr-hero-sub">
+            Our policies, rules, and agreements — clearly laid out for every service we provide.
+          </p>
           {!loading && (
-            <div className="tnr-count">
+            <div className="tnr-count-badge">
+              <Shield size={10} />
               {filtered.length} {filtered.length === 1 ? "document" : "documents"}
             </div>
           )}
-        </header>
+        </div>
+      </section>
 
-        {/* ── Controls ── */}
-        <div className="tnr-controls">
+      {/* ── Controls bar ── */}
+      <div className="tnr-controls-bar">
+        <div className="tnr-controls-inner">
+
           {/* Service filter */}
           <div className="tnr-select-wrap">
             <span className="tnr-select-icon"><Layers size={14} /></span>
@@ -514,13 +680,15 @@ export default function TermsAndRules() {
               className="tnr-reset-btn"
               onClick={() => { setSelectedService(null); setQuery("") }}
             >
-              <X size={13} />
-              Reset
+              <X size={12} /> Reset
             </button>
           )}
         </div>
+      </div>
 
-        {/* ── Error banner ── */}
+      {/* ── Body ── */}
+      <div className="tnr-body">
+
         {error && (
           <div className="tnr-alert">
             <AlertCircle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
@@ -528,7 +696,6 @@ export default function TermsAndRules() {
           </div>
         )}
 
-        {/* ── Body ── */}
         {loading ? (
           <Spinner />
         ) : filtered.length === 0 ? (
@@ -547,6 +714,32 @@ export default function TermsAndRules() {
           </div>
         )}
       </div>
+
+      {/* ── CTA bar ── */}
+      <div className="tnr-cta-bar">
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".25em", color: "rgba(200,169,110,.7)", textTransform: "uppercase", marginBottom: 4 }}>
+            Have questions?
+          </div>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,.55)", margin: 0, fontWeight: 300 }}>
+            Our team is available Mon–Fri, 9 AM–6 PM IST to assist with any legal queries.
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <Phone size={15} style={{ color: "#c8a96e" }} />
+            <span style={{ fontSize: 14, fontWeight: 500, color: "white" }}>+91 (612) 796-5983</span>
+          </div>
+          <div style={{ width: 1, height: 24, background: "rgba(255,255,255,.1)" }} />
+          <a
+            href="mailto:info@achalprojects.com"
+            style={{ fontSize: 13, color: "#c8a96e", textDecoration: "none", fontWeight: 500 }}
+          >
+            info@achalprojects.com
+          </a>
+        </div>
+      </div>
+
     </div>
   )
 }
