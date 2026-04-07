@@ -3,135 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from 'next/navigation';
 
-
-const SLIDES = [
-  {
-    img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1400&q=80",
-    label: "Civil Engineering",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=1400&q=80",
-    label: "EV Infrastructure",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1400&q=80",
-    label: "Cargo & Logistics",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400&q=80",
-    label: "Restaurant Services",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1400&q=80",
-    label: "Parking Solutions",
-  }
-];
-
-const SERVICES = [
-  {
-    name: "Civil Engineering",
-    desc: "Precision structural development & large-scale infrastructure with BIM modeling.",
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-12 h-12">
-        <rect x="6" y="20" width="36" height="22" rx="1" />
-        <path d="M2 20L24 4l22 16" />
-        <rect x="18" y="30" width="12" height="12" />
-        <line x1="16" y1="20" x2="16" y2="42" />
-        <line x1="32" y1="20" x2="32" y2="42" />
-      </svg>
-    ),
-  },
-  {
-    name: "Parking Solutions",
-    desc: "Smart automated parking with real-time monitoring & EV charging integration.",
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-12 h-12">
-        <circle cx="24" cy="24" r="20" />
-        <circle cx="24" cy="24" r="8" />
-        <path d="M24 4v8M24 36v8M4 24h8M36 24h8" />
-        <circle cx="24" cy="24" r="2" fill="currentColor" />
-      </svg>
-    ),
-  },
-  {
-    name: "Restaurant Services",
-    desc: "Premium culinary operations & corporate catering with world-class hospitality.",
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-12 h-12">
-        <path d="M8 38V14a2 2 0 0 1 2-2h28a2 2 0 0 1 2 2v24" />
-        <path d="M4 38h40" />
-        <path d="M16 12v-4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" />
-        <line x1="24" y1="12" x2="24" y2="38" />
-        <line x1="8" y1="24" x2="40" y2="24" />
-      </svg>
-    ),
-  },
-  {
-    name: "Cargo & Logistics",
-    desc: "End-to-end supply chain mastery with GPS tracking & customs clearance support.",
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-12 h-12">
-        <rect x="2" y="16" width="32" height="20" rx="2" />
-        <path d="M34 22h6l6 8v6h-12V22z" />
-        <circle cx="12" cy="38" r="4" />
-        <circle cx="36" cy="38" r="4" />
-        <line x1="2" y1="26" x2="34" y2="26" />
-      </svg>
-    ),
-  },
-  {
-    name: "EV Infrastructure",
-    desc: "Next-gen charging networks with Level 3 DC fast charge & solar-powered hubs.",
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-12 h-12">
-        <path d="M24 4l-8 20h16L24 44" />
-        <circle cx="24" cy="24" r="18" strokeDasharray="4 3" />
-      </svg>
-    ),
-  },
-];
-
-const STATS = [
-  { num: 500, suffix: "+", label: "Projects Delivered" },
-  { num: 4000, suffix: "+", label: "Global Clients" },
-  { num: 200, suffix: "+", label: "Specialists On Board" },
-  { num: 12, suffix: "+", label: "Years of Excellence" },
-];
-
-const WHY = [
-  { n: "01", title: "Innovation First", desc: "Cutting-edge technology and engineering solutions for the challenges of tomorrow, implemented today across all our service verticals." },
-  { n: "02", title: "Proven Track Record", desc: "12+ years of consistently delivering exceptional results with 500+ successful projects completed across India." },
-  { n: "03", title: "Professional Team", desc: "200+ highly skilled specialists across engineering, logistics, and hospitality — all committed to service excellence." },
-  { n: "04", title: "24/7 Support", desc: "Round-the-clock client assistance and project monitoring ensuring zero downtime and complete peace of mind." },
-  { n: "05", title: "Eco-Conscious", desc: "Sustainable practices embedded across all operations — from green EV infrastructure to responsible construction materials." },
-  { n: "06", title: "One-Point Contact", desc: "Simplified project management through a single point of accountability — our hallmark approach to service delivery." },
-];
-
-const TESTIMONIALS = [
-  { quote: "Exceptional civil engineering expertise. ACHAL delivered our infrastructure project on time and within budget — their structural precision is unmatched in the industry.", name: "Rajesh Kumar", role: "Construction Manager", rating: 5 },
-  { quote: "Outstanding catering and restaurant service for our corporate events. Highly professional and the food quality consistently exceeds expectations.", name: "Priya Sharma", role: "Restaurant Owner", rating: 5 },
-  { quote: "Best cargo and logistics service in the region. Reliable, fast, and completely transparent tracking — ACHAL has transformed our supply chain.", name: "Amit Patel", role: "Fleet Manager", rating: 5 },
-];
-
-const TICKER_ITEMS = [
-  { label: "Years of Excellence", value: "12+" },
-  { label: "Projects Delivered", value: "500+" },
-  { label: "Clients Served", value: "4,000+" },
-  { label: "Industry Verticals", value: "5" },
-  { label: "Civil · Parking · Hospitality · Cargo · EV", value: "" },
-  { label: "Registered in Bihar, India", value: "" },
-];
-
 export default function Home() {
   const [slide, setSlide] = useState(0);
   const [statNums, setStatNums] = useState([]);
+  const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const statsRef = useRef(null);
   const statsAnimated = useRef(false);
   const router = useRouter();
-
-  // API state
-  const [apiData, setApiData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   // Parse JSON safely
   const safeParse = (data, fallback = []) => {
@@ -163,39 +42,22 @@ export default function Home() {
     fetchFrontpage();
   }, []);
 
-  const heroSlides = apiData?.heroSlides ? safeParse(apiData.heroSlides, SLIDES) : SLIDES;
-  const tickerItems = apiData?.tickerItems ? safeParse(apiData.tickerItems, TICKER_ITEMS) : TICKER_ITEMS;
-  const services = apiData?.services ? safeParse(apiData.services, SERVICES.map(s => ({ name: s.name, description: s.desc }))) : SERVICES;
+  // Merge API data with fallbacks
+  const heroSlides = apiData?.heroSlides ? safeParse(apiData.heroSlides, []) : [];
+  const tickerItems = apiData?.tickerItems ? safeParse(apiData.tickerItems, []) : [];
+  const services = apiData?.services ? safeParse(apiData.services, []) : [];
   const stats = apiData && (apiData.numberOfProjects || apiData.numberOfClients || apiData.teamMembers || apiData.yoe)
     ? [
-      { num: parseInt(apiData.numberOfProjects) || 500, suffix: "+", label: "Projects Delivered" },
-      { num: parseInt(apiData.numberOfClients) || 4000, suffix: "+", label: "Global Clients" },
-      { num: parseInt(apiData.teamMembers) || 200, suffix: "+", label: "Specialists On Board" },
-      { num: parseInt(apiData.yoe) || 12, suffix: "+", label: "Years of Excellence" },
+      { num: parseInt(apiData.numberOfProjects) || 0, suffix: "+", label: "Projects Delivered" },
+      { num: parseInt(apiData.numberOfClients) || 0, suffix: "+", label: "Global Clients" },
+      { num: parseInt(apiData.teamMembers) || 0, suffix: "+", label: "Specialists On Board" },
+      { num: parseInt(apiData.yoe) || 0, suffix: "+", label: "Years of Excellence" },
     ]
-    : STATS;
-  const whyUs = apiData?.whyPartner ? safeParse(apiData.whyPartner, WHY.map((w, i) => ({ n: String(i + 1).padStart(2, '0'), title: w.title, desc: w.description }))) : WHY;
-  const testimonials = apiData?.testimonials ? safeParse(apiData.testimonials, TESTIMONIALS) : TESTIMONIALS;
-  const aboutValues = apiData?.aboutValues ? safeParse(apiData.aboutValues, [
-    { title: "Excellence", desc: "Setting the gold standard in every project." },
-    { title: "Integrity", desc: "Radical transparency in all partnerships." },
-    { title: "Innovation", desc: "Pioneering industrial technology." },
-    { title: "Sustainability", desc: "Eco-conscious across all operations." },
-  ]) : [
-    { title: "Excellence", desc: "Setting the gold standard in every project." },
-    { title: "Integrity", desc: "Radical transparency in all partnerships." },
-    { title: "Innovation", desc: "Pioneering industrial technology." },
-    { title: "Sustainability", desc: "Eco-conscious across all operations." },
-  ];
-  const portfolioItems = apiData?.portfolioItems ? safeParse(apiData.portfolioItems, [
-    { img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1400&q=80", tag: "Civil Engineering", name: "Large-Scale Infrastructure Development", wide: true },
-    { img: "https://images.unsplash.com/photo-1619983081563-430f63602796?w=800&q=80", tag: "EV Infrastructure", name: "Rapid Charging Network" },
-    { img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80", tag: "Cargo & Logistics", name: "Supply Chain Operations" },
-  ]) : [
-    { img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1400&q=80", tag: "Civil Engineering", name: "Large-Scale Infrastructure Development", wide: true },
-    { img: "https://images.unsplash.com/photo-1619983081563-430f63602796?w=800&q=80", tag: "EV Infrastructure", name: "Rapid Charging Network" },
-    { img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80", tag: "Cargo & Logistics", name: "Supply Chain Operations" },
-  ];
+    : [];
+  const whyUs = apiData?.whyPartner ? safeParse(apiData.whyPartner, []) : [];
+  const testimonials = apiData?.testimonials ? safeParse(apiData.testimonials, []) : [];
+  const aboutValues = apiData?.aboutValues ? safeParse(apiData.aboutValues, []) : [];
+  const portfolioItems = apiData?.portfolioItems ? safeParse(apiData.portfolioItems, []) : [];
 
   // Initialize stat numbers
   useEffect(() => {
@@ -205,12 +67,14 @@ export default function Home() {
 
   // Auto-slide
   useEffect(() => {
+    if (heroSlides.length === 0) return;
     const t = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 4000);
     return () => clearInterval(t);
   }, [heroSlides]);
 
   // Stats counter on scroll
   useEffect(() => {
+    if (stats.length === 0) return;
     const el = statsRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
@@ -357,11 +221,17 @@ export default function Home() {
         <section className="relative w-full min-h-screen md:h-screen overflow-hidden bg-blue-950">
           {/* Slides */}
           <div className="absolute inset-0">
-            {heroSlides.map((s, i) => (
+            {heroSlides.length > 0 ? heroSlides.map((s, i) => (
               <div key={i} className={`slide${i === slide ? " active" : ""}`}>
                 <img src={s.img} alt={s.label} className="w-full h-full object-cover opacity-45" style={{ filter: "saturate(0.3)" }} />
               </div>
-            ))}
+            )) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-900 to-blue-800 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <div className="text-lg font-semibold">Loading hero content...</div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Overlay */}
@@ -390,7 +260,7 @@ export default function Home() {
 
           {/* Dots */}
           <div className="absolute bottom-8 left-6 md:left-16 flex gap-2.5">
-            {heroSlides.map((_, i) => (
+            {heroSlides.length > 0 && heroSlides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setSlide(i)}
@@ -401,20 +271,24 @@ export default function Home() {
           </div>
 
           {/* Label */}
-          <div key={slide} className="hide-mobile slide-label absolute bottom-8 right-6 md:right-16 text-xs tracking-widest text-white/50 uppercase">
-            {heroSlides[slide]?.label}
-          </div>
+          {heroSlides.length > 0 && (
+            <div key={slide} className="hide-mobile slide-label absolute bottom-8 right-6 md:right-16 text-xs tracking-widest text-white/50 uppercase">
+              {heroSlides[slide]?.label}
+            </div>
+          )}
         </section>
 
         {/* ── TICKER ── */}
         <div className="ticker-wrap">
           <div className="ticker-inner">
-            {[...tickerItems, ...tickerItems].map((item, i) => (
+            {tickerItems.length > 0 ? [...tickerItems, ...tickerItems].map((item, i) => (
               <div key={i} className="ticker-item">
                 {item.value && <strong>{item.value} </strong>}
                 {item.label}
               </div>
-            ))}
+            )) : (
+              <div className="ticker-item text-gray-500">Loading ticker items...</div>
+            )}
           </div>
         </div>
 
@@ -427,20 +301,20 @@ export default function Home() {
             </h2>
 
             <div className="services-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border border-gray-200">
-              {services.map((svc, i) => {
-                const originalService = SERVICES.find(s => s.name === svc.name || s.desc === svc.description);
-                return (
-                  <div
-                    key={i}
-                    className="service-card p-8 md:p-10 border-r border-gray-200 last:border-r-0 bg-white hover:bg-amber-50 cursor-pointer"
-                  >
-                    <div className="text-blue-950 mb-6">{originalService?.icon}</div>
-                    <div className="playfair text-lg font-bold text-slate-900 mb-2 leading-snug">{svc.name}</div>
-                    <div className="text-sm text-gray-600 leading-relaxed mb-4">{svc.description}</div>
-                    <div className="service-arrow inline-block text-lg text-yellow-800">→</div>
-                  </div>
-                );
-              })}
+              {services.length > 0 ? services.map((svc, i) => (
+                <div
+                  key={i}
+                  className="service-card p-8 md:p-10 border-r border-gray-200 last:border-r-0 bg-white hover:bg-amber-50 cursor-pointer"
+                >
+                  <div className="playfair text-lg font-bold text-slate-900 mb-2 leading-snug">{svc.name}</div>
+                  <div className="text-sm text-gray-600 leading-relaxed mb-4">{svc.description || svc.desc}</div>
+                  <div className="service-arrow inline-block text-lg text-yellow-800">→</div>
+                </div>
+              )) : (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  No services available
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -457,9 +331,7 @@ export default function Home() {
               {/* Image */}
               <div className="relative">
                 <img
-                  src={
-
-                    apiData?.aboutImage || "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80"}
+                  src={apiData?.aboutImage || "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80"}
                   alt="About Achal"
                   className="w-full h-96 object-cover"
                   style={{ filter: "saturate(.4)" }}
@@ -485,12 +357,16 @@ export default function Home() {
                 </p>
 
                 <div className="grid grid-cols-2 gap-4">
-                  {aboutValues.map((v, i) => (
+                  {aboutValues.length > 0 ? aboutValues.map((v, i) => (
                     <div key={i} className="value-item">
                       <div className="font-semibold text-xs tracking-wide uppercase text-slate-900 mb-1.5">{v.title}</div>
                       <div className="text-sm text-gray-600 leading-relaxed">{v.desc}</div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="col-span-2 text-center text-gray-500 py-4">
+                      Values loading...
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -500,7 +376,7 @@ export default function Home() {
         {/* ── STATS ── */}
         <section ref={statsRef} className="px-6 md:px-16 py-24 bg-slate-900">
           <div className="stats-responsive max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-white/10">
-            {stats.map((s, i) => (
+            {stats.length > 0 ? stats.map((s, i) => (
               <div key={i} className="stat-card p-12 border-r border-white/10 last:border-r-0 text-center hover:scale-105 transition-transform">
                 <div className="playfair text-5xl md:text-6xl font-black text-yellow-800 leading-tight mb-2.5">
                   {i === 1
@@ -511,7 +387,11 @@ export default function Home() {
                 </div>
                 <div className="text-xs tracking-widest uppercase text-white/50">{s.label}</div>
               </div>
-            ))}
+            )) : (
+              <div className="col-span-full text-center py-12 text-gray-400">
+                Statistics loading...
+              </div>
+            )}
           </div>
         </section>
 
@@ -535,6 +415,11 @@ export default function Home() {
                 </div>
               </div>
             ))}
+            {portfolioItems.length === 0 && (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                No portfolio items available
+              </div>
+            )}
           </div>
         </section>
 
@@ -547,13 +432,17 @@ export default function Home() {
             </h2>
 
             <div className="why-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
-              {whyUs.map((w, i) => (
+              {whyUs.length > 0 ? whyUs.map((w, i) => (
                 <div key={i} className="why-card bg-white p-12 border-b border-gray-200">
                   <div className="playfair text-6xl font-black text-gray-300 leading-tight mb-5">{w.n}</div>
                   <div className="font-semibold text-base uppercase tracking-wide text-slate-900 mb-3">{w.title}</div>
                   <div className="text-sm text-gray-600 leading-relaxed">{w.desc}</div>
                 </div>
-              ))}
+              )) : (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  No partnership details available
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -567,7 +456,7 @@ export default function Home() {
             </h2>
 
             <div className="testimonials-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
-              {testimonials.map((t, i) => (
+              {testimonials.length > 0 ? testimonials.map((t, i) => (
                 <div key={i} className="tcard">
                   <div className="playfair text-4xl text-yellow-700 leading-tight mb-5">&ldquo;</div>
                   <p className="text-sm text-white/75 leading-relaxed italic mb-8">{t.quote}</p>
@@ -579,7 +468,11 @@ export default function Home() {
                   <div className="font-semibold text-xs tracking-widest uppercase text-white">{t.name}</div>
                   <div className="text-xs text-white/40 mt-1">{t.role}</div>
                 </div>
-              ))}
+              )) : (
+                <div className="col-span-full text-center py-12 text-gray-400">
+                  No testimonials available
+                </div>
+              )}
             </div>
           </div>
         </section>
