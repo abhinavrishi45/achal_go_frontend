@@ -1,4 +1,3 @@
-
 import React from "react";
 export const dynamic = "force-dynamic";
 
@@ -476,7 +475,7 @@ function CTASection({ pageName }) {
 
 // Server page: fetch service page data from API using service slug
 export default async function ServicePage({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   let page = null;
   let service = null;
 
