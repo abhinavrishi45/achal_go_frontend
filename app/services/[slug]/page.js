@@ -1,5 +1,6 @@
 import React from "react";
 export const dynamic = "force-dynamic";
+import { useRouter } from 'next/navigation';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://achal-backend-trial.tannis.in";
 
@@ -206,7 +207,7 @@ function HeroSection({ heroSection, pageName, pageDescription }) {
         <h1>{heading}</h1>
         {sub && <p>{sub}</p>}
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <button className="btn-gold">Request a Quote</button>
+          <button onClick={() => router.push('/get-quote')} className="btn-primary px-12 py-3 text-sm cursor-pointer">Request a Quote</button>
           <button className="btn-ghost">Learn More</button>
         </div>
       </div>
@@ -478,6 +479,8 @@ export default async function ServicePage({ params }) {
   const { slug } = await params;
   let page = null;
   let service = null;
+  
+
 
   try {
     // Fetch complete service page data by slug
