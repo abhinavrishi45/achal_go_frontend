@@ -183,8 +183,8 @@ export default function Home() {
         .value-item { padding: 20px; border: 1px solid var(--border); background: white; }
 
         /* TCARD */
-        .tcard { background: rgba(255,255,255,.04); padding: 44px 36px; border-top: 1px solid rgba(255,255,255,.08); transition: background .3s; }
-        .tcard:hover { background: rgba(255,255,255,.07); }
+        .tcard { background: rgba(59,130,246,.12); padding: 44px 36px; border-top: 1px solid rgba(59,130,246,.2); transition: background .3s; }
+        .tcard:hover { background: rgba(59,130,246,.18); }
 
         /* SECTION LABEL */
         .section-label { font-size: 11px; font-weight: 600; letter-spacing: .3em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
@@ -457,15 +457,15 @@ export default function Home() {
 
             <div className="testimonials-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
               {testimonials.length > 0 ? testimonials.map((t, i) => (
-                <div key={i} className="tcard">
+                <div key={i} className="tcard ">
                   <div className="playfair text-4xl text-yellow-700 leading-tight mb-5">&ldquo;</div>
-                  <p className="text-sm text-white/75 leading-relaxed italic mb-8">{t.quote}</p>
+                  <p className="text-sm text-slate-900 leading-relaxed italic mb-8">{t.quote}</p>
                   <div className="text-yellow-800 text-sm tracking-wider mb-4">
                     {[...Array(5)].map((_, i) => (
                       <span key={i}>{i < t.rating ? '★' : '☆'}</span>
                     ))}
                   </div>
-                  <div className="font-semibold text-xs tracking-widest uppercase text-white">{t.name}</div>
+                  <div className="font-semibold text-xs tracking-widest uppercase text-slate-900">{t.name}</div>
                   <div className="text-xs text-white/40 mt-1">{t.role}</div>
                 </div>
               )) : (
