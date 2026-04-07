@@ -436,7 +436,7 @@ export default function Home() {
                 <div key={i} className="why-card bg-white p-12 border-b border-gray-200">
                   <div className="playfair text-6xl font-black text-gray-300 leading-tight mb-5">{w.n}</div>
                   <div className="font-semibold text-base uppercase tracking-wide text-slate-900 mb-3">{w.title}</div>
-                  <div className="text-sm text-gray-600 leading-relaxed">{w.desc}</div>
+                  <div className="text-sm text-gray-600 leading-relaxed">{w.desc || w.description}</div>
                 </div>
               )) : (
                 <div className="col-span-full text-center py-12 text-gray-500">
