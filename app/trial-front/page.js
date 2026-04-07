@@ -424,7 +424,7 @@ export default function Home() {
         </section>
 
         {/* ── WHY US ── */}
-        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-amber-50">
+        <section className="section-responsive px-6 md:px-16 py-14 md:py-18 bg-amber-50">
           <div className="max-w-7xl mx-auto">
             <div className="section-label">Why Partner With Us</div>
             <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-16">
@@ -448,10 +448,10 @@ export default function Home() {
         </section>
 
         {/* ── TESTIMONIALS ── */}
-        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-slate-900">
+        <section className="section-responsive px-6 md:px-16 py-14 md:py-18 bg-amber-50">
           <div className="max-w-7xl mx-auto">
             <div className="section-label text-yellow-800">Client Voices</div>
-            <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-white mb-16">
+            <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-10">
               What Our Partners Say
             </h2>
 
