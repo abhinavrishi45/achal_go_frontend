@@ -531,7 +531,8 @@ export default function Home() {
               Experience the standard of ACHAL INTERNATIONAL. Professionalism that stands the test of time.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button onClick={() => router.push('/contact')} className="btn-primary px-12 py-3 text-sm">Get In Touch</button>
+              <button onClick={() => router.push('/contact')} className="btn-primary px-12 py-3 text-sm cursor-pointer">Get In Touch</button>
+               <button onClick={() => router.push('/get-quote')} className="btn-primary px-12 py-3 text-sm cursor-pointer">Get Quote</button>
               {/* <button className="btn-outline px-12 py-3 text-sm">View Capabilities</button> */}
             </div>
           </div>
