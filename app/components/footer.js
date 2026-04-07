@@ -69,7 +69,7 @@ export function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
             {/* Company Info */}
             <div>
-              <h3 className="text-lg font-bold mb-4">ACHAL PROJECTS</h3>
+              <h3 className="text-lg font-bold mb-4">ACHAL INTERNATIONAL PVT. LTD.</h3>
               <p className="text-sm text-muted-foreground mb-4">Your trusted partner in comprehensive service solutions.</p>
               <div className="flex gap-4">
                 <Facebook className="w-5 h-5 cursor-pointer hover:text-primary transition-colors" />
@@ -107,7 +107,7 @@ export function Footer() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link href="#privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
                 <li><Link href="/termsand" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-                <li><Link href="#cookies" className="hover:text-primary transition-colors">Cookie Policy</Link></li>
+                {/* <li><Link href="#cookies" className="hover:text-primary transition-colors">Cookie Policy</Link></li> */}
               </ul>
             </div>
 
