@@ -455,25 +455,7 @@ export default function Home() {
               What Our Partners Say
             </h2>
 
-            <div className="testimonials-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
-              {testimonials.length > 0 ? testimonials.map((t, i) => (
-                <div key={i} className="tcard ">
-                  <div className="playfair text-4xl text-yellow-700 leading-tight mb-5">&ldquo;</div>
-                  <p className="text-sm text-slate-900 leading-relaxed italic mb-8">{t.quote}</p>
-                  <div className="text-yellow-800 text-sm tracking-wider mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i}>{i < t.rating ? '★' : '☆'}</span>
-                    ))}
-                  </div>
-                  <div className="font-semibold text-xs tracking-widest uppercase text-slate-900">{t.name}</div>
-                  <div className="text-xs text-white/40 mt-1">{t.role}</div>
-                </div>
-              )) : (
-                <div className="col-span-full text-center py-12 text-gray-400">
-                  No testimonials available
-                </div>
-              )}
-            </div>
+            t
           </div>
         </section>
         {/* <PremiumCarousel/> */}
