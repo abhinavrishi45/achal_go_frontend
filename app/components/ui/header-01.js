@@ -99,7 +99,7 @@ export function Menus({ isScrolled }) {
           {/* About Us */}
           <NavigationMenuItem>
             <NavigationMenuLink asChild className={linkClass}>
-              <a href="/#about">About Us</a>
+              <a href="/aboutUs">About Us</a>
             </NavigationMenuLink>
           </NavigationMenuItem>
 
