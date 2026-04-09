@@ -1,0 +1,487 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from 'next/navigation';
+
+export default function Home() {
+  const [slide, setSlide] = useState(0);
+  const [statNums, setStatNums] = useState([]);
+  const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const statsRef = useRef(null);
+  const statsAnimated = useRef(false);
+  const router = useRouter();
+
+  // Parse JSON safely
+  const safeParse = (data, fallback = []) => {
+    if (!data) return fallback;
+    if (Array.isArray(data)) return data;
+    if (typeof data === 'object') return data;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return fallback;
+    }
+  };
+
+  // Fetch frontpage data from API
+  useEffect(() => {
+    const fetchFrontpage = async () => {
+      try {
+        const res = await fetch('https://achal-backend-trial.tannis.in/api/frontpage');
+        if (res.ok) {
+          const data = await res.json();
+          setApiData(data);
+        }
+      } catch (err) {
+        console.error('Error fetching frontpage data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFrontpage();
+  }, []);
+
+  // Merge API data with fallbacks
+  const heroSlides = apiData?.heroSlides ? safeParse(apiData.heroSlides, []) : [];
+  const tickerItems = apiData?.tickerItems ? safeParse(apiData.tickerItems, []) : [];
+  const services = apiData?.services ? safeParse(apiData.services, []) : [];
+  const stats = apiData && (apiData.numberOfProjects || apiData.numberOfClients || apiData.teamMembers || apiData.yoe)
+    ? [
+      { num: parseInt(apiData.numberOfProjects) || 0, suffix: "+", label: "Projects Delivered" },
+      { num: parseInt(apiData.numberOfClients) || 0, suffix: "+", label: "Global Clients" },
+      { num: parseInt(apiData.teamMembers) || 0, suffix: "+", label: "Specialists On Board" },
+      { num: parseInt(apiData.yoe) || 0, suffix: "+", label: "Years of Excellence" },
+    ]
+    : [];
+  const whyUs = apiData?.whyPartner ? safeParse(apiData.whyPartner, []) : [];
+  const testimonials = apiData?.testimonials ? safeParse(apiData.testimonials, []) : [];
+  const aboutValues = apiData?.aboutValues ? safeParse(apiData.aboutValues, []) : [];
+  const portfolioItems = apiData?.portfolioItems ? safeParse(apiData.portfolioItems, []) : [];
+
+  // Initialize stat numbers
+  useEffect(() => {
+    setStatNums(stats.map(() => 0));
+    statsAnimated.current = false;
+  }, [stats]);
+
+  // Auto-slide
+  useEffect(() => {
+    if (heroSlides.length === 0) return;
+    const t = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 4000);
+    return () => clearInterval(t);
+  }, [heroSlides]);
+
+  // Stats counter on scroll
+  useEffect(() => {
+    if (stats.length === 0) return;
+    const el = statsRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !statsAnimated.current) {
+          statsAnimated.current = true;
+          stats.forEach((s, i) => {
+            const duration = 1800;
+            const start = performance.now();
+            const tick = (t) => {
+              const p = Math.min((t - start) / duration, 1);
+              setStatNums((prev) => {
+                const next = [...prev];
+                next[i] = Math.round(p * s.num);
+                return next;
+              });
+              if (p < 1) requestAnimationFrame(tick);
+              else
+                setStatNums((prev) => {
+                  const next = [...prev];
+                  next[i] = s.num;
+                  return next;
+                });
+            };
+            requestAnimationFrame(tick);
+          });
+        }
+      },
+      { threshold: 0.5 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [stats]);
+
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+        :root {
+          --navy: #0a1628;
+          --blue: #1a3a6b;
+          --gold: #c8a96e;
+          --light: #f5f3ef;
+          --white: #ffffff;
+          --gray: #6b7280;
+          --border: #e5e0d8;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+          font-family: 'DM Sans', sans-serif;
+          background: var(--white);
+          color: var(--navy);
+          overflow-x: hidden;
+          margin: 0;
+        }
+
+        .playfair { font-family: 'Playfair Display', serif; }
+
+        /* TICKER */
+        .ticker-wrap { background: var(--navy); padding: 14px 0; overflow: hidden; border-top: 1px solid rgba(200,169,110,.3); }
+        .ticker-inner { display: flex; animation: ticker 28s linear infinite; white-space: nowrap; }
+        .ticker-item { padding: 0 48px; font-size: 12px; letter-spacing: .15em; color: rgba(255,255,255,.6); text-transform: uppercase; border-right: 1px solid rgba(255,255,255,.15); flex-shrink: 0; }
+        .ticker-item strong { color: var(--gold); font-weight: 600; }
+        @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* HERO SLIDE */
+        .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
+        .slide.active { opacity: 1; }
+
+        /* SERVICE CARD ARROW */
+        .service-card { transition: background .3s, border-color .3s; position: relative; }
+        .service-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--gold); transform: scaleX(0); transition: transform .3s; }
+        .service-card:hover::after { transform: scaleX(1); }
+        .service-card:hover { background: var(--light) !important; }
+        .service-arrow { transition: transform .3s; display: inline-block; }
+        .service-card:hover .service-arrow { transform: translateX(6px); }
+
+        /* PORTFOLIO */
+        .portfolio-item img { transition: transform .7s, filter .7s; filter: saturate(.3); }
+        .portfolio-item:hover img { transform: scale(1.05); filter: saturate(.7); }
+
+        /* WHY CARD */
+        .why-card { border-bottom: 3px solid transparent; transition: border-color .3s; }
+        .why-card:hover { border-color: var(--gold); }
+
+        /* STAT CARD */
+        .stat-card { transition: transform .3s; }
+        .stat-card:hover { transform: translateY(-4px); }
+
+        /* BUTTONS */
+        .btn-primary { padding: 14px 36px; background: var(--gold); color: var(--navy); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; border: none; cursor: pointer; transition: background .3s, transform .2s; font-family: 'DM Sans', sans-serif; }
+        .btn-primary:hover { background: #b8954a; transform: translateY(-1px); }
+        .btn-outline { padding: 14px 36px; background: transparent; color: white; font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; border: 1px solid rgba(255,255,255,.4); cursor: pointer; transition: border-color .3s, color .3s; font-family: 'DM Sans', sans-serif; }
+        .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+        .btn-dark-outline { padding: 16px 48px; background: transparent; color: var(--navy); font-weight: 600; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; border: 1px solid rgba(10,22,40,.35); cursor: pointer; transition: border-color .3s, color .3s; font-family: 'DM Sans', sans-serif; }
+        .btn-dark-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* VALUE ITEM */
+        .value-item { padding: 20px; border: 1px solid var(--border); background: white; }
+
+        /* TCARD */
+        .tcard { background: rgba(59,130,246,.12); padding: 44px 36px; border-top: 1px solid rgba(59,130,246,.2); transition: background .3s; }
+        .tcard:hover { background: rgba(59,130,246,.18); }
+
+        /* SECTION LABEL */
+        .section-label { font-size: 11px; font-weight: 600; letter-spacing: .3em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+        .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+
+        /* ABOUT BADGE */
+        .about-badge { position: absolute; bottom: -20px; right: -20px; background: var(--navy); color: white; padding: 32px 36px; text-align: center; }
+
+        @media (max-width: 900px) {
+          .services-responsive { grid-template-columns: 1fr 1fr !important; }
+          .about-responsive { grid-template-columns: 1fr !important; gap: 60px !important; }
+          .stats-responsive { grid-template-columns: 1fr 1fr !important; }
+          .portfolio-responsive { grid-template-columns: 1fr !important; }
+          .why-responsive { grid-template-columns: 1fr !important; }
+          .testimonials-responsive { grid-template-columns: 1fr !important; }
+          .hero-content-responsive { padding: 40px 24px !important; }
+          .section-responsive { padding: 64px 24px !important; }
+          .footer-responsive { flex-direction: column !important; gap: 20px !important; text-align: center !important; }
+          .portfolio-wide { grid-column: span 1 !important; height: 300px !important; }
+          .hide-mobile { display: none !important; }
+
+        /* SLIDE LABEL POP OUT */
+        @keyframes slidePopOut { 
+          from { opacity: 0; transform: scale(0.5) translateY(20px); } 
+          to { opacity: 1; transform: scale(1) translateY(0); } 
+        }
+        .slide-label { animation: slidePopOut 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        }
+      `}</style>
+
+      <main className="w-full bg-white overflow-x-hidden">
+
+        {/* ── HERO ── */}
+        <section className="relative w-full min-h-screen md:h-screen overflow-hidden bg-blue-950">
+          {/* Slides */}
+          <div className="absolute inset-0">
+            {heroSlides.length > 0 ? heroSlides.map((s, i) => (
+              <div key={i} className={`slide${i === slide ? " active" : ""}`}>
+                <img src={s.img} alt={s.label} className="w-full h-full object-cover opacity-45" style={{ filter: "saturate(0.3)" }} />
+              </div>
+            )) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-900 to-blue-800 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <div className="text-lg font-semibold">Loading hero content...</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Overlay */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,rgba(10,22,40,.92) 0%,rgba(10,22,40,.6) 60%,rgba(10,22,40,.2) 100%)" }} />
+
+          {/* Content */}
+          <div className="hero-content-responsive absolute inset-0 flex flex-col justify-center px-6 md:px-16 py-20 max-w-3xl">
+            {/* <div className="section-label text-yellow-700">
+              Established 2014 · Bihar, India
+            </div> */}
+
+            <h1 className="playfair text-5xl md:text-7xl font-black leading-tight text-white mt-6 mb-7">
+              Building Tomorrow.<br />
+              <span className="text-yellow-700">Steadfast.</span>
+            </h1>
+
+            <p className="text-base md:text-lg leading-relaxed text-white/75 max-w-xl mb-12 font-light">
+              ACHAL INTERNATIONAL PRIVATE LIMITED delivers excellence across civil engineering, smart mobility, hospitality, logistics, and green energy infrastructure.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="btn-primary" onClick={() => scrollTo("services-sec")}>Explore Services</button>
+              <button className="btn-outline" onClick={() => scrollTo("about-sec")}>Our Story</button>
+            </div>
+          </div>
+
+          {/* Dots */}
+          <div className="absolute bottom-8 left-6 md:left-16 flex gap-2.5">
+            {heroSlides.length > 0 && heroSlides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setSlide(i)}
+                className="transition-all border-none cursor-pointer p-0"
+                style={{ width: i === slide ? 48 : 24, height: 2, background: i === slide ? "var(--gold)" : "rgba(255,255,255,.3)" }}
+              />
+            ))}
+          </div>
+
+          {/* Label */}
+          {heroSlides.length > 0 && (
+            <div key={slide} className="hide-mobile slide-label absolute bottom-8 right-6 md:right-16 text-xs tracking-widest text-white/50 uppercase">
+              {heroSlides[slide]?.label}
+            </div>
+          )}
+        </section>
+
+        {/* ── TICKER ── */}
+        <div className="ticker-wrap">
+          <div className="ticker-inner">
+            {tickerItems.length > 0 ? [...tickerItems, ...tickerItems].map((item, i) => (
+              <div key={i} className="ticker-item">
+                {item.value && <strong>{item.value} </strong>}
+                {item.label}
+              </div>
+            )) : (
+              <div className="ticker-item text-gray-500">Loading ticker items...</div>
+            )}
+          </div>
+        </div>
+
+        {/* ── SERVICES ── */}
+        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-white" id="services-sec">
+          <div className="max-w-7xl mx-auto">
+            <div className="section-label">Our Expertise</div>
+            <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-16">
+              Five Pillars of<br />Industrial Excellence
+            </h2>
+
+            <div className="services-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border border-gray-200">
+              {services.length > 0 ? services.map((svc, i) => (
+                <div
+                  key={i}
+                  className="service-card p-8 md:p-10 border-r border-gray-200 last:border-r-0 bg-white hover:bg-amber-50 cursor-pointer"
+                >
+                  <div className="playfair text-lg font-bold text-slate-900 mb-2 leading-snug">{svc.name}</div>
+                  <div className="text-sm text-gray-600 leading-relaxed mb-4">{svc.description || svc.desc}</div>
+                  <div className="service-arrow inline-block text-lg text-yellow-800">→</div>
+                </div>
+              )) : (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  No services available
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ── ABOUT ── */}
+        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-amber-50" id="about-sec">
+          <div className="max-w-7xl mx-auto">
+            <div className="section-label">Corporate Profile</div>
+            <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-16">
+              {apiData?.aboutHeading || "The Name ACHAL\nMeans Unwavering"}
+            </h2>
+
+            <div className="about-responsive grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+              {/* Image */}
+              <div className="relative">
+                <img
+                  src={apiData?.aboutImage || "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80"}
+                  alt="About Achal"
+                  className="w-full h-96 object-cover"
+                  style={{ filter: "saturate(.4)" }}
+                />
+                <div className="about-badge">
+                  <div className="playfair text-5xl font-black text-yellow-700 leading-tight">{apiData?.yoe || 12}+</div>
+                  <div className="text-xs tracking-widest uppercase text-white/60 mt-1.5">Years of Trust</div>
+                </div>
+              </div>
+
+              {/* Text */}
+              <div>
+                <p className="text-base leading-relaxed text-gray-600 mb-6">
+                  {apiData?.aboutBody || "ACHAL INTERNATIONAL PRIVATE LIMITED was incorporated in 2014 with a singular vision — to provide professional, dedicated, one-point service excellence across India's core industrial sectors."}
+                </p>
+
+                <blockquote className="playfair text-2xl italic text-slate-900 border-l-4 border-yellow-800 pl-6 my-8 leading-relaxed">
+                  &quot;{apiData?.aboutQuote || "Unyielding quality in a world that demands constant change."}&quot;
+                </blockquote>
+
+                <p className="text-base leading-relaxed text-gray-600 mb-8">
+                  {apiData?.aboutBody2 || "Registered in Bihar, we have grown into a multi-disciplinary powerhouse operating in civil construction, urban mobility, hospitality, freight logistics, and sustainable energy infrastructure."}
+                </p>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {aboutValues.length > 0 ? aboutValues.map((v, i) => (
+                    <div key={i} className="value-item">
+                      <div className="font-semibold text-xs tracking-wide uppercase text-slate-900 mb-1.5">{v.title}</div>
+                      <div className="text-sm text-gray-600 leading-relaxed">{v.desc}</div>
+                    </div>
+                  )) : (
+                    <div className="col-span-2 text-center text-gray-500 py-4">
+                      Values loading...
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── STATS ── */}
+        <section ref={statsRef} className="px-6 md:px-16 py-24 bg-slate-900">
+          <div className="stats-responsive max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-white/10">
+            {stats.length > 0 ? stats.map((s, i) => (
+              <div key={i} className="stat-card p-12 border-r border-white/10 last:border-r-0 text-center hover:scale-105 transition-transform">
+                <div className="playfair text-5xl md:text-6xl font-black text-yellow-800 leading-tight mb-2.5">
+                  {i === 1
+                    ? statNums[i] >= 1000
+                      ? `${(statNums[i] / 1000).toFixed(0)}K+`
+                      : `${statNums[i]}+`
+                    : `${statNums[i]}${s.suffix}`}
+                </div>
+                <div className="text-xs tracking-widest uppercase text-white/50">{s.label}</div>
+              </div>
+            )) : (
+              <div className="col-span-full text-center py-12 text-gray-400">
+                Statistics loading...
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ── PORTFOLIO ── */}
+        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="section-label">Our Work</div>
+            <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900">
+              Signature Projects &amp;<br />Capabilities
+            </h2>
+          </div>
+
+          <div className="portfolio-responsive grid grid-cols-1 lg:grid-cols-2 gap-0.5 mt-16">
+            {portfolioItems.map((p, i) => (
+              <div key={i} className={`portfolio-item ${p.wide ? 'portfolio-wide lg:col-span-2' : ''} relative overflow-hidden cursor-pointer h-96 ${p.wide ? 'lg:h-80' : 'lg:h-80'}`}>
+                <img src={p.img} alt={p.name} className="w-full h-full object-cover" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top,rgba(10,22,40,.9) 0%,rgba(10,22,40,.2) 60%)" }} />
+                <div className="absolute bottom-0 left-0 right-0 p-8">
+                  <div className="text-xs tracking-widest uppercase text-yellow-800 mb-2 font-semibold">{p.tag}</div>
+                  <div className="playfair text-2xl md:text-3xl font-bold text-white leading-tight">{p.name}</div>
+                </div>
+              </div>
+            ))}
+            {portfolioItems.length === 0 && (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                No portfolio items available
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ── WHY US ── */}
+        <section className="section-responsive px-6 md:px-16 py-14 md:py-18 bg-amber-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="section-label">Why Partner With Us</div>
+            <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-16">
+              The ACHAL Advantage
+            </h2>
+
+            <div className="why-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
+              {whyUs.length > 0 ? whyUs.map((w, i) => (
+                <div key={i} className="why-card bg-white p-12 border-b border-gray-200">
+                  <div className="playfair text-6xl font-black text-gray-300 leading-tight mb-5">{w.n}</div>
+                  <div className="font-semibold text-base uppercase tracking-wide text-slate-900 mb-3">{w.title}</div>
+                  <div className="text-sm text-gray-600 leading-relaxed">{w.desc || w.description}</div>
+                </div>
+              )) : (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  No partnership details available
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ── TESTIMONIALS ── */}
+        <section className="section-responsive px-6 md:px-16 py-14 md:py-18 bg-amber-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="section-label text-yellow-800">Client Voices</div>
+            <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-10">
+              What Our Partners Say
+            </h2>
+
+            t
+          </div>
+        </section>
+        {/* <PremiumCarousel/> */}
+
+        {/* ── CTA ── */}
+        <section className="relative px-6 md:px-16 py-24 md:py-32 bg-slate-900 text-center overflow-hidden">
+          <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 w-96 h-96 pointer-events-none" style={{ background: "radial-gradient(circle,rgba(200,169,110,.08) 0%,transparent 70%)" }} />
+          <div className="relative max-w-4xl mx-auto">
+            <h2 className="playfair text-4xl md:text-6xl font-black text-white leading-tight mb-4">
+              Ready to Build<br />
+              <span className="text-yellow-700">Something Great?</span>
+            </h2>
+            <p className="text-base md:text-lg text-white/60 mb-12 leading-relaxed">
+              Experience the standard of ACHAL INTERNATIONAL. Professionalism that stands the test of time.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button onClick={() => router.push('/contact')} className="btn-primary px-12 py-3 text-sm cursor-pointer">Get In Touch</button>
+              <button onClick={() => router.push('/get-quote')} className="btn-primary px-12 py-3 text-sm cursor-pointer">Get Quote</button>
+              {/* <button className="btn-outline px-12 py-3 text-sm">View Capabilities</button> */}
+            </div>
+          </div>
+        </section>
+
+
+
+      </main>
+    </>
+  );
+}
