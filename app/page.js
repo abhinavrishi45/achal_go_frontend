@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useRouter } from 'next/navigation';
 
 
@@ -163,39 +163,39 @@ export default function Home() {
     fetchFrontpage();
   }, []);
 
-  const heroSlides = apiData?.heroSlides ? safeParse(apiData.heroSlides, SLIDES) : SLIDES;
-  const tickerItems = apiData?.tickerItems ? safeParse(apiData.tickerItems, TICKER_ITEMS) : TICKER_ITEMS;
-  const services = apiData?.services ? safeParse(apiData.services, SERVICES.map(s => ({ name: s.name, description: s.desc }))) : SERVICES;
-  const stats = apiData && (apiData.numberOfProjects || apiData.numberOfClients || apiData.teamMembers || apiData.yoe)
-    ? [
-      { num: parseInt(apiData.numberOfProjects) || 500, suffix: "+", label: "Projects Delivered" },
-      { num: parseInt(apiData.numberOfClients) || 4000, suffix: "+", label: "Global Clients" },
-      { num: parseInt(apiData.teamMembers) || 200, suffix: "+", label: "Specialists On Board" },
-      { num: parseInt(apiData.yoe) || 12, suffix: "+", label: "Years of Excellence" },
-    ]
-    : STATS;
-  const whyUs = apiData?.whyPartner ? safeParse(apiData.whyPartner, WHY.map((w, i) => ({ n: String(i + 1).padStart(2, '0'), title: w.title, desc: w.description }))) : WHY;
-  const testimonials = apiData?.testimonials ? safeParse(apiData.testimonials, TESTIMONIALS) : TESTIMONIALS;
-  const aboutValues = apiData?.aboutValues ? safeParse(apiData.aboutValues, [
+  const heroSlides = useMemo(() => apiData?.heroSlides ? safeParse(apiData.heroSlides, SLIDES) : SLIDES, [apiData?.heroSlides]);
+  const tickerItems = useMemo(() => apiData?.tickerItems ? safeParse(apiData.tickerItems, TICKER_ITEMS) : TICKER_ITEMS, [apiData?.tickerItems]);
+  const services = useMemo(() => apiData?.services ? safeParse(apiData.services, SERVICES.map(s => ({ name: s.name, description: s.desc }))) : SERVICES, [apiData?.services]);
+
+  const stats = useMemo(() => {
+    if (apiData && (apiData.numberOfProjects || apiData.numberOfClients || apiData.teamMembers || apiData.yoe)) {
+      return [
+        { num: parseInt(apiData.numberOfProjects) || 500, suffix: "+", label: "Projects Delivered" },
+        { num: parseInt(apiData.numberOfClients) || 4000, suffix: "+", label: "Global Clients" },
+        { num: parseInt(apiData.teamMembers) || 200, suffix: "+", label: "Specialists On Board" },
+        { num: parseInt(apiData.yoe) || 12, suffix: "+", label: "Years of Excellence" },
+      ];
+    }
+    return STATS;
+  }, [apiData?.numberOfProjects, apiData?.numberOfClients, apiData?.teamMembers, apiData?.yoe]);
+
+  const whyUs = useMemo(() => apiData?.whyPartner ? safeParse(apiData.whyPartner, WHY) : WHY, [apiData?.whyPartner]);
+  const testimonials = useMemo(() => apiData?.testimonials ? safeParse(apiData.testimonials, TESTIMONIALS) : TESTIMONIALS, [apiData?.testimonials]);
+
+  const defaultAboutValues = useMemo(() => [
     { title: "Excellence", desc: "Setting the gold standard in every project." },
     { title: "Integrity", desc: "Radical transparency in all partnerships." },
     { title: "Innovation", desc: "Pioneering industrial technology." },
     { title: "Sustainability", desc: "Eco-conscious across all operations." },
-  ]) : [
-    { title: "Excellence", desc: "Setting the gold standard in every project." },
-    { title: "Integrity", desc: "Radical transparency in all partnerships." },
-    { title: "Innovation", desc: "Pioneering industrial technology." },
-    { title: "Sustainability", desc: "Eco-conscious across all operations." },
-  ];
-  const portfolioItems = apiData?.portfolioItems ? safeParse(apiData.portfolioItems, [
+  ], []);
+  const aboutValues = useMemo(() => apiData?.aboutValues ? safeParse(apiData.aboutValues, defaultAboutValues) : defaultAboutValues, [apiData?.aboutValues, defaultAboutValues]);
+
+  const defaultPortfolioItems = useMemo(() => [
     { img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1400&q=80", tag: "Civil Engineering", name: "Large-Scale Infrastructure Development", wide: true },
     { img: "https://images.unsplash.com/photo-1619983081563-430f63602796?w=800&q=80", tag: "EV Infrastructure", name: "Rapid Charging Network" },
     { img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80", tag: "Cargo & Logistics", name: "Supply Chain Operations" },
-  ]) : [
-    { img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1400&q=80", tag: "Civil Engineering", name: "Large-Scale Infrastructure Development", wide: true },
-    { img: "https://images.unsplash.com/photo-1619983081563-430f63602796?w=800&q=80", tag: "EV Infrastructure", name: "Rapid Charging Network" },
-    { img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80", tag: "Cargo & Logistics", name: "Supply Chain Operations" },
-  ];
+  ], []);
+  const portfolioItems = useMemo(() => apiData?.portfolioItems ? safeParse(apiData.portfolioItems, defaultPortfolioItems) : defaultPortfolioItems, [apiData?.portfolioItems, defaultPortfolioItems]);
 
   // Initialize stat numbers
   useEffect(() => {
