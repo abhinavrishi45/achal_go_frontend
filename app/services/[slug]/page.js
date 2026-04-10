@@ -8,7 +8,7 @@ function safeParseJSON(v) {
   if (!v) return null;
   if (Array.isArray(v)) return v;
   if (typeof v === "object") return v;
-  
+
   // Handle string input
   if (typeof v === "string") {
     try {
@@ -71,14 +71,14 @@ const PAGE_STYLES = `
     position: absolute; inset: 0;
     background: linear-gradient(135deg, rgba(10,22,40,.95) 0%, rgba(10,22,40,.65) 60%, rgba(10,22,40,.2) 100%);
   }
-  .svc-hero-content { position: relative; z-index: 2; padding: 100px 64px 80px; max-width: 860px; }
+  .svc-hero-content { position: relative; z-index: 2; padding: 100px 44px 80px; max-width: 860px; right: -128px; }
   .svc-hero-breadcrumb { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 28px; }
   .svc-hero-breadcrumb a { color: var(--gold); text-decoration: none; }
   .svc-hero-breadcrumb span { color: rgba(255,255,255,.25); }
   .svc-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 900; color: #fff; line-height: 1.1; margin: 0 0 20px; }
   .svc-hero p { font-size: 1.05rem; color: rgba(255,255,255,.72); line-height: 1.7; max-width: 560px; margin: 0 0 36px; font-weight: 300; }
   .svc-hero-badge {
-    position: absolute; right: 64px; bottom: -28px; z-index: 3;
+    position: absolute; right: 64px; bottom: -8px; z-index: 3;
     background: var(--gold); color: var(--navy);
     padding: 20px 32px; font-family: 'Playfair Display', serif;
     font-weight: 900; font-size: 2rem; line-height: 1;
@@ -233,7 +233,7 @@ function HeroSection({ heroSection, pageName, pageDescription }) {
           <button className="btn-ghost">Learn More</button>
         </div>
       </div>
-      <div className="svc-hero-badge">
+      <div className="svc-hero-badge ">
         ACHAL
         <span>International</span>
       </div>
