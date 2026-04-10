@@ -6,12 +6,32 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://achal-backend-tria
 
 function safeParseJSON(v) {
   if (!v) return null;
-  if (Array.isArray(v) || typeof v === "object") return v;
-  try {
-    return JSON.parse(v);
-  } catch (_) {
-    return v;
+  if (Array.isArray(v)) return v;
+  if (typeof v === "object") return v;
+  
+  // Handle string input
+  if (typeof v === "string") {
+    try {
+      // Remove outer quotes if present
+      let cleaned = v;
+      if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+        cleaned = cleaned.slice(1, -1);
+      }
+      // Parse JSON
+      const parsed = JSON.parse(cleaned);
+      return parsed;
+    } catch (_) {
+      // If it's a newline-separated string, split and trim
+      if (v.includes("\\n")) {
+        return v.split("\\n").map(item => item.trim()).filter(Boolean);
+      }
+      if (v.includes("\n")) {
+        return v.split("\n").map(item => item.trim()).filter(Boolean);
+      }
+      return v;
+    }
   }
+  return v;
 }
 
 // ── Inline styles & keyframes injected once ──────────────────
