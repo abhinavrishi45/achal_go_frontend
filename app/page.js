@@ -428,7 +428,7 @@ export default function Home() {
         </div>
 
         {/* ── SERVICES ── */}
-        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-white" id="services-sec">
+        <section className="section-responsive px-6 md:px-16 py-14 md:py-15 bg-white" id="services-sec">
           <div className="max-w-7xl mx-auto">
             <div className="section-label">Our Expertise</div>
             <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-16">
@@ -441,12 +441,12 @@ export default function Home() {
                 return (
                   <div
                     key={i}
-                    className="service-card p-8 md:p-10 border-r border-gray-200 last:border-r-0 bg-white hover:bg-amber-50 cursor-pointer"
+                    className="service-card p-8 md:p-8 border-r border-gray-200 last:border-r-0 bg-white hover:bg-amber-50 cursor-pointer"
                   >
                     <div className="text-blue-950 mb-6">{originalService?.icon}</div>
                     <div className="playfair text-lg font-bold text-slate-900 mb-2 leading-snug">{svc.name}</div>
                     <div className="text-sm text-gray-600 leading-relaxed mb-4">{svc.description}</div>
-                    <div className="service-arrow inline-block text-lg text-yellow-800">→</div>
+                    {/* <div className="service-arrow inline-block text-lg text-yellow-800">→</div> */}
                   </div>
                 );
               })}
@@ -455,7 +455,7 @@ export default function Home() {
         </section>
 
         {/* ── ABOUT ── */}
-        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-amber-50" id="about-sec">
+        <section className="section-responsive px-6 md:px-16 py-24 md:py-18 bg-amber-50" id="about-sec">
           <div className="max-w-7xl mx-auto">
             <div className="section-label">Corporate Profile</div>
             <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-16">
@@ -525,7 +525,7 @@ export default function Home() {
         </section>
 
         {/* ── PORTFOLIO ── */}
-        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-white">
+        <section className="section-responsive px-6 md:px-16 py-24 md:py-15 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="section-label">Our Work</div>
             <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900">
@@ -548,7 +548,7 @@ export default function Home() {
         </section>
 
         {/* ── WHY US ── */}
-        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-amber-50">
+        <section className="section-responsive px-6 md:px-16 py-24 md:py-15 bg-amber-50">
           <div className="max-w-7xl mx-auto">
             <div className="section-label">Why Partner With Us</div>
             <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-slate-900 mb-16">
@@ -569,7 +569,7 @@ export default function Home() {
         </section>
 
         {/* ── TESTIMONIALS ── */}
-        <section className="section-responsive px-6 md:px-16 py-24 md:py-32 bg-slate-900">
+        <section className="section-responsive px-6 md:px-16 py-24 md:py-15 bg-slate-900">
           <div className="max-w-7xl mx-auto">
             <div className="section-label text-yellow-800">Client Voices</div>
             <h2 className="playfair text-4xl md:text-5xl font-bold leading-tight text-white mb-16">
