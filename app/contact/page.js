@@ -34,12 +34,12 @@ const contactInfo = [
 ];
 
 const faqs = [
-  { id: 1, question: "What services does ACHAL Projects offer?", answer: "ACHAL Projects provides comprehensive services in civil engineering, parking management, restaurant operations, cargo logistics, and EV charging infrastructure. Each service is designed with cutting-edge technology and customer-centric solutions." },
+  { id: 1, question: "What services does ACHAL Projects offer?", answer: "ACHAL INTERNATIONAL provides comprehensive services in civil engineering, parking management, restaurant operations, cargo logistics, and EV charging infrastructure. Each service is designed with cutting-edge technology and customer-centric solutions." },
   { id: 2, question: "How long does it take to get a response?", answer: "We typically respond to all inquiries within 24–48 business hours. For urgent matters, please call our dedicated support line. Our team is available Monday to Friday, 9:00 AM to 6:00 PM IST." },
   { id: 3, question: "Do you have local offices in different cities?", answer: "Yes, we have regional offices across major Indian cities including Mumbai, Delhi, Bangalore, Hyderabad, and Pune. Please contact us to find the nearest office for your requirements." },
   { id: 4, question: "Can I schedule a consultation with your team?", answer: "Absolutely! We offer free initial consultations for all our services. You can schedule a meeting through our contact form or by calling our office directly. Virtual consultations are also available." },
   { id: 5, question: "What is your response time for emergencies?", answer: "Emergency support is available 24/7 for our service users. Call our emergency hotline immediately, and our on-call team will respond within the shortest time possible." },
-  { id: 6, question: "How can I become a partner with ACHAL Projects?", answer: "We welcome partnership opportunities! Please reach out to our business development team at partnerships@achalprojects.com with details about your proposal and requirements." },
+  { id: 6, question: "How can I become a partner with ACHAL INTERNATIONAL?", answer: "We welcome partnership opportunities! Please reach out to our business development team at partnerships@achalprojects.com with details about your proposal and requirements." },
 ];
 
 const departments = [

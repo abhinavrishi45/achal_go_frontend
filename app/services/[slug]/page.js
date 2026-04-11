@@ -182,7 +182,7 @@ const PAGE_STYLES = `
 
   /* ── Responsive ── */
   @media (max-width: 900px) {
-    .svc-hero-content { padding: 100px 24px 72px; }
+    .svc-hero-content { padding: 100px 24px 72px; right: 0; }
     .svc-hero-badge { right: 24px; bottom: -24px; font-size: 1.4rem; padding: 14px 20px; }
     .svc-summary { padding: 64px 24px; }
     .svc-summary-inner { grid-template-columns: 1fr; gap: 40px; }
