@@ -189,7 +189,7 @@ export function Footer() {
           <div className="border-t border-gray-200 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-xs md:text-sm text-gray-600">
-                © 2024 ACHAL PROJECTS PVT LTD. All rights reserved.
+                © 2024 ACHAL INTERNATIONAL PVT LTD. All rights reserved.
               </p>
               <p className="text-xs md:text-sm text-gray-500">
                 Designed with <span className="text-red-500">❤</span> for excellence
