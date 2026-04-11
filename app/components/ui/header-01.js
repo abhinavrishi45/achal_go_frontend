@@ -212,15 +212,167 @@ export function Menus({ isScrolled }) {
   )
 }
 
+/* ── Mobile Menu Component ────────────────────────────────── */
+function MobileMenu({ isScrolled, menuState, setMenuState, svcList }) {
+  const [expandedMenu, setExpandedMenu] = React.useState(null)
+
+  return (
+    <div
+      data-state={menuState ? "active" : undefined}
+      className="data-[state=active]:block border backdrop-blur-2xl lg:data-[state=active]:flex hidden w-full flex-col rounded-sm p-4 shadow-sm bg-white/95 lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none max-h-[calc(100vh-100px)] overflow-y-auto lg:overflow-visible"
+    >
+      <div className="lg:hidden block">
+        <ul className="space-y-4 text-base">
+          {/* About Us */}
+          <li>
+            <a
+              href="/aboutUs"
+              onClick={() => setMenuState(false)}
+              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
+            >
+              About Us
+            </a>
+          </li>
+
+          {/* Services with submenu */}
+          <li>
+            <button
+              onClick={() => setExpandedMenu(expandedMenu === "services" ? null : "services")}
+              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold w-full text-left flex items-center justify-between"
+            >
+              Services
+              <span className={`transition-transform ${expandedMenu === "services" ? "rotate-180" : ""}`}>
+                ▼
+              </span>
+            </button>
+            {expandedMenu === "services" && (
+              <ul className="mt-3 ml-4 space-y-2 border-l border-gray-200 pl-3">
+                {svcList.length > 0 ? (
+                  svcList.map((service, i) => (
+                    <li key={service.slug || service.title || i}>
+                      <a
+                        href={service.slug ? `/services/${service.slug}` : service.href}
+                        onClick={() => setMenuState(false)}
+                        className="text-gray-600 hover:text-blue-600 text-xs block duration-150"
+                      >
+                        {service.name || service.title}
+                      </a>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-gray-500 text-xs">Loading services...</li>
+                )}
+              </ul>
+            )}
+          </li>
+
+          {/* Careers */}
+          <li>
+            <a
+              href="/careers"
+              onClick={() => setMenuState(false)}
+              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
+            >
+              Careers
+            </a>
+          </li>
+
+          {/* Contact */}
+          <li>
+            <a
+              href="/contact"
+              onClick={() => setMenuState(false)}
+              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
+            >
+              Contact
+            </a>
+          </li>
+
+          {/* Track Your Parcel */}
+          <li>
+            <a
+              href="https://cargo.achalprojects.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
+            >
+              Track Your Parcel
+            </a>
+          </li>
+
+          {/* Login with submenu */}
+          <li className="border-t border-gray-200 pt-4 mt-4">
+            <button
+              onClick={() => setExpandedMenu(expandedMenu === "login" ? null : "login")}
+              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold w-full text-left flex items-center justify-between"
+            >
+              Login
+              <span className={`transition-transform ${expandedMenu === "login" ? "rotate-180" : ""}`}>
+                ▼
+              </span>
+            </button>
+            {expandedMenu === "login" && (
+              <ul className="mt-3 ml-4 space-y-2 border-l border-gray-200 pl-3">
+                <li>
+                  <a
+                    href="https://achalprojects.com/billing/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMenuState(false)}
+                    className="text-gray-600 hover:text-blue-600 text-xs block duration-150"
+                  >
+                    👤 Employee Login
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://parking.achalprojects.com/Admin/login"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMenuState(false)}
+                    className="text-gray-600 hover:text-blue-600 text-xs block duration-150"
+                  >
+                    🅿 Parking Login
+                  </a>
+                </li>
+              </ul>
+            )}
+          </li>
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 /* ── Header ───────────────────────────────────────────────── */
 const Header = () => {
   const [menuState, setMenuState] = React.useState(false)
   const [isScrolled, setIsScrolled] = React.useState(false)
+  const [svcList, setSvcList] = React.useState([])
 
   React.useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 4)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  React.useEffect(() => {
+    let mounted = true
+    const API = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
+    async function load() {
+      try {
+        const res = await fetch(`${API}/api/services`)
+        if (!mounted || !res.ok) return
+        const data = await res.json().catch(() => null)
+        if (!mounted || !data) return
+        if (Array.isArray(data)) setSvcList(data)
+        else if (typeof data === "object") setSvcList([data])
+      } catch (e) {
+        console.error("Failed to load services for menu", e)
+      }
+    }
+    load()
+    return () => { mounted = false }
   }, [])
 
   return (
@@ -280,26 +432,7 @@ const Header = () => {
             </div>
 
             {/* Mobile menu drawer */}
-            <div
-              data-state={menuState ? "active" : undefined}
-              className="data-[state=active]:block border backdrop-blur-2xl lg:data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-sm p-3 shadow-sm bg-white/95 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none"
-            >
-              <div className="lg:hidden block p-3">
-                <ul className="space-y-6 text-base">
-                  {menuItems.map((item, index) => (
-                    <li key={index}>
-                      <a
-                        href={item.href}
-                        className="text-gray-800 hover:text-blue-600 text-sm block duration-150"
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-2 sm:space-y-0" />
-            </div>
+            <MobileMenu isScrolled={isScrolled} menuState={menuState} setMenuState={setMenuState} svcList={svcList} />
 
           </div>
         </div>

@@ -124,6 +124,7 @@ const TICKER_ITEMS = [
 
 export default function Home() {
   const [slide, setSlide] = useState(0);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [statNums, setStatNums] = useState([]);
   const statsRef = useRef(null);
   const statsAnimated = useRef(false);
@@ -321,6 +322,14 @@ export default function Home() {
         /* TCARD */
         .tcard { background: rgba(255,255,255,.04); padding: 44px 36px; border-top: 1px solid rgba(255,255,255,.08); transition: background .3s; }
         .tcard:hover { background: rgba(255,255,255,.07); }
+
+        /* TESTIMONIAL CAROUSEL */
+        .testimonial-carousel-container { animation: fadeIn 0.4s ease-in-out; }
+        .carousel-nav-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: white; width: 44px; height: 44px; border-radius: 8px; cursor: pointer; font-size: 18px; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+        .carousel-nav-btn:hover { background: rgba(200,169,110,.3); border-color: rgba(200,169,110,.5); }
+        .carousel-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.2); border: none; cursor: pointer; transition: all 0.3s; }
+        .carousel-dot.active { background: rgba(200,169,110,.8); width: 28px; border-radius: 5px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* SECTION LABEL */
         .section-label { font-size: 11px; font-weight: 600; letter-spacing: .3em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
@@ -567,7 +576,8 @@ export default function Home() {
               What Our Partners Say
             </h2>
 
-            <div className="testimonials-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
+            {/* Desktop Grid */}
+            <div className="hidden md:grid testimonials-responsive grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
               {testimonials.map((t, i) => (
                 <div key={i} className="tcard">
                   <div className="playfair text-4xl text-yellow-700 leading-tight mb-5">&ldquo;</div>
@@ -581,6 +591,58 @@ export default function Home() {
                   <div className="text-xs text-white/40 mt-1">{t.role}</div>
                 </div>
               ))}
+            </div>
+
+            {/* Mobile Carousel */}
+            <div className="md:hidden">
+              <div className="testimonial-carousel-container">
+                <div className="tcard">
+                  <div className="playfair text-4xl text-yellow-700 leading-tight mb-5">&ldquo;</div>
+                  <p className="text-sm text-white/75 leading-relaxed italic mb-8">{testimonials[testimonialIndex]?.quote}</p>
+                  <div className="text-yellow-800 text-sm tracking-wider mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i}>{i < (testimonials[testimonialIndex]?.rating || 5) ? '★' : '☆'}</span>
+                    ))}
+                  </div>
+                  <div className="font-semibold text-xs tracking-widest uppercase text-white">{testimonials[testimonialIndex]?.name}</div>
+                  <div className="text-xs text-white/40 mt-1">{testimonials[testimonialIndex]?.role}</div>
+                </div>
+              </div>
+
+              {/* Carousel Navigation */}
+              <div className="flex items-center justify-center gap-4 mt-8">
+                <button
+                  onClick={() => setTestimonialIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))}
+                  className="carousel-nav-btn"
+                  aria-label="Previous testimonial"
+                >
+                  ←
+                </button>
+
+                <div className="flex gap-2">
+                  {testimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setTestimonialIndex(i)}
+                      className={`carousel-dot ${i === testimonialIndex ? 'active' : ''}`}
+                      aria-label={`Go to testimonial ${i + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setTestimonialIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))}
+                  className="carousel-nav-btn"
+                  aria-label="Next testimonial"
+                >
+                  →
+                </button>
+              </div>
+
+              {/* Indicator Text */}
+              <p className="text-center text-white/50 text-xs mt-4">
+                {testimonialIndex + 1} / {testimonials.length}
+              </p>
             </div>
           </div>
         </section>
