@@ -15,27 +15,43 @@ export default function AboutPage() {
         const res = await fetch(`${API_BASE}/api/about/public`);
         if (!res.ok) throw new Error("Failed to fetch about data");
         const data = await res.json();
-        
-        // Parse JSON strings
-        if (data.team && typeof data.team === 'string') {
-          data.team = JSON.parse(data.team);
+
+        // Helper function to safely parse JSON strings
+        const safeJSONParse = (value, fallback = null) => {
+          if (!value) return fallback;
+          if (typeof value === 'object') return value;
+          if (typeof value === 'string') {
+            try {
+              return JSON.parse(value);
+            } catch (e) {
+              console.warn("Failed to parse JSON field:", value.substring(0, 100), "...", e);
+              return fallback;
+            }
+          }
+          return fallback;
+        };
+
+        // Parse JSON strings safely
+        if (data.team) {
+          data.team = safeJSONParse(data.team, []);
         }
-        if (data.work && typeof data.work === 'string') {
-          data.work = JSON.parse(data.work);
+        if (data.work) {
+          data.work = safeJSONParse(data.work, []);
         }
-        if (data.partners && typeof data.partners === 'string') {
-          data.partners = JSON.parse(data.partners);
+        if (data.partners) {
+          data.partners = safeJSONParse(data.partners, []);
         }
-        if (data.stats && typeof data.stats === 'string') {
-          data.stats = JSON.parse(data.stats);
+        if (data.stats) {
+          data.stats = safeJSONParse(data.stats, []);
         }
-        
+
         setAboutData(data);
       } catch (err) {
         console.error("Error fetching about data:", err);
         setError(err.message);
       } finally {
         setLoading(false);
+
       }
     };
     fetchAboutData();
@@ -159,7 +175,7 @@ export default function AboutPage() {
                     <>Building Excellence<br /><span style={{ color: "#c8a96e" }}>Since 2008.</span></>
                   )}
                 </h1>
-                <p className="text-white/60 text-sm leading-relaxed max-w-md font-light">
+                <p className="text-white/80 text-md leading-relaxed font-light">
                   {loading ? "Loading..." : aboutData?.intro || "Delivering innovative construction and engineering solutions across Bihar and beyond."}
                 </p>
               </div>
@@ -242,7 +258,7 @@ export default function AboutPage() {
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                     {aboutData.stats.map((stat, i) => (
                       <div key={i} className="stat-box fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                        <div className="playfair" style={{ fontSize: 36, fontWeight: 900, color: "#c8a96e", marginBottom: 8 }}>
+                        <div className="playfair" style={{ fontSize: 36, fontWeight: 900, color: "#00008B", marginBottom: 8 }}>
                           {stat.value || stat.num}
                         </div>
                         <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".15em", color: "#6b7280", textTransform: "uppercase" }}>
@@ -268,7 +284,7 @@ export default function AboutPage() {
                     {aboutData.team.map((member, i) => (
                       <div key={i} className="team-card fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
                         {member.photo && (
-                          <div style={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", marginBottom: 20, border: "2px solid #e7e0d4" }}>
+                          <div style={{  marginBottom: 10, border: "px solid #e7e0d4" }}>
                             <img src={member.photo} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           </div>
                         )}
@@ -313,9 +329,9 @@ export default function AboutPage() {
                             </p>
                           )}
                           {project.link && (
-                            <a 
-                              href={project.link} 
-                              target="_blank" 
+                            <a
+                              href={project.link}
+                              target="_blank"
                               rel="noopener noreferrer"
                               style={{ fontSize: 12, fontWeight: 600, color: "#c8a96e", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, textTransform: "uppercase", letterSpacing: ".1em" }}
                             >
@@ -341,15 +357,15 @@ export default function AboutPage() {
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                     {aboutData.partners.map((partner, i) => (
-                      <div 
-                        key={i} 
-                        className="fade-up" 
-                        style={{ 
-                          background: "white", 
-                          border: "1px solid #e7e0d4", 
-                          padding: "24px", 
-                          display: "flex", 
-                          alignItems: "center", 
+                      <div
+                        key={i}
+                        className="fade-up"
+                        style={{
+                          background: "white",
+                          border: "1px solid #e7e0d4",
+                          padding: "24px",
+                          display: "flex",
+                          alignItems: "center",
                           justifyContent: "center",
                           animationDelay: `${i * 0.05}s`
                         }}
