@@ -440,7 +440,7 @@ export default function ContactPage() {
         </section>
 
         {/* ── GOOGLE MAP ── */}
-        <section className="px-6 md:px-16 pb-0 bg-white">
+        <section className="px-3 md:px-16 pb-0 md:mb-10 mb-5 bg-white">
           <div className="max-w-7xl mx-auto">
             <div
               ref={mapRef}
