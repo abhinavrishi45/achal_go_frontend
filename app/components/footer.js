@@ -192,7 +192,7 @@ export function Footer() {
                 © 2024 ACHAL INTERNATIONAL PVT LTD. All rights reserved.
               </p>
               <p className="text-xs md:text-sm text-gray-500">
-                Designed with <span className="text-red-500">❤</span> for excellence
+                Designed by <span className="text-red-500">Ficuslot Innovation Pvt. Ltd.</span> for excellence
               </p>
             </div>
           </div>
