@@ -177,9 +177,9 @@ export function Footer() {
                   <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -ml-1" />
                   <span>Sitemap</span>
                 </Link></li>
-                <li><Link href="#accessibility" className="text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1 group">
+                <li><Link href="/faq" className="text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1 group">
                   <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -ml-1" />
-                  <span>Accessibility</span>
+                  <span>FAQs</span>
                 </Link></li>
               </ul>
             </div>

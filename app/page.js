@@ -507,7 +507,7 @@ export default function Home() {
         </section>
 
         {/* ── STATS ── */}
-        <section ref={statsRef} className="px-6 md:px-16 py-24 bg-slate-900">
+        <section ref={statsRef} className="px-2 md:px-16 py-24 bg-slate-900">
           <div className="stats-responsive max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-white/10">
             {stats.map((s, i) => (
               <div key={i} className="stat-card p-12 border-r border-white/10 last:border-r-0 text-center hover:scale-105 transition-transform">

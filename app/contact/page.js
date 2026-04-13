@@ -5,6 +5,7 @@ import {
   AlertCircle, Loader, MessageCircle, Linkedin, Twitter, Facebook,
   Instagram, ChevronDown
 } from "lucide-react";
+import { useRouter } from 'next/navigation';
 
 const contactInfo = [
   {
@@ -33,14 +34,6 @@ const contactInfo = [
   },
 ];
 
-const faqs = [
-  { id: 1, question: "What services does ACHAL Projects offer?", answer: "ACHAL INTERNATIONAL provides comprehensive services in civil engineering, parking management, restaurant operations, cargo logistics, and EV charging infrastructure. Each service is designed with cutting-edge technology and customer-centric solutions." },
-  { id: 2, question: "How long does it take to get a response?", answer: "We typically respond to all inquiries within 24–48 business hours. For urgent matters, please call our dedicated support line. Our team is available Monday to Friday, 9:00 AM to 6:00 PM IST." },
-  { id: 3, question: "Do you have local offices in different cities?", answer: "Yes, we have regional offices across major Indian cities including Mumbai, Delhi, Bangalore, Hyderabad, and Pune. Please contact us to find the nearest office for your requirements." },
-  { id: 4, question: "Can I schedule a consultation with your team?", answer: "Absolutely! We offer free initial consultations for all our services. You can schedule a meeting through our contact form or by calling our office directly. Virtual consultations are also available." },
-  { id: 5, question: "What is your response time for emergencies?", answer: "Emergency support is available 24/7 for our service users. Call our emergency hotline immediately, and our on-call team will respond within the shortest time possible." },
-  { id: 6, question: "How can I become a partner with ACHAL INTERNATIONAL?", answer: "We welcome partnership opportunities! Please reach out to our business development team at partnerships@achalprojects.com with details about your proposal and requirements." },
-];
 
 const departments = [
   "General Inquiry", "Civil Engineering", "Parking Service",
@@ -61,6 +54,7 @@ export default function ContactPage() {
   const [error, setError] = useState('');
   const [expandedFaq, setExpandedFaq] = useState(null);
   const mapRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     // Load Google Maps API
@@ -457,48 +451,7 @@ export default function ContactPage() {
         </section>
 
         {/* ── FAQ ── */}
-        <section className="px-6 md:px-16 py-24 md:py-32 bg-amber-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-16">
-              <div className="lg:col-span-2">
-                <div className="section-label">FAQs</div>
-                <h2 className="playfair text-4xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
-                  Frequently Asked<br />Questions
-                </h2>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  Can&apos;t find what you&apos;re looking for? Reach out to us directly.
-                </p>
-                <button className="btn-gold mt-8"
-                  onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}>
-                  Ask a Question <ArrowRight size={16} />
-                </button>
-              </div>
-
-              <div className="lg:col-span-3 space-y-px">
-                {faqs.map(faq => (
-                  <div key={faq.id} className={`faq-item ${expandedFaq === faq.id ? 'open' : ''}`}>
-                    <button
-                      onClick={() => setExpandedFaq(expandedFaq === faq.id ? null : faq.id)}
-                      className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-stone-50 transition-colors"
-                    >
-                      <span className="font-semibold text-sm text-slate-900 pr-4 leading-snug">{faq.question}</span>
-                      <ChevronDown
-                        size={18}
-                        className="flex-shrink-0 text-stone-400 transition-transform"
-                        style={{ transform: expandedFaq === faq.id ? 'rotate(180deg)' : 'none' }}
-                      />
-                    </button>
-                    {expandedFaq === faq.id && (
-                      <div className="px-6 pb-6 text-sm text-gray-600 leading-relaxed border-t border-stone-100 pt-4">
-                        {faq.answer}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        
 
         {/* ── CTA STRIP ── */}
         <section className="relative px-6 md:px-16 py-24 md:py-32 overflow-hidden" style={{ background: "#0a1628" }}>
@@ -520,9 +473,7 @@ export default function ContactPage() {
               Join thousands of clients who trust ACHAL INTERNATIONAL for precision, reliability, and excellence across every service vertical.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-gold px-12 py-4">
-                Explore Services <ArrowRight size={16} />
-              </button>
+              
               <button
                 className="btn-navy-outline px-12 py-4"
                 style={{ color: "white", borderColor: "rgba(255,255,255,.3)" }}
@@ -531,6 +482,7 @@ export default function ContactPage() {
               >
                 <Phone size={16} /> Call Now
               </button>
+             <button onClick={() => router.push('/faq')} className="btn-gold px-12 py-3 text-sm cursor-pointer">FAQs  <ArrowRight size={16} /></button>
             </div>
           </div>
         </section>
