@@ -155,7 +155,7 @@ export function Footer() {
                 Legal
               </h4>
               <ul className="space-y-2.5">
-                <li><Link href="#privacy" className="text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1 group">
+                <li><Link href="/termsand" className="text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1 group">
                   <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -ml-1" />
                   <span>Privacy Policy</span>
                 </Link></li>
