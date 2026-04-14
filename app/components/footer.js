@@ -95,9 +95,13 @@ export function Footer() {
                    
 
                   </a>
-                  <a>  <Phone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
-                     
-                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">0120-6851294</span></a>
+                   <a href="tel:0120-6851294" className="flex gap-3 items-start group cursor-pointer">
+                    <Phone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
+                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">0120-6851294</span>
+                   
+
+                  </a>
+                 
                   <a href="mailto:info@achalprojects.com" className="flex gap-3 items-start group cursor-pointer">
                     <Mail className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
                     <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">info@achalprojects.com</span>
