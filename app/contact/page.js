@@ -345,6 +345,7 @@ export default function ContactPage() {
                 <div className="space-y-6">
                   {[
                     { icon: Phone, label: "Phone", val: "+91 612-796-5983" },
+                    { icon: Phone, label: "Phone", val: "0120-6851294" },
                     { icon: Mail, label: "Email", val: "info@achalprojects.com" },
                     { icon: MapPin, label: "Location", val: "Patna, Bihar – 800002" },
                   ].map(({ icon: Icon, label, val }, i) => (
