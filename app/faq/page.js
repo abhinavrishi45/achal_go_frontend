@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, ArrowRight, Phone, MessageCircle, Search } from "lucide-react";
-import { API_BASE } from '@/lib/api';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';;
 import { useRouter } from "next/navigation";
 
 export default function FAQPage() {

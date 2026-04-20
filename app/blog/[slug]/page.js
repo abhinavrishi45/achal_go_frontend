@@ -1,6 +1,6 @@
 // Force this blog post page to be dynamic at runtime (server-rendered)
 export const dynamic = "force-dynamic";
-import { API_BASE } from '@/lib/api';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
 export default async function BlogPostPage({ params }) {
   const slug = params?.slug;

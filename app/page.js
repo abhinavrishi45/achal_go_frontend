@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useRouter } from 'next/navigation';
-import { API_BASE } from '@/lib/api';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';;
 
 
 const SLIDES = [

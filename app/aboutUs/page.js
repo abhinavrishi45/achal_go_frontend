@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Users, Target, Eye, Award, ArrowRight, Phone, Building2, TrendingUp, Loader } from "lucide-react";
-import { API_BASE } from '@/lib/api';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
 export default function AboutPage() {
   const [aboutData, setAboutData] = useState(null);

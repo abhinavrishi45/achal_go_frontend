@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Send, RotateCcw, CheckCircle2, AlertCircle, Loader, ArrowRight, Phone, Sparkles } from "lucide-react";
-import { API_BASE } from '@/lib/api';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';;
 
 const steps = ["Contact Details", "Project Info", "Review"];
 

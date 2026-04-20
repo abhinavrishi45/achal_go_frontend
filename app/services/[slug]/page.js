@@ -1,7 +1,7 @@
 import React from "react";
 export const dynamic = "force-dynamic";
 import Link from 'next/link';
-import { API_BASE } from '@/lib/api';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';;
 
 function safeParseJSON(v) {
   if (!v) return null;

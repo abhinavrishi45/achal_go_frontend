@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Search, Calendar, User, BookOpen, Zap } from "lucide-react";
-import { API_BASE } from '@/lib/api';
-
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);

@@ -7,7 +7,7 @@ import {
   Building2, Sparkles, BookOpen, Zap, Send
 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { API_BASE } from '@/lib/api';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
 const TYPE_LABELS = {
   'full-time': 'Full-time',

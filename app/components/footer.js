@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { API_BASE } from '@/lib/api';
+// const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';;
 
 export function Footer() {
   const [services, setServices] = useState([]);
