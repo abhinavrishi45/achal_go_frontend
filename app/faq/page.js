@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, ArrowRight, Phone, MessageCircle, Search } from "lucide-react";
+import { API_BASE } from '@/lib/api';
 import { useRouter } from "next/navigation";
 
 export default function FAQPage() {
@@ -15,9 +16,7 @@ export default function FAQPage() {
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const res = await fetch(
-          "https://achal-backend-trial.tannis.in/api/faqs/public/active"
-        );
+        const res = await fetch(`${API_BASE}/api/faqs/public/active`);
         if (res.ok) {
           const data = await res.json();
           setFaqs(Array.isArray(data) ? data : []);

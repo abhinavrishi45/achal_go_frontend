@@ -6,7 +6,7 @@ import {
   Calendar, Tag, AlertCircle, Layers, Phone,
 } from "lucide-react"
 
-const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
+import { API_BASE } from '@/lib/api'
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 const STYLES = `
@@ -567,8 +567,8 @@ export default function TermsAndRules() {
       setLoading(true)
       try {
         const [tRes, sRes] = await Promise.all([
-          fetch(`${apiBase}/api/terms`),
-          fetch(`${apiBase}/api/services`),
+          fetch(`${API_BASE}/api/terms`),
+          fetch(`${API_BASE}/api/services`),
         ])
         if (!mounted) return
         setTerms(tRes.ok ? await tRes.json() : [])
@@ -584,7 +584,7 @@ export default function TermsAndRules() {
     }
     load()
     return () => { mounted = false }
-  }, [apiBase])
+  }, [API_BASE])
 
   useEffect(() => {
     if (!selectedService) return
@@ -592,7 +592,7 @@ export default function TermsAndRules() {
     (async () => {
       setLoading(true)
       try {
-        const res = await fetch(`${apiBase}/api/terms/service/${encodeURIComponent(selectedService)}`)
+        const res = await fetch(`${API_BASE}/api/terms/service/${encodeURIComponent(selectedService)}`)
         if (mounted && res.ok) setTerms(await res.json())
       } catch (err) {
         console.error("fetch by service failed", err)

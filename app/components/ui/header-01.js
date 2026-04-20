@@ -2,6 +2,7 @@
 import { Equal, X } from "@aliimam/icons"
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { API_BASE } from '@/lib/api'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -60,10 +61,9 @@ export function Menus({ isScrolled }) {
 
   React.useEffect(() => {
     let mounted = true
-    const API = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
     async function load() {
       try {
-        const res = await fetch(`${API}/api/services`)
+        const res = await fetch(`${API_BASE}/api/services`)
         if (!mounted || !res.ok) return
         const data = await res.json().catch(() => null)
         if (!mounted || !data) return
@@ -168,16 +168,16 @@ export function Menus({ isScrolled }) {
                 <li className="list-none">
                   <NavigationMenuLink asChild>
                     <a
-                      href="https://achalprojects.com/billing/"
+                      href="https://billing.achalprojects.com"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block px-4 py-3 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 no-underline"
                     >
                       <div className="flex items-center gap-2 text-base font-semibold text-[#0a1628] font-[DM_Sans,sans-serif]">
-                        <span>👤</span> Employee Login
+                        <span>👤</span> Billing Software Login
                       </div>
                       <div className="text-[13px] text-gray-500 mt-0.5 font-light font-[DM_Sans,sans-serif]">
-                        Access your employee portal
+                        Access your Billing portal
                       </div>
                     </a>
                   </NavigationMenuLink>
@@ -358,10 +358,9 @@ const Header = () => {
 
   React.useEffect(() => {
     let mounted = true
-    const API = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in"
     async function load() {
       try {
-        const res = await fetch(`${API}/api/services`)
+        const res = await fetch(`${API_BASE}/api/services`)
         if (!mounted || !res.ok) return
         const data = await res.json().catch(() => null)
         if (!mounted || !data) return

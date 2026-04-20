@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Users, Target, Eye, Award, ArrowRight, Phone, Building2, TrendingUp, Loader } from "lucide-react";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://achal-backend-trial.tannis.in";
+import { API_BASE } from '@/lib/api';
 
 export default function AboutPage() {
   const [aboutData, setAboutData] = useState(null);
@@ -284,7 +283,7 @@ export default function AboutPage() {
                     {aboutData.team.map((member, i) => (
                       <div key={i} className="team-card fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
                         {member.photo && (
-                          <div style={{  marginBottom: 10, border: "px solid #e7e0d4" }}>
+                          <div style={{ marginBottom: 10, border: "px solid #e7e0d4" }}>
                             <img src={member.photo} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           </div>
                         )}

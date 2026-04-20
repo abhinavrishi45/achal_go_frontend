@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Search, Calendar, User, BookOpen, Zap } from "lucide-react";
+import { API_BASE } from '@/lib/api';
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([]);
@@ -16,7 +17,7 @@ export default function BlogPage() {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://achal-backend-trial.tannis.in/api/blogs/public");
+      const response = await fetch(`${API_BASE}/api/blogs/public`);
       if (response.ok) {
         const data = await response.json();
         setBlogs(data);

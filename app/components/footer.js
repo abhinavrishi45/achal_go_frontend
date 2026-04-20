@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { API_BASE } from '@/lib/api';
 
 export function Footer() {
   const [services, setServices] = useState([]);
@@ -10,10 +11,9 @@ export function Footer() {
 
   useEffect(() => {
     let mounted = true;
-    const API = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
     async function load() {
       try {
-        const res = await fetch(`${API}/api/services`);
+        const res = await fetch(`${API_BASE}/api/services`);
         if (!mounted) return;
         if (!res.ok) {
           setErr(new Error('Failed to load services'));
@@ -92,16 +92,16 @@ export function Footer() {
                   <a href="tel:0612-41-37355" className="flex gap-3 items-start group cursor-pointer">
                     <Phone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
                     <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">0612-41-37355</span>
-                   
+
 
                   </a>
-                   <a href="tel:0120-6851294" className="flex gap-3 items-start group cursor-pointer">
+                  <a href="tel:0120-6851294" className="flex gap-3 items-start group cursor-pointer">
                     <Phone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
                     <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">0120-6851294</span>
-                   
+
 
                   </a>
-                 
+
                   <a href="mailto:info@achalprojects.com" className="flex gap-3 items-start group cursor-pointer">
                     <Mail className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
                     <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">info@achalprojects.com</span>

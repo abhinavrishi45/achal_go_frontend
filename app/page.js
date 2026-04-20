@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useRouter } from 'next/navigation';
+import { API_BASE } from '@/lib/api';
 
 
 const SLIDES = [
@@ -150,7 +151,7 @@ export default function Home() {
   useEffect(() => {
     const fetchFrontpage = async () => {
       try {
-        const res = await fetch('https://achal-backend-trial.tannis.in/api/frontpage');
+        const res = await fetch(`${API_BASE}/api/frontpage`);
         if (res.ok) {
           const data = await res.json();
           setApiData(data);
