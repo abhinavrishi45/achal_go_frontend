@@ -315,13 +315,13 @@ function MobileMenu({ isScrolled, menuState, setMenuState, svcList }) {
               <ul className="mt-3 ml-4 space-y-2 border-l border-gray-200 pl-3">
                 <li>
                   <a
-                    href="https://achalprojects.com/billing/"
+                    href="https://billing.achalprojects.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setMenuState(false)}
                     className="text-gray-600 hover:text-blue-600 text-xs block duration-150"
                   >
-                    👤 Employee Login
+                    👤 Billing Software Login
                   </a>
                 </li>
                 <li>
