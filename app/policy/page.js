@@ -116,14 +116,27 @@ export default function PolicyPage() {
     async function load() {
       setLoading(true)
       try {
-        // Fetch only policies (category=policy)
+        // Fetch terms and services, then filter terms to those that are policies (serviceId === 0) or explicitly marked
         const [pRes, sRes] = await Promise.all([
-          fetch(`${API_BASE}/api/terms?category=policy`),
+          fetch(`${API_BASE}/api/terms`),
           fetch(`${API_BASE}/api/services`),
         ])
         if (!mounted) return
-        setPolicies(pRes.ok ? await pRes.json() : [])
-        setServices(sRes.ok ? await sRes.json() : [])
+        const allTerms = pRes.ok ? await pRes.json() : []
+        const sList = sRes.ok ? await sRes.json() : []
+
+        // Filter policies: serviceId === 0 or category === 'policy'
+        const policiesOnly = Array.isArray(allTerms)
+          ? allTerms.filter(t => t && (t.serviceId === 0 || String(t.serviceId) === '0' || t.category === 'policy'))
+          : []
+
+        // Ensure a static policy service exists client-side when backend doesn't provide it
+        const finalServices = Array.isArray(sList)
+          ? (sList.some(s => Number(s.id) === 0) ? sList : [{ id: 0, name: 'policy' }, ...sList])
+          : [{ id: 0, name: 'policy' }]
+
+        setPolicies(policiesOnly)
+        setServices(finalServices)
       } catch (err) {
         console.error('policy load error', err)
         setError('Backend unreachable — cannot load policies.')
@@ -158,7 +171,13 @@ export default function PolicyPage() {
         ) : (
           <div className="tnr-grid">
             {policies.map(item => (
-              <PolicyCard key={item.id} item={item} serviceName={services.find(s => s.id === item.serviceId)?.name || 'General'} expanded={expandedId === item.id} onToggle={() => setExpandedId(expandedId === item.id ? null : item.id)} />
+              <PolicyCard
+                key={item.id}
+                item={item}
+                serviceName={services.find(s => String(s.id) === String(item.serviceId))?.name || 'General'}
+                expanded={expandedId === item.id}
+                onToggle={() => setExpandedId(expandedId === item.id ? null : item.id)}
+              />
             ))}
           </div>
         )}
