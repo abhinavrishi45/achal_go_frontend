@@ -472,7 +472,7 @@ export default function ContactPage() {
         </section>
 
         {/* ── FAQ ── */}
-        
+
 
         {/* ── CTA STRIP ── */}
         <section className="relative px-6 md:px-16 py-24 md:py-32 overflow-hidden" style={{ background: "#0a1628" }}>
@@ -494,7 +494,7 @@ export default function ContactPage() {
               Join thousands of clients who trust ACHAL INTERNATIONAL for precision, reliability, and excellence across every service vertical.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              
+
               <button
                 className="btn-navy-outline px-12 py-4"
                 style={{ color: "white", borderColor: "rgba(255,255,255,.3)" }}
@@ -503,7 +503,7 @@ export default function ContactPage() {
               >
                 <Phone size={16} /> Call Now
               </button>
-             <button onClick={() => router.push('/faq')} className="btn-gold px-12 py-3 text-sm cursor-pointer">FAQs  <ArrowRight size={16} /></button>
+              <button onClick={() => router.push('/faq')} className="btn-gold px-12 py-3 text-sm cursor-pointer">FAQs  <ArrowRight size={16} /></button>
             </div>
           </div>
         </section>
