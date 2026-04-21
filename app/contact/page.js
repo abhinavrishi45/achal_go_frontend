@@ -46,6 +46,7 @@ const socialLinks = [
   { icon: Facebook, name: "Facebook", url: "#" },
   { icon: Instagram, name: "Instagram", url: "#" },
 ];
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in/api/inquires';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', department: '', message: '' });
@@ -128,12 +129,31 @@ export default function ContactPage() {
     if (!validateForm()) return;
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
+        department: formData.department || null,
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+      };
+
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || `Failed to send message (${res.status})`);
+      }
+
       setSubmitted(true);
       setFormData({ name: '', email: '', phone: '', subject: '', department: '', message: '' });
       setTimeout(() => setSubmitted(false), 5000);
-    } catch {
-      setError('Failed to send message. Please try again.');
+    } catch (err) {
+      setError(err.message || 'Failed to send message. Please try again.');
     } finally {
       setLoading(false);
     }

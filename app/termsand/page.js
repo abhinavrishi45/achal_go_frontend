@@ -635,11 +635,9 @@ export default function TermsAndRules() {
         </div>
       </section>
 
-      {/* ── Controls bar ── */}
-      <div className="tnr-controls-bar">
+      {/* <div className="tnr-controls-bar">
         <div className="tnr-controls-inner">
 
-          {/* Service filter */}
           <div className="tnr-select-wrap">
             <span className="tnr-select-icon"><Layers size={14} /></span>
             <select
@@ -657,7 +655,6 @@ export default function TermsAndRules() {
             <span className="tnr-select-chevron"><ChevronDown size={14} /></span>
           </div>
 
-          {/* Search */}
           <div className="tnr-search-wrap">
             <span className="tnr-search-icon"><Search size={15} /></span>
             <input
@@ -674,7 +671,6 @@ export default function TermsAndRules() {
             )}
           </div>
 
-          {/* Reset */}
           {(selectedService || query) && (
             <button
               className="tnr-reset-btn"
@@ -684,7 +680,7 @@ export default function TermsAndRules() {
             </button>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* ── Body ── */}
       <div className="tnr-body">
