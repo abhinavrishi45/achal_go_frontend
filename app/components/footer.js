@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-// const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';;
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
 export function Footer() {
   const [services, setServices] = useState([]);
@@ -49,17 +49,23 @@ export function Footer() {
   }, []);
 
   const defaultLinks = [
-    { name: 'Civil Engineering', href: '/services/civil-engineering' },
-    { name: 'Parking Service', href: '/services/parking' },
-    { name: 'Restaurant Service', href: '/services/restaurant' },
-    { name: 'Cargo Service', href: '/services/cargo' },
-    { name: 'EV Charging', href: '/services/ev-charging' },
+    { name: 'Civil Engineering', href: 'https://goachal.com/services/civil-engineering' },
+    { name: 'Parking Service', href: 'https://goachal.com/services/parking' },
+    { name: 'Restaurant Service', href: 'https://goachal.com/services/restaurant' },
+    { name: 'Cargo Service', href: 'https://goachal.com/services/cargo' },
+    { name: 'EV Charging', href: 'https://goachal.com/services/ev-charging' },
   ];
 
-  const renderedServices = services.length > 0 ? services.slice(0, 5).map((s) => ({
-    name: s.name || s.title || s.slug,
-    href: `/services/${s.slug}`,
-  })) : defaultLinks;
+  const renderedServices = (Array.isArray(services) && services.length > 0)
+    ? services.slice(0, 5).map((s) => {
+      const name = s.name || s.title || s.slug || 'Service';
+      const slug = s.slug || (name ? String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : 'service');
+      return {
+        name,
+        href: `https://goachal.com/services/${slug}`,
+      };
+    })
+    : defaultLinks;
 
   return (
     <footer className="w-full bg-white">
