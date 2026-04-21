@@ -46,7 +46,7 @@ const socialLinks = [
   { icon: Facebook, name: "Facebook", url: "#" },
   { icon: Instagram, name: "Instagram", url: "#" },
 ];
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in/api/inquires';
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', department: '', message: '' });
@@ -138,7 +138,7 @@ export default function ContactPage() {
         message: formData.message.trim(),
       };
 
-      const res = await fetch(API_BASE, {
+      const res = await fetch(`${API_BASE}/api/inquiries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
