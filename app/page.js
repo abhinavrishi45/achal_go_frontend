@@ -515,8 +515,8 @@ export default function Home() {
             </div> */}
 
             <h1 className="playfair text-5xl md:text-7xl font-black leading-tight text-white mt-6 mb-7">
-              Building Tomorrow.<br />
-              <span className="text-yellow-700">Steadfast.</span>
+              Empowering Everyday.<br />
+              <span className="text-yellow-700">Living.</span>
             </h1>
 
             <p className="text-base md:text-lg leading-relaxed text-white/75 max-w-xl mb-12 font-light">
