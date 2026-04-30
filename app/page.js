@@ -321,8 +321,8 @@ export default function Home() {
         if (!mounted) return;
         const g = window.google;
         mapInstance = new g.maps.Map(mapRef.current, {
-          center: { lat: 20, lng: 0 },
-          zoom: 2,
+         center: { lat: 20.5937, lng: 78.9629 }, 
+          zoom: 4.5,
           disableDefaultUI: true,
           styles: [
             { elementType: 'geometry', stylers: [{ color: '#f5f7fb' }] },
@@ -710,7 +710,7 @@ export default function Home() {
 
             <div className="map-wrapper relative rounded-lg p-6 bg-slate-50">
               <style>{`
-                .gm-map { width: 100%; height: 420px; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 20px rgba(10,22,40,.06); }
+                .gm-map { width: 100%; height: 650px; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 20px rgba(10,22,40,.06); }
                 .locations-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; font-size:13px; color:var(--gray); }
                 .locations-list .loc { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; background:#fff; border:1px solid var(--border); border-radius:9999px; }
                 @media (max-width:900px){ .gm-map{height:300px} }
@@ -718,11 +718,7 @@ export default function Home() {
 
               <div ref={mapRef} id="gm-map" className="gm-map" />
 
-              <div className="locations-list mt-4">
-                {mapLocations.map((m, i) => (
-                  <div key={i} className="loc">{m.name}</div>
-                ))}
-              </div>
+             
             </div>
 
           </div>
