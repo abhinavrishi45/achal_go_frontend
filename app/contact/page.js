@@ -58,9 +58,9 @@ export default function ContactPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Load Google Maps API
+    // Load Google Maps API via backend proxy so the API key remains on the server
     const script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCQsaeZLvlG7xsEXOLYaj3gNGXaRbJcYy4';
+    script.src = `${API_BASE}/api/google/maps-js`;
     script.async = true;
     script.defer = true;
     script.onload = () => {
