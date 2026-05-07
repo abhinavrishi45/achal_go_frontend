@@ -293,12 +293,8 @@ export default function Home() {
   }, [apiData?.serviceLocations]);
 
   useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    if (!apiKey) {
-      // If no key, skip loading map gracefully
-      console.warn('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY not set — skipping Google Maps load');
-      return;
-    }
+    // Load Maps JS via backend proxy so API key is not exposed in client network tab
+    const proxyUrl = `${API_BASE}/api/google/maps-js`;
 
     let mapInstance = null;
     const markers = [];
@@ -307,7 +303,7 @@ export default function Home() {
       if (typeof window === 'undefined') return reject(new Error('no window'));
       if (window.google && window.google.maps) return resolve(window.google);
       const s = document.createElement('script');
-      s.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
+      s.src = proxyUrl;
       s.async = true;
       s.defer = true;
       s.onload = () => resolve(window.google);
@@ -321,7 +317,7 @@ export default function Home() {
         if (!mounted) return;
         const g = window.google;
         mapInstance = new g.maps.Map(mapRef.current, {
-         center: { lat: 20.5937, lng: 78.9629 }, 
+          center: { lat: 20.5937, lng: 78.9629 },
           zoom: 4.5,
           disableDefaultUI: true,
           styles: [
@@ -718,7 +714,7 @@ export default function Home() {
 
               <div ref={mapRef} id="gm-map" className="gm-map" />
 
-             
+
             </div>
 
           </div>
