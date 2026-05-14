@@ -90,6 +90,11 @@ export function Footer() {
                   </a>
                 </div>
               </div>
+              <div className="w-full md:w-auto bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl md: border border-gray-200">
+                
+                <img src="/qr.jpeg" alt="ACHAL QR Code" className="w-55 h-50 object-contain rounded-md mx-auto" />
+                
+              </div>
 
               {/* Contact Info Card */}
               <div className="w-full md:w-auto bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 md:p-6 border border-gray-200">
