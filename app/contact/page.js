@@ -16,7 +16,7 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email",
-    details: ["info@goachalprojects.com"],
+    details: ["info@goachal.com"],
   },
   {
     icon: MapPin,

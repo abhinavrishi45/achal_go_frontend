@@ -113,9 +113,9 @@ export function Footer() {
 
                   </a>
 
-                  <a href="mailto:info@goachalprojects.com" className="flex gap-3 items-start group cursor-pointer">
+                  <a href="mailto:info@goachal.com" className="flex gap-3 items-start group cursor-pointer">
                     <Mail className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
-                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">info@goachalprojects.com</span>
+                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">info@goachal.com</span>
                   </a>
                   <div className="flex gap-3 items-start">
                     <MapPin className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
