@@ -11,12 +11,12 @@ const contactInfo = [
   {
     icon: Phone,
     title: "Phone",
-    details: ["+91 (612) 796-5983", "+91 (123) 456-7890"],
+    details: ["0120-6851294"],
   },
   {
     icon: Mail,
     title: "Email",
-    details: ["info@achalprojects.com", "support@achalprojects.com"],
+    details: ["info@goachalprojects.com"],
   },
   {
     icon: MapPin,
@@ -30,7 +30,7 @@ const contactInfo = [
   {
     icon: Clock,
     title: "Business Hours",
-    details: ["Mon – Fri: 9:00 AM – 6:00 PM", "Saturday: 10:00 AM – 4:00 PM"],
+    details: ["Mon – Fri: 9:00 AM – 6:00 PM", "Saturday: 10:00 AM – 5:00 PM"],
   },
 ];
 
@@ -91,7 +91,6 @@ export default function ContactPage() {
                 Near SBI Beur, Beur<br/>
                 Patna, Bihar – 800002
               </p>
-              <p style="margin: 8px 0 0 0; font-size: 12px; color: #6b7280;">Phone: +91 612-796-5983</p>
             </div>
           `,
         });
@@ -364,7 +363,7 @@ export default function ContactPage() {
 
                 <div className="space-y-6">
                   {[
-                    { icon: Phone, label: "Phone", val: "+91 612-796-5983" },
+                    // { icon: Phone, label: "Phone", val: "+91 612-796-5983" },
                     { icon: Phone, label: "Phone", val: "0120-6851294" },
                     { icon: Mail, label: "Email", val: "info@achalprojects.com" },
                     { icon: MapPin, label: "Location", val: "Patna, Bihar – 800002" },
