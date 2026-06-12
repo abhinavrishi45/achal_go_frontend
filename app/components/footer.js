@@ -100,12 +100,12 @@ export function Footer() {
               <div className="w-full md:w-auto bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 md:p-6 border border-gray-200">
                 <h4 className="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider">Quick Contact</h4>
                 <div className="space-y-3">
-                  <a href="tel:0612-41-37355" className="flex gap-3 items-start group cursor-pointer">
+                  {/* <a href="tel:0612-41-37355" className="flex gap-3 items-start group cursor-pointer">
                     <Phone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
                     <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">0612-41-37355</span>
 
 
-                  </a>
+                  </a> */}
                   <a href="tel:0120-6851294" className="flex gap-3 items-start group cursor-pointer">
                     <Phone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
                     <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">0120-6851294</span>
@@ -113,9 +113,9 @@ export function Footer() {
 
                   </a>
 
-                  <a href="mailto:info@achalprojects.com" className="flex gap-3 items-start group cursor-pointer">
+                  <a href="mailto:info@goachalprojects.com" className="flex gap-3 items-start group cursor-pointer">
                     <Mail className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5 group-hover:scale-125 transition-transform" />
-                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">info@achalprojects.com</span>
+                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">info@goachalprojects.com</span>
                   </a>
                   <div className="flex gap-3 items-start">
                     <MapPin className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />

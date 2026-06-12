@@ -201,6 +201,24 @@ export function Menus({ isScrolled }) {
                     </a>
                   </NavigationMenuLink>
                 </li>
+                <li className="list-none">
+                  <NavigationMenuLink asChild>
+                    <a
+                      href="https://admin.goachal.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 py-3 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 no-underline"
+                    >
+                      <div className="flex items-center gap-2 text-base font-semibold text-[#0a1628] font-[DM_Sans,sans-serif]">
+                        <span>👤</span> Admin Login
+                      </div>
+                      <div className="text-[13px] text-gray-500 mt-0.5 font-light font-[DM_Sans,sans-serif]">
+                        Access your Admin portal
+                      </div>
+                    </a>
+                  </NavigationMenuLink>
+                </li>
+
 
               </ul>
             </NavigationMenuContent>
