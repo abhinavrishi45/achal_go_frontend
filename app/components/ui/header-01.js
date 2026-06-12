@@ -168,7 +168,7 @@ export function Menus({ isScrolled }) {
                 <li className="list-none">
                   <NavigationMenuLink asChild>
                     <a
-                      href="https://billing.achalprojects.com"
+                      href=" http://billing.goachal.com/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block px-4 py-3 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 no-underline"
@@ -187,7 +187,7 @@ export function Menus({ isScrolled }) {
                 <li className="list-none">
                   <NavigationMenuLink asChild>
                     <a
-                      href="https://parking.achalprojects.com/Admin/login"
+                      href="http://parking.goachal.com/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block px-4 py-3 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 no-underline"
