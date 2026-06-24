@@ -309,7 +309,7 @@ function MobileMenu({ isScrolled, menuState, setMenuState, svcList }) {
           {/* Track Your Parcel */}
           <li>
             <a
-              href="https://cargo.achalprojects.com/"
+              href="https://cargo.goachal.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
