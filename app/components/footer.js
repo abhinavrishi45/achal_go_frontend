@@ -1,8 +1,80 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight, Truck, Plane, Flame } from 'lucide-react';
 import Link from 'next/link';
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
+
+function GooglePlayIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <polygon fill="#00C3FF" points="3.5,1.5 13.2,12 3.5,22.5" />
+      <polygon fill="#00E676" points="3.5,1.5 15.4,8.64 13.2,12" />
+      <polygon fill="#FFC400" points="15.4,8.64 21,12 15.4,15.36 13.2,12" />
+      <polygon fill="#FF3D47" points="3.5,22.5 13.2,12 15.4,15.36" />
+    </svg>
+  );
+}
+
+function WindowsIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <rect fill="#00A4EF" x="2" y="2" width="9.5" height="9.5" />
+      <rect fill="#00A4EF" x="12.5" y="2" width="9.5" height="9.5" />
+      <rect fill="#00A4EF" x="2" y="12.5" width="9.5" height="9.5" />
+      <rect fill="#00A4EF" x="12.5" y="12.5" width="9.5" height="9.5" />
+    </svg>
+  );
+}
+
+const STORES = {
+  playstore: { caption: 'Get it on', label: 'Google Play', Icon: GooglePlayIcon },
+  windows: { caption: 'Download for', label: 'Windows', Icon: WindowsIcon },
+};
+
+const appLinks = [
+  {
+    name: 'Achal Delivery Partner',
+    Icon: Truck,
+    stores: [
+      { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achalinternational.deliverypartner' },
+    ],
+  },
+  {
+    name: 'Achal Airline Partner',
+    Icon: Plane,
+    stores: [
+      { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achal.airlinepartner' },
+      // TODO: replace with the real Windows app link
+      { type: 'windows', href: 'https://example.com/achal-airline-partner-windows' },
+    ],
+  },
+  {
+    name: 'Barbeque Company',
+    Icon: Flame,
+    stores: [
+      { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achal.barbequecompany' },
+    ],
+  },
+];
+
+function StoreBadge({ type, href }) {
+  const { caption, label, Icon } = STORES[type];
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${caption} ${label}`}
+      className="inline-flex items-center gap-2 bg-gray-900 hover:bg-black text-white rounded-lg pl-2.5 pr-3.5 py-1.5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+    >
+      <Icon className="w-5 h-5 flex-shrink-0" />
+      <span className="flex flex-col leading-tight text-left">
+        <span className="text-[9px] uppercase tracking-wide text-gray-300">{caption}</span>
+        <span className="text-sm font-semibold">{label}</span>
+      </span>
+    </a>
+  );
+}
 
 export function Footer() {
   const [services, setServices] = useState([]);
@@ -205,14 +277,39 @@ export function Footer() {
             </div>
           </div>
 
+          {/* Apps */}
+          <div className="mb-10 md:mb-12">
+            <h4 className="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider flex items-center gap-1">
+              <span className="w-1 h-4 bg-blue-600 rounded-full"></span>
+              Our Apps
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {appLinks.map(({ name, Icon, stores }) => (
+                <div key={name} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200 flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="p-2 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg">
+                      <Icon className="w-4 h-4" />
+                    </span>
+                    <span className="font-semibold text-gray-900 text-sm">{name}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {stores.map((store) => (
+                      <StoreBadge key={store.type} {...store} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Bottom Section */}
           <div className="border-t border-gray-200 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-xs md:text-sm text-gray-600">
                 © 2024 ACHAL INTERNATIONAL PVT LTD. All rights reserved.
               </p>
-              <p className="text-xs md:text-sm text-gray-500">
-                Designed by <span className="text-red-500">Ficuslot Innovation Pvt. Ltd.</span> for excellence
+              <p className="text-xs md:text-sm text-gray-500 hidden">
+                Designed by <a className="text-red-500" href='https://dacitos.com'>Dacitos Technologies Pvt. Ltd.</a> for excellence
               </p>
             </div>
           </div>
