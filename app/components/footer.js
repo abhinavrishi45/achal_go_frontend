@@ -48,13 +48,7 @@ const appLinks = [
       { type: 'windows', href: 'https://cargo.achalprojects.com/uploads/windows.zip' },
     ],
   },
-  {
-    name: 'Barbeque Company',
-    Icon: Flame,
-    stores: [
-      { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achal.barbequecompany' },
-    ],
-  },
+  
 ];
 
 function StoreBadge({ type, href }) {
