@@ -45,7 +45,7 @@ const appLinks = [
     stores: [
       { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achal.airlinepartner' },
       // TODO: replace with the real Windows app link
-      { type: 'windows', href: 'https://example.com/achal-airline-partner-windows' },
+      { type: 'windows', href: 'https://cargo.achalprojects.com/uploads/windows.zip' },
     ],
   },
   {
