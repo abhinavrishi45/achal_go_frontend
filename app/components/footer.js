@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight, Truck, Plane,  } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight, Truck, Plane, X,  } from 'lucide-react';
 import Link from 'next/link';
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
@@ -161,21 +161,43 @@ export function Footer() {
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">ACHAL INTERNATIONAL PVT. LTD.</h3>
                 <p className="text-sm md:text-base text-gray-600 mb-5 leading-relaxed">Your trusted partner in comprehensive service solutions delivering excellence across industries.</p>
                 <div className="flex gap-3">
-                  <a href="https://www.facebook.com/goachal.in?mibextid=wwXIfr" className="p-2.5 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
+                  <a 
+                    href="https://www.facebook.com/goachal.in?mibextid=wwXIfr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Follow us on Facebook"
+                    className="p-2.5 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
                     <Facebook className="w-5 h-5" />
                   </a>
                   {/* Instagram */}
 
 
-                  <a href="https://www.instagram.com/goachal.in?stkn=cjZmaWV5NWo0eGVz&utm_source=qr" className="p-2.5 bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
+                  <a 
+                    href="https://www.instagram.com/goachal.in?stkn=cjZmaWV5NWo0eGVz&utm_source=qr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Follow us on Instagram"
+                    className="p-2.5 bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
                     <Instagram className="w-5 h-5" />
                   </a>
 
-                  <a href="https://x.com/goachalin?s=11" className="p-2.5 bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
-                    <Twitter className="w-5 h-5" />
+                  <a
+                    href="https://x.com/goachalin?s=11"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Follow us on X"
+                      className="p-2.5 bg-black text-white rounded-lg hover:bg-gray-800 hover:shadow-lg transition-all duration-300 hover:scale-110"
+                  >
+                    <X className="w-5 h-5" />
                   </a>
 
-                  <a href="https://www.linkedin.com/company/achal-projects/" className="p-2.5 bg-gradient-to-br from-blue-700 to-blue-800 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
+                  <a
+                    href="https://www.linkedin.com/company/achal-projects/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Follow us on LinkedIn"
+                    className="p-2.5 bg-gradient-to-br from-blue-700 to-blue-800 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110"
+                  >
                     <Linkedin className="w-5 h-5" />
                   </a>
                 </div>
