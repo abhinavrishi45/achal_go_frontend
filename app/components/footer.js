@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight, Truck, Plane, Flame } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight, Truck, Plane,  } from 'lucide-react';
 import Link from 'next/link';
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
@@ -11,6 +11,19 @@ function GooglePlayIcon({ className }) {
       <polygon fill="#00E676" points="3.5,1.5 15.4,8.64 13.2,12" />
       <polygon fill="#FFC400" points="15.4,8.64 21,12 15.4,15.36 13.2,12" />
       <polygon fill="#FF3D47" points="3.5,22.5 13.2,12 15.4,15.36" />
+    </svg>
+  );
+}
+
+function AppleIcon({ className }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M17.05 12.54c.02 2.08 1.82 2.77 1.84 2.78-.02.05-.29 1.01-.95 2-.57.85-1.16 1.7-2.09 1.72-.91.02-1.2-.56-2.24-.56-1.04 0-1.37.54-2.23.58-.89.03-1.57-.92-2.15-1.77-1.18-1.7-2.08-4.81-.87-6.91.6-1.04 1.67-1.7 2.83-1.72.88-.02 1.71.61 2.24.61.53 0 1.52-.75 2.56-.64.44.02 1.68.18 2.47 1.34-.06.04-1.48.86-1.46 2.57ZM15.36 6.94c.47-.57.79-1.36.7-2.14-.68.03-1.5.45-1.99 1.02-.44.51-.82 1.31-.72 2.08.76.06 1.54-.39 2.01-.96Z" />
     </svg>
   );
 }
@@ -28,24 +41,27 @@ function WindowsIcon({ className }) {
 
 const STORES = {
   playstore: { caption: 'Get it on', label: 'Google Play', Icon: GooglePlayIcon },
+  appstore: { caption: 'Download on the', label: 'App Store', Icon: AppleIcon },
   windows: { caption: 'Download for', label: 'Windows', Icon: WindowsIcon },
 };
 
 const appLinks = [
   {
-    name: 'Achal Delivery Partner',
-    Icon: Truck,
-    stores: [
-      { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achalinternational.deliverypartner' },
-    ],
-  },
-  {
     name: 'Achal Airline Partner',
     Icon: Plane,
     stores: [
       { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achal.airlinepartner' },
+      { type: 'appstore', href: 'https://apps.apple.com/in/app/achal-airline-partner/id6817169392' },
       // TODO: replace with the real Windows app link
       { type: 'windows', href: 'https://cargo.achalprojects.com/uploads/windows.zip' },
+    ],
+  },
+  
+  {
+    name: 'Achal Delivery Partner',
+    Icon: Truck,
+    stores: [
+      { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achalinternational.deliverypartner' },
     ],
   },
   
