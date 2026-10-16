@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight, Truck, Plane,  } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin, ChevronRight, Truck, Plane,  } from 'lucide-react';
 import Link from 'next/link';
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
@@ -161,13 +161,21 @@ export function Footer() {
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">ACHAL INTERNATIONAL PVT. LTD.</h3>
                 <p className="text-sm md:text-base text-gray-600 mb-5 leading-relaxed">Your trusted partner in comprehensive service solutions delivering excellence across industries.</p>
                 <div className="flex gap-3">
-                  <a href="#" className="p-2.5 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
+                  <a href="https://www.facebook.com/goachal.in?mibextid=wwXIfr" className="p-2.5 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
                     <Facebook className="w-5 h-5" />
                   </a>
-                  <a href="#" className="p-2.5 bg-gradient-to-br from-sky-500 to-sky-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
+                  {/* Instagram */}
+
+
+                  <a href="https://www.instagram.com/goachal.in?stkn=cjZmaWV5NWo0eGVz&utm_source=qr" className="p-2.5 bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
+                    <Instagram className="w-5 h-5" />
+                  </a>
+
+                  <a href="https://x.com/goachalin?s=11" className="p-2.5 bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
                     <Twitter className="w-5 h-5" />
                   </a>
-                  <a href="#" className="p-2.5 bg-gradient-to-br from-blue-700 to-blue-800 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
+
+                  <a href="https://www.linkedin.com/company/achal-projects/" className="p-2.5 bg-gradient-to-br from-blue-700 to-blue-800 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-110">
                     <Linkedin className="w-5 h-5" />
                   </a>
                 </div>
@@ -293,7 +301,7 @@ export function Footer() {
               <span className="w-1 h-4 bg-blue-600 rounded-full"></span>
               Our Apps
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {appLinks.map(({ name, Icon, stores }) => (
                 <div key={name} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200 flex flex-col gap-3">
                   <div className="flex items-center gap-3">
