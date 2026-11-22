@@ -1,316 +1,313 @@
 import React from "react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Globe2,
+  Clock,
+  Layers,
+  MapPin,
+  ShieldCheck,
+  ChevronRight,
+  Building2,
+  FileText,
+  Phone,
+  Mail,
+} from "lucide-react";
+
 export const dynamic = "force-dynamic";
-import Link from 'next/link';
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';;
+
+const API_BASE =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in";
 
 function safeParseJSON(v) {
   if (!v) return null;
   if (Array.isArray(v)) return v;
   if (typeof v === "object") return v;
 
-  // Handle string input
   if (typeof v === "string") {
     try {
-      // Remove outer quotes if present
-      let cleaned = v;
+      let cleaned = v.trim();
       if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
         cleaned = cleaned.slice(1, -1);
       }
-      // Parse JSON
-      const parsed = JSON.parse(cleaned);
-      return parsed;
+      return JSON.parse(cleaned);
     } catch (_) {
-      // If it's a newline-separated string, split and trim
       if (v.includes("\\n")) {
-        return v.split("\\n").map(item => item.trim()).filter(Boolean);
+        return v
+          .split("\\n")
+          .map((item) => item.trim())
+          .filter(Boolean);
       }
       if (v.includes("\n")) {
-        return v.split("\n").map(item => item.trim()).filter(Boolean);
+        return v
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean);
       }
-      return v;
+      return [v.trim()];
     }
   }
   return v;
 }
 
-// ── Inline styles & keyframes injected once ──────────────────
-const PAGE_STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-  :root {
-    --navy:   #0a1628;
-    --blue:   #1a3a6b;
-    --gold:   #c8a96e;
-    --gold2:  #b8954a;
-    --light:  #f5f3ef;
-    --white:  #ffffff;
-    --gray:   #6b7280;
-    --border: #e5e0d8;
-    --slate:  #0f172a;
-  }
-  .svc-page { font-family: 'DM Sans', sans-serif; color: var(--navy); background: var(--white); overflow-x: hidden; }
-  .playfair { font-family: 'Playfair Display', serif; }
-
-  /* ── Section label (gold pill) ── */
-  .svc-label {
-    display: inline-flex; align-items: center; gap: 12px;
-    font-size: 11px; font-weight: 600; letter-spacing: .3em;
-    color: var(--gold); text-transform: uppercase; margin-bottom: 16px;
-  }
-  .svc-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
-
-  /* ── Hero ── */
-  .svc-hero {
-    position: relative; width: 100%; min-height: 540px;
-    display: flex; align-items: flex-end;
-    background: var(--navy); overflow: hidden;
-  }
-  .svc-hero img.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.35); opacity: .5; }
-  .svc-hero-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(10,22,40,.95) 0%, rgba(10,22,40,.65) 60%, rgba(10,22,40,.2) 100%);
-  }
-  .svc-hero-content { position: relative; z-index: 2; padding: 100px 44px 80px; max-width: 860px; right: -128px; }
-  .svc-hero-breadcrumb { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 28px; }
-  .svc-hero-breadcrumb a { color: var(--gold); text-decoration: none; }
-  .svc-hero-breadcrumb span { color: rgba(255,255,255,.25); }
-  .svc-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 900; color: #fff; line-height: 1.1; margin: 0 0 20px; }
-  .svc-hero p { font-size: 1.05rem; color: rgba(255,255,255,.72); line-height: 1.7; max-width: 560px; margin: 0 0 36px; font-weight: 300; }
-  .svc-hero-badge {
-    position: absolute; right: 64px; bottom: -8px; z-index: 3;
-    background: var(--gold); color: var(--navy);
-    padding: 20px 32px; font-family: 'Playfair Display', serif;
-    font-weight: 900; font-size: 2rem; line-height: 1;
-    display: flex; flex-direction: column; align-items: center;
-  }
-  .svc-hero-badge span { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; opacity: .7; margin-top: 4px; }
-  .svc-hero-divider { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--gold) 0%, transparent 70%); }
-
-  /* ── Summary Band ── */
-  .svc-summary { background: var(--light); padding: 80px 64px; }
-  .svc-summary-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
-  .svc-summary-main-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; color: var(--navy); line-height: 1.2; margin: 0 0 16px; }
-  .svc-summary-single-title { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gray); margin: 0 0 12px; }
-  .svc-summary-desc { font-size: 1rem; line-height: 1.8; color: #4b5563; font-weight: 300; }
-  .svc-summary-bullets { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .svc-summary-bullets li { display: flex; align-items: flex-start; gap: 14px; font-size: .9rem; color: #374151; line-height: 1.5; }
-  .svc-summary-bullets li::before { content: ''; flex-shrink: 0; margin-top: 8px; width: 20px; height: 1px; background: var(--gold); }
-  .svc-summary-right { border-left: 1px solid var(--border); padding-left: 64px; padding-top: 4px; }
-
-  /* ── Portfolio ── */
-  .svc-portfolio { padding: 80px 64px; background: var(--white); }
-  .svc-portfolio-inner { max-width: 1200px; margin: 0 auto; }
-  .svc-portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
-  .svc-port-item { position: relative; overflow: hidden; cursor: pointer; height: 320px; }
-  .svc-port-item img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.35); transition: transform .7s, filter .7s; }
-  .svc-port-item:hover img { transform: scale(1.06); filter: saturate(.7); }
-  .svc-port-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,.92) 0%, rgba(10,22,40,.1) 60%); }
-  .svc-port-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 32px; }
-  .svc-port-tag { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 6px; }
-  .svc-port-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: #fff; line-height: 1.3; }
-  .svc-port-location { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 5px; letter-spacing: .06em; }
-  .svc-port-item:first-child { grid-column: span 2; height: 380px; }
-
-  /* ── Pricing ── */
-  .svc-pricing { padding: 80px 64px; background: var(--navy); }
-  .svc-pricing-inner { max-width: 1200px; margin: 0 auto; }
-  .svc-pricing-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 900; color: #fff; line-height: 1.2; margin: 0 0 48px; }
-  .svc-pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .svc-plan {
-    background: rgba(255,255,255,.04); border-top: 3px solid transparent;
-    padding: 44px 36px; position: relative; transition: background .3s, border-color .3s;
-  }
-  .svc-plan:hover { background: rgba(255,255,255,.07); border-top-color: var(--gold); }
-  .svc-plan-featured { background: rgba(200,169,110,.08) !important; border-top-color: var(--gold) !important; }
-  .svc-plan-featured-badge {
-    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 700;
-    letter-spacing: .15em; text-transform: uppercase; padding: 4px 16px; white-space: nowrap;
-  }
-  .svc-plan-name { font-size: 11px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 12px; }
-  .svc-plan-price { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: 24px; }
-  .svc-plan-divider { height: 1px; background: rgba(255,255,255,.08); margin-bottom: 24px; }
-  .svc-plan-benefits { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-  .svc-plan-benefits li { display: flex; align-items: flex-start; gap: 12px; font-size: .88rem; color: rgba(255,255,255,.65); line-height: 1.5; }
-  .svc-plan-benefits li::before { content: ''; flex-shrink: 0; margin-top: 7px; width: 14px; height: 1px; background: var(--gold); }
-  .svc-plan-btn { margin-top: 32px; width: 100%; padding: 14px; background: transparent; border: 1px solid rgba(255,255,255,.2); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: border-color .3s, color .3s; }
-  .svc-plan-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .svc-plan-featured .svc-plan-btn { background: var(--gold); border-color: var(--gold); color: var(--navy); }
-
-  /* ── Gallery ── */
-  .svc-gallery { padding: 80px 64px; background: var(--light); }
-  .svc-gallery-inner { max-width: 1200px; margin: 0 auto; }
-  .svc-gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-top: 48px; }
-  .svc-gallery-item { overflow: hidden; position: relative; cursor: zoom-in; }
-  .svc-gallery-item img { width: 100%; height: 220px; object-fit: cover; filter: saturate(.4); transition: transform .5s, filter .5s; display: block; }
-  .svc-gallery-item:hover img { transform: scale(1.07); filter: saturate(.85); }
-  .svc-gallery-item:first-child,
-  .svc-gallery-item:nth-child(5) { grid-column: span 2; }
-  .svc-gallery-item:first-child img,
-  .svc-gallery-item:nth-child(5) img { height: 340px; }
-
-  /* ── Coverage + Full Details ── */
-  .svc-details { padding: 80px 64px; background: var(--white); }
-  .svc-details-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
-  .svc-coverage { background: var(--navy); padding: 52px 48px; }
-  .svc-coverage-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #fff; margin: 0 0 28px; }
-  .svc-coverage-row { display: flex; align-items: flex-start; gap: 20px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
-  .svc-coverage-row:last-child { border-bottom: none; }
-  .svc-coverage-icon { flex-shrink: 0; width: 36px; height: 36px; border: 1px solid rgba(200,169,110,.4); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 15px; }
-  .svc-coverage-label { font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 4px; }
-  .svc-coverage-value { font-size: .9rem; color: rgba(255,255,255,.78); line-height: 1.5; }
-  .svc-full-details { background: var(--light); padding: 52px 48px; position: relative; overflow: hidden; }
-  .svc-full-details-img { width: 100%; height: 220px; object-fit: cover; margin-bottom: 32px; filter: saturate(.4); display: block; }
-  .svc-full-details-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--navy); margin: 0 0 16px; }
-  .svc-full-details-desc { font-size: .95rem; color: #4b5563; line-height: 1.8; font-weight: 300; }
-  .svc-full-details-accent { position: absolute; bottom: 0; right: 0; width: 140px; height: 140px; background: var(--gold); opacity: .05; pointer-events: none; }
-
-  /* ── CTA ── */
-  .svc-cta { position: relative; background: var(--slate); padding: 88px 64px; text-align: center; overflow: hidden; }
-  .svc-cta::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(200,169,110,.07) 0%, transparent 70%); pointer-events: none; }
-  .svc-cta-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; color: #fff; margin: 0 0 12px; position: relative; z-index: 1; }
-  .svc-cta-title em { color: var(--gold); font-style: normal; }
-  .svc-cta-sub { font-size: 1rem; color: rgba(255,255,255,.5); margin: 0 auto 44px; max-width: 520px; line-height: 1.7; font-weight: 300; position: relative; z-index: 1; }
-  .svc-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
-
-  /* ── Buttons ── */
-  .btn-gold { padding: 15px 44px; background: var(--gold); color: var(--navy); font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; border: none; cursor: pointer; transition: background .3s, transform .2s; }
-  .btn-gold:hover { background: var(--gold2); transform: translateY(-1px); }
-  .btn-ghost { padding: 15px 44px; background: transparent; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; border: 1px solid rgba(255,255,255,.25); cursor: pointer; transition: border-color .3s, color .3s; }
-  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
-
-  /* ── Responsive ── */
-  @media (max-width: 900px) {
-    .svc-hero-content { padding: 100px 24px 72px; right: 0; }
-    .svc-hero-badge { right: 24px; bottom: -24px; font-size: 1.4rem; padding: 14px 20px; }
-    .svc-summary { padding: 64px 24px; }
-    .svc-summary-inner { grid-template-columns: 1fr; gap: 40px; }
-    .svc-summary-right { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 40px; }
-    .svc-portfolio { padding: 60px 24px; }
-    .svc-portfolio-grid { grid-template-columns: 1fr; }
-    .svc-port-item:first-child { grid-column: span 1; height: 320px; }
-    .svc-pricing { padding: 60px 24px; }
-    .svc-pricing-grid { grid-template-columns: 1fr; }
-    .svc-gallery { padding: 60px 24px; }
-    .svc-gallery-grid { grid-template-columns: 1fr 1fr; }
-    .svc-gallery-item:first-child,
-    .svc-gallery-item:nth-child(5) { grid-column: span 1; }
-    .svc-gallery-item:first-child img,
-    .svc-gallery-item:nth-child(5) img { height: 220px; }
-    .svc-details { padding: 60px 24px; }
-    .svc-details-inner { grid-template-columns: 1fr; }
-    .svc-cta { padding: 64px 24px; }
-  }
-`;
-
-// ── Sub-components ────────────────────────────────────────────
-
+// ── 1. HERO SECTION ──────────────────────────────────────────
 function HeroSection({ heroSection, pageName, pageDescription }) {
   const heading = heroSection?.heading || pageName;
-  const sub = heroSection?.shortDescription || pageDescription;
-  const bg = heroSection?.backgroundImage;
+  const sub =
+    heroSection?.shortDescription ||
+    pageDescription ||
+    "Delivering high-tolerance turnkey execution, technical precision, and complete regulatory compliance across India.";
+  const bg = heroSection?.backgroundImage || "/banner-1.png";
 
   return (
-    <section className="svc-hero">
-      {bg && <img className="hero-bg" src={bg} alt={heading} />}
-      <div className="svc-hero-overlay" />
-      <div className="svc-hero-content">
-        <nav className="svc-hero-breadcrumb">
-          <a href="/">Home</a>
-          <span>›</span>
-          <a href="/#services-sec">Services</a>
-          <span>›</span>
-          <span style={{ color: "rgba(255,255,255,.6)" }}>{heading}</span>
-        </nav>
-        <div className="svc-label">Our Expertise</div>
-        <h1>{heading}</h1>
-        {sub && <p>{sub}</p>}
-        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <Link href="/get-quote" className="btn-gold px-12 py-3 text-sm" style={{ display: "inline-block", textDecoration: "none" }}>
-            Request a Quote
-          </Link>
-          <button className="btn-ghost">Learn More</button>
+    <section className="relative w-full min-h-[520px] lg:min-h-[580px] bg-[#0a192f] text-white flex items-center overflow-hidden border-b border-slate-800">
+      {/* Background Graphic Asset */}
+      {bg && (
+        <img
+          src={bg}
+          alt={heading}
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-25 saturate-50 pointer-events-none"
+        />
+      )}
+
+      {/* Corporate Obsidian Gradient Layer */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0a192f] via-[#0a192f]/90 to-transparent" />
+
+      {/* Hero Content Grid */}
+      <div className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-16 py-20 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+          {/* Left Column (8 cols): Metadata & Title */}
+          <div className="lg:col-span-8">
+            {/* Breadcrumb Strip */}
+            <nav className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-slate-400 mb-6">
+              <Link href="/" className="hover:text-[#38bdf8] transition-colors">
+                Home
+              </Link>
+              <span>/</span>
+              <Link href="/#services-sec" className="hover:text-[#38bdf8] transition-colors">
+                Services
+              </Link>
+              <span>/</span>
+              <span className="text-[#38bdf8] font-bold truncate">{pageName}</span>
+            </nav>
+
+            {/* Division Tag */}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-2.5 h-0.5 bg-[#0284c7]" />
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#38bdf8]">
+                Core Industrial Sector &bull; Turnkey EPC
+              </span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1] mb-6">
+              {heading}
+            </h1>
+
+            <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed mb-8 max-w-2xl">
+              {sub}
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-4">
+              <Link
+                href="/get-quote"
+                className="px-8 py-3.5 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-sm inline-flex items-center gap-2"
+              >
+                Request Commercial Tender <ArrowRight size={14} />
+              </Link>
+              <Link
+                href="/contact"
+                className="px-8 py-3.5 bg-transparent border border-slate-600 hover:border-slate-300 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+              >
+                Project Coordination Desk
+              </Link>
+            </div>
+
+            {/* Verification Metadata Footnote */}
+            <div className="flex flex-wrap items-center gap-6 text-xs font-mono text-slate-400 border-t border-slate-800 pt-6 mt-10">
+              <div>CIN: <span className="text-white font-semibold">U74999BR2014PTC022718</span></div>
+              <div className="hidden sm:inline text-slate-600">&bull;</div>
+              <div>Headquarters: <span className="text-white font-semibold">Patna, Bihar</span></div>
+              <div className="hidden sm:inline text-slate-600">&bull;</div>
+              <div>Operations: <span className="text-white font-semibold">Pan-India</span></div>
+            </div>
+          </div>
+
+          {/* Right Column (4 cols): Architectural Stamp Tile */}
+          <div className="lg:col-span-4 hidden lg:flex flex-col gap-4">
+            <div className="bg-slate-900/90 border border-slate-800 p-7 shadow-2xl relative overflow-hidden">
+              <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800 text-[11px] font-mono text-slate-400">
+                <span>DIVISION STATUS</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  ACTIVE
+                </span>
+              </div>
+              <div className="text-2xl font-bold text-white tracking-tight mb-1">
+                ACHAL
+              </div>
+              <div className="text-xs font-mono text-[#0284c7] uppercase tracking-wider font-semibold mb-4">
+                International Private Limited
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                Executing high-capacity infrastructure packages, supply chains, and municipal technologies with single-source contractual responsibility.
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
-      <div className="svc-hero-badge ">
-        ACHAL
-        <span>International</span>
-      </div>
-      <div className="svc-hero-divider" />
+
+      {/* Sky Blue Bottom Stripe */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0284c7] via-[#38bdf8] to-transparent" />
     </section>
   );
 }
 
+// ── 2. SUMMARY & KEY SPECIFICATIONS ──────────────────────────
 function SummarySection({ secondHeroSection }) {
   if (!secondHeroSection) return null;
   const { mainTitle, singleTitle, descriptions, bullets } = secondHeroSection;
   const bulletList = safeParseJSON(bullets) || [];
   const hasBullets = Array.isArray(bulletList) && bulletList.length > 0;
-  const hasRight = hasBullets;
   if (!mainTitle && !singleTitle && !descriptions && !hasBullets) return null;
 
   return (
-    <section className="svc-summary">
-      <div
-        className="svc-summary-inner"
-        style={!hasRight ? { gridTemplateColumns: "1fr" } : undefined}
-      >
-        <div>
-          {mainTitle && <h2 className="svc-summary-main-title">{mainTitle}</h2>}
-          {singleTitle && <div className="svc-summary-single-title">{singleTitle}</div>}
-          {descriptions && <p className="svc-summary-desc">{descriptions}</p>}
-        </div>
-        {hasBullets && (
-          <div className="svc-summary-right">
-            <div className="svc-label">Key Highlights</div>
-            <ul className="svc-summary-bullets">
-              {bulletList.map((b, i) => (
-                <li key={i}>{b}</li>
-              ))}
-            </ul>
+    <section className="py-20 md:py-24 px-6 md:px-16 bg-[#f8fafc] border-b border-slate-200">
+      <div className="max-w-7xl mx-auto">
+        <div className={`grid grid-cols-1 ${hasBullets ? "lg:grid-cols-12" : ""} gap-12 lg:gap-16 items-start`}>
+
+          {/* Main Description */}
+          <div className={hasBullets ? "lg:col-span-7" : "max-w-3xl"}>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-0.5 bg-[#0284c7]" />
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0284c7]">
+                Technical Briefing
+              </span>
+            </div>
+
+            {mainTitle && (
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 mb-4 leading-tight">
+                {mainTitle}
+              </h2>
+            )}
+
+            {singleTitle && (
+              <div className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500 mb-4">
+                {singleTitle}
+              </div>
+            )}
+
+            {descriptions && (
+              <p className="text-base text-slate-600 leading-relaxed font-normal">
+                {descriptions}
+              </p>
+            )}
           </div>
-        )}
+
+          {/* Highlights Box */}
+          {hasBullets && (
+            <div className="lg:col-span-5 bg-white border border-slate-200/90 p-8 shadow-xs">
+              <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#0284c7]" />
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+                    Deliverable Specifications
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">
+                  Audited
+                </span>
+              </div>
+
+              <ul className="space-y-3.5 m-0 p-0 list-none">
+                {bulletList.map((b, i) => (
+                  <li key={i} className="flex items-start gap-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                    <CheckCircle2 size={16} className="text-[#0284c7] shrink-0 mt-0.5" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+        </div>
       </div>
     </section>
   );
 }
 
+// ── 3. PORTFOLIO & SIGNATURE PROJECTS ─────────────────────────
 function PortfolioSection({ portfolioSections }) {
   if (!portfolioSections?.length) return null;
+
   return (
-    <section className="svc-portfolio">
-      <div className="svc-portfolio-inner">
-        <div className="svc-label">Our Work</div>
-        <h2
-          className="playfair"
-          style={{ fontSize: "clamp(1.8rem,3vw,2.8rem)", fontWeight: 900, margin: "0", lineHeight: 1.15 }}
-        >
-          Signature Projects &amp;<br />Capabilities
-        </h2>
-        <div className="svc-portfolio-grid">
+    <section className="py-20 md:py-24 px-6 md:px-16 bg-white border-b border-slate-200">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2.5 h-0.5 bg-[#0284c7]" />
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0284c7]">
+                Proven Delivery
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+              Signature Projects &amp; Capabilities
+            </h2>
+          </div>
+          <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+            Verified Deployments
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {portfolioSections.map((p, i) => (
-            <div key={p.projectId || i} className="svc-port-item">
-              {p.image && (
-                <img src={p.image} alt={p.projectName || p.title || `Project ${i + 1}`} />
-              )}
-              <div className="svc-port-overlay" />
-              <div className="svc-port-content">
-                <div className="svc-port-tag">{p.tag || "Project"}</div>
-                <div className="svc-port-name">{p.projectName || p.title}</div>
-                {p.location && <div className="svc-port-location">📍 {p.location}</div>}
-                {p.projectDescription && (
-                  <p
-                    style={{
-                      fontSize: ".8rem",
-                      color: "rgba(255,255,255,.55)",
-                      margin: "8px 0 0",
-                      lineHeight: 1.5,
-                      fontWeight: 300,
-                    }}
-                  >
-                    {p.projectDescription}
-                  </p>
+            <div
+              key={p.projectId || i}
+              className="group border border-slate-200 bg-white overflow-hidden flex flex-col justify-between hover:border-[#0284c7] transition-all duration-200"
+            >
+              <div>
+                {p.image && (
+                  <div className="relative h-56 overflow-hidden bg-slate-100">
+                    <img
+                      src={p.image}
+                      alt={p.projectName || p.title || `Project ${i + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/85 via-transparent to-transparent opacity-80" />
+                    <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-[#38bdf8] font-bold">
+                        {p.tag || "Turnkey Package"}
+                      </span>
+                      {p.location && (
+                        <span className="text-xs font-mono flex items-center gap-1 text-slate-200">
+                          <MapPin size={11} className="text-[#38bdf8]" /> {p.location}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 )}
+
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-slate-900 mb-2 leading-snug group-hover:text-[#0284c7] transition-colors">
+                    {p.projectName || p.title}
+                  </h3>
+                  {p.projectDescription && (
+                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                      {p.projectDescription}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-6 pt-0">
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#0284c7]">
+                  <span>Technical Specifications</span>
+                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
             </div>
           ))}
@@ -320,36 +317,79 @@ function PortfolioSection({ portfolioSections }) {
   );
 }
 
+// ── 4. COMMERCIAL / PRICING PLANS ────────────────────────────
 function PricingSection({ pricingPlans }) {
   if (!pricingPlans?.length) return null;
+
   return (
-    <section className="svc-pricing">
-      <div className="svc-pricing-inner">
-        <div className="svc-label" style={{ color: "var(--gold)" }}>
-          Investment
+    <section className="py-20 md:py-24 px-6 md:px-16 bg-[#0a192f] text-white border-b border-slate-800">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2.5 h-0.5 bg-[#38bdf8]" />
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#38bdf8]">
+                Commercial Framework
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              Standard Commercial Tiers
+            </h2>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-400 max-w-md font-normal leading-relaxed">
+            All enterprise contracts include audited milestone tracking, dedicated safety officers, and complete compliance documentation.
+          </p>
         </div>
-        <h2 className="svc-pricing-title">
-          Transparent<br />Pricing Plans
-        </h2>
-        <div className="svc-pricing-grid">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {pricingPlans.map((plan, i) => {
             const benefits = safeParseJSON(plan.benefits) || [];
             const isFeatured = plan.featured || (pricingPlans.length === 3 && i === 1);
+
             return (
-              <div key={i} className={`svc-plan${isFeatured ? " svc-plan-featured" : ""}`}>
-                {isFeatured && <div className="svc-plan-featured-badge">Most Popular</div>}
-                <div className="svc-plan-name">{plan.title}</div>
-                <div className="svc-plan-price">{plan.price}</div>
-                <div className="svc-plan-divider" />
-                {Array.isArray(benefits) && benefits.length > 0 && (
-                  <ul className="svc-plan-benefits">
-                    {benefits.map((b, j) => (
-                      <li key={j}>{b}</li>
-                    ))}
-                  </ul>
+              <div
+                key={i}
+                className={`relative p-8 flex flex-col justify-between border transition-all ${isFeatured
+                  ? "bg-[#0f2442] border-[#38bdf8] shadow-2xl"
+                  : "bg-slate-900/60 border-slate-800 hover:border-slate-700"
+                  }`}
+              >
+                {isFeatured && (
+                  <div className="absolute -top-3 left-6 bg-[#0284c7] text-white text-[10px] font-mono uppercase tracking-widest font-bold px-3 py-1">
+                    Primary Industry Standard
+                  </div>
                 )}
-                <Link href="/get-quote" style={{ display: "block", textDecoration: "none" }}>
-                  <button className="svc-plan-btn">Get Started</button>
+
+                <div>
+                  <div className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">
+                    {plan.title}
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-6">
+                    {plan.price}
+                  </div>
+
+                  <div className="h-px bg-slate-800 mb-6" />
+
+                  {Array.isArray(benefits) && benefits.length > 0 && (
+                    <ul className="space-y-3 m-0 p-0 list-none mb-8">
+                      {benefits.map((b, j) => (
+                        <li key={j} className="flex items-start gap-2.5 text-xs text-slate-300 leading-relaxed">
+                          <CheckCircle2 size={14} className="text-[#38bdf8] shrink-0 mt-0.5" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <Link
+                  href="/get-quote"
+                  className={`w-full py-3 text-center text-xs font-bold uppercase tracking-wider transition-colors ${isFeatured
+                    ? "bg-[#0284c7] hover:bg-[#0369a1] text-white"
+                    : "bg-transparent border border-slate-700 hover:border-slate-400 text-white"
+                    }`}
+                >
+                  Request Technical Proposal &rarr;
                 </Link>
               </div>
             );
@@ -360,22 +400,34 @@ function PricingSection({ pricingPlans }) {
   );
 }
 
+// ── 5. GALLERY SECTION ────────────────────────────────────────
 function GallerySection({ galleryItems }) {
   if (!galleryItems?.length) return null;
+
   return (
-    <section className="svc-gallery">
-      <div className="svc-gallery-inner">
-        <div className="svc-label">Visual Showcase</div>
-        <h2
-          className="playfair"
-          style={{ fontSize: "clamp(1.8rem,3vw,2.8rem)", fontWeight: 900, margin: "0", lineHeight: 1.2 }}
-        >
-          Project Gallery
+    <section className="py-20 md:py-24 px-6 md:px-16 bg-[#f8fafc] border-b border-slate-200">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="w-2.5 h-0.5 bg-[#0284c7]" />
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0284c7]">
+            Field Documentation
+          </span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 mb-12">
+          Operational Gallery
         </h2>
-        <div className="svc-gallery-grid">
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {galleryItems.map((g, i) => (
-            <div key={i} className="svc-gallery-item">
-              <img src={g.image} alt={g.title || `Gallery ${i + 1}`} />
+            <div
+              key={i}
+              className="border border-slate-200 bg-white overflow-hidden group h-52 sm:h-64"
+            >
+              <img
+                src={g.image}
+                alt={g.title || `Gallery Item ${i + 1}`}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
           ))}
         </div>
@@ -384,167 +436,233 @@ function GallerySection({ galleryItems }) {
   );
 }
 
+// ── 6. COVERAGE & TECHNICAL DETAILS ──────────────────────────
 function DetailsSection({ coverageSection, fullDetailsSection }) {
   if (!coverageSection && !fullDetailsSection) return null;
   const both = coverageSection && fullDetailsSection;
-  return (
-    <section className="svc-details">
-      <div
-        className="svc-details-inner"
-        style={!both ? { gridTemplateColumns: "1fr" } : undefined}
-      >
-        {coverageSection && (
-          <div className="svc-coverage">
-            <div className="svc-label">Service Reach</div>
-            {coverageSection.title && (
-              <h3 className="svc-coverage-title">{coverageSection.title}</h3>
-            )}
-            {coverageSection.countriesCovered && (
-              <div className="svc-coverage-row">
-                <div className="svc-coverage-icon">🌍</div>
-                <div>
-                  <div className="svc-coverage-label">Countries Covered</div>
-                  <div className="svc-coverage-value">{coverageSection.countriesCovered}</div>
-                </div>
-              </div>
-            )}
-            {coverageSection.availableServices && (
-              <div className="svc-coverage-row">
-                <div className="svc-coverage-icon">⚙</div>
-                <div>
-                  <div className="svc-coverage-label">Available Services</div>
-                  <div className="svc-coverage-value">{coverageSection.availableServices}</div>
-                </div>
-              </div>
-            )}
-            {coverageSection.turnaround && (
-              <div className="svc-coverage-row">
-                <div className="svc-coverage-icon">⏱</div>
-                <div>
-                  <div className="svc-coverage-label">Turnaround</div>
-                  <div className="svc-coverage-value">{coverageSection.turnaround}</div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
 
-        {fullDetailsSection && (
-          <div className="svc-full-details">
-            <div className="svc-full-details-accent" />
-            {fullDetailsSection.image && (
-              <img
-                src={fullDetailsSection.image}
-                alt={fullDetailsSection.title || "Detail"}
-                className="svc-full-details-img"
-              />
-            )}
-            <div className="svc-label">In Depth</div>
-            {fullDetailsSection.title && (
-              <h3 className="svc-full-details-title">{fullDetailsSection.title}</h3>
-            )}
-            {fullDetailsSection.description && (
-              <p className="svc-full-details-desc">{fullDetailsSection.description}</p>
-            )}
-          </div>
-        )}
+  return (
+    <section className="py-20 md:py-24 px-6 md:px-16 bg-white border-b border-slate-200">
+      <div className="max-w-7xl mx-auto">
+        <div className={`grid grid-cols-1 ${both ? "lg:grid-cols-2" : ""} gap-8`}>
+
+          {/* Coverage / Reach */}
+          {coverageSection && (
+            <div className="bg-[#0a192f] text-white p-8 sm:p-12 border border-slate-800 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-6">
+                  <Globe2 size={18} className="text-[#38bdf8]" />
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#38bdf8]">
+                    Operational Geography
+                  </span>
+                </div>
+
+                {coverageSection.title && (
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-6">
+                    {coverageSection.title}
+                  </h3>
+                )}
+
+                <div className="space-y-5">
+                  {coverageSection.countriesCovered && (
+                    <div className="flex items-start gap-4 pb-4 border-b border-slate-800">
+                      <div className="w-9 h-9 bg-slate-900 border border-slate-800 flex items-center justify-center text-[#38bdf8] shrink-0">
+                        <Globe2 size={16} />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                          Footprint / Regions
+                        </div>
+                        <div className="text-sm font-semibold text-white mt-0.5">
+                          {coverageSection.countriesCovered}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {coverageSection.availableServices && (
+                    <div className="flex items-start gap-4 pb-4 border-b border-slate-800">
+                      <div className="w-9 h-9 bg-slate-900 border border-slate-800 flex items-center justify-center text-[#38bdf8] shrink-0">
+                        <Layers size={16} />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                          Active Divisions
+                        </div>
+                        <div className="text-sm font-semibold text-white mt-0.5">
+                          {coverageSection.availableServices}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {coverageSection.turnaround && (
+                    <div className="flex items-start gap-4">
+                      <div className="w-9 h-9 bg-slate-900 border border-slate-800 flex items-center justify-center text-[#38bdf8] shrink-0">
+                        <Clock size={16} />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                          Turnaround SLA
+                        </div>
+                        <div className="text-sm font-semibold text-white mt-0.5">
+                          {coverageSection.turnaround}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-6 mt-8 border-t border-slate-800 text-xs font-mono text-slate-400 uppercase tracking-wider">
+                Regulatory Rigor // ISO Standard Compliant
+              </div>
+            </div>
+          )}
+
+          {/* Full Technical Details */}
+          {fullDetailsSection && (
+            <div className="bg-[#f8fafc] border border-slate-200 p-8 sm:p-12 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-6">
+                  <ShieldCheck size={18} className="text-[#0284c7]" />
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0284c7]">
+                    Execution Parameters
+                  </span>
+                </div>
+
+                {fullDetailsSection.image && (
+                  <div className="mb-6 h-56 overflow-hidden border border-slate-200 bg-white">
+                    <img
+                      src={fullDetailsSection.image}
+                      alt={fullDetailsSection.title || "Detail Image"}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                {fullDetailsSection.title && (
+                  <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">
+                    {fullDetailsSection.title}
+                  </h3>
+                )}
+
+                {fullDetailsSection.description && (
+                  <p className="text-sm text-slate-600 leading-relaxed font-normal">
+                    {fullDetailsSection.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="pt-6 mt-8 border-t border-slate-200 text-xs font-mono text-slate-500 uppercase tracking-wider">
+                Corporate Governance Standard
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
     </section>
   );
 }
 
+// ── 7. INDUSTRIAL CALL TO ACTION ─────────────────────────────
 function CTASection({ pageName }) {
   return (
-    <section className="svc-cta">
-      <h2 className="svc-cta-title">
-        Ready to Work with<br />
-        <em>ACHAL International?</em>
-      </h2>
-      <p className="svc-cta-sub">
-        Experience world-class {pageName ? pageName.toLowerCase() : "service"} delivered with the
-        reliability and precision that defines ACHAL.
-      </p>
-      <div className="svc-cta-btns">
-        <Link href="/get-quote" className="btn-gold" style={{ display: "inline-block", textDecoration: "none" }}>
-          Get In Touch
-        </Link>
-        <Link href="/services" className="btn-ghost" style={{ display: "inline-block", textDecoration: "none" }}>
-          View All Services
-        </Link>
+    <section className="py-20 md:py-24 px-6 md:px-16 bg-[#0a192f] text-white">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-0.5 bg-[#0284c7]" />
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#38bdf8]">
+                Commercial Tenders &bull; Turnkey EPC
+              </span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-4">
+              Deploy with ACHAL International
+            </h2>
+
+            <p className="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
+              Partner with our specialized engineering and logistics directors for your upcoming{" "}
+              <strong className="text-white font-semibold">
+                {pageName ? pageName.toLowerCase() : "industrial"}
+              </strong>{" "}
+              requirements across India.
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-slate-400">
+              <span>CIN: U74999BR2014PTC022718</span>
+              <span className="hidden sm:inline">&bull;</span>
+              <span>Pan-India Operations</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto shrink-0">
+            <Link
+              href="/get-quote"
+              className="px-8 py-4 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold uppercase tracking-wider transition-colors text-center shadow-sm"
+            >
+              Request Tender Quote &rarr;
+            </Link>
+            <Link
+              href="/services"
+              className="px-8 py-4 bg-transparent hover:bg-white/5 border border-slate-600 hover:border-slate-300 text-white text-xs font-bold uppercase tracking-wider transition-colors text-center"
+            >
+              All Industrial Verticals
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-// ── SSR Page (Next.js 13+ App Router) ────────────────────────
-// Replace this default export with the async SSR version below
-// when deploying to your Next.js project:
-//
-//   export default async function Page({ params }) {
-//     const { slug } = await params;
-//     let page = null, service = null;
-//     try {
-//       const r = await fetch(`${API_BASE}/api/service-pages/slug/${encodeURIComponent(slug)}`, { cache: 'no-store' });
-//       if (r.ok) { page = await r.json(); service = page?.service ?? null; }
-//       else if (r.status === 404) {
-//         const sr = await fetch(`${API_BASE}/api/services/slug/${encodeURIComponent(slug)}`, { cache: 'no-store' });
-//         if (sr.ok) { service = await sr.json(); const pr = await fetch(`${API_BASE}/api/service-pages/service/${service.id}`, { cache: 'no-store' }); if (pr.ok) page = await pr.json(); }
-//         else return <NotFound slug={slug} />;
-//       } else throw new Error('fetch failed');
-//     } catch (e) { return <div className="min-h-screen flex items-center justify-center text-red-600">Error loading page</div>; }
-//     const { heroSection, secondHeroSection, portfolioSections, pricingPlans, galleryItems, coverageSection, fullDetailsSection } = page || {};
-//     const pageName = service?.name || page?.name || '';
-//     return <ServicePageUI ... />;
-//   }
-
-
-
-// This page is dynamic; static param generation removed so it's handled at runtime.
-
-// Server page: fetch service page data from API using service slug
+// ── 8. MAIN SSR PAGE EXPORT ──────────────────────────────────
 export default async function ServicePage({ params }) {
   const { slug } = await params;
   let page = null;
   let service = null;
 
-
-
   try {
-    // Fetch complete service page data by slug
-    const pageRes = await fetch(`${API_BASE}/api/service-pages/slug/${slug}`, {
-      cache: 'no-store',
-      headers: { 'Accept': 'application/json' }
+    // Primary lookup: direct service page slug
+    const pageRes = await fetch(`${API_BASE}/api/service-pages/slug/${encodeURIComponent(slug)}`, {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
     });
 
     if (pageRes.ok) {
       const contentType = String(pageRes.headers.get("content-type") || "").toLowerCase();
       if (contentType.includes("application/json")) {
-        try {
-          page = await pageRes.json();
-          // Extract service info if available in the page data
-          service = page?.service || { name: page?.name };
-          console.log("Fetched service page data:", { slug, page, service });
-        } catch (err) {
-          console.error("Error parsing service page data:", err);
-          page = null;
-        }
-      } else {
-        console.warn("Service page endpoint returned non-JSON:", contentType);
-        page = null;
+        page = await pageRes.json();
+        service = page?.service || { name: page?.name };
       }
     } else if (pageRes.status === 404) {
-      console.warn(`Service page not found for slug: ${slug}`);
-      page = null;
-    } else {
-      console.warn(`Error fetching service page: ${pageRes.status}`);
-      page = null;
+      // Secondary fallback lookup: find service first, then load linked page
+      const svcRes = await fetch(`${API_BASE}/api/services/slug/${encodeURIComponent(slug)}`, {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      });
+
+      if (svcRes.ok) {
+        service = await svcRes.json();
+        if (service?.id) {
+          const linkedPageRes = await fetch(`${API_BASE}/api/service-pages/service/${service.id}`, {
+            cache: "no-store",
+            headers: { Accept: "application/json" },
+          });
+          if (linkedPageRes.ok) {
+            page = await linkedPageRes.json();
+          }
+        }
+      }
     }
   } catch (e) {
-    console.error("Error fetching service page from API:", e);
+    console.error("Error retrieving service page:", e);
     page = null;
   }
 
-  // Extract sections from API data
   const heroSection = page?.heroSection;
   const secondHeroSection = page?.secondHeroSection;
   const portfolioSections = page?.portfolioSections;
@@ -553,38 +671,56 @@ export default async function ServicePage({ params }) {
   const coverageSection = page?.coverageSection;
   const fullDetailsSection = page?.fullDetailsSection;
 
-  const pageName = service?.name || page?.name || "Service";
+  const pageName = service?.name || page?.name || "Service Specification";
 
   if (!page) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-600 bg-white">
-        <div style={{ textAlign: "center", padding: "40px" }}>
-          <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}>
-            Service Page Not Found
+      <main className="min-h-screen bg-white flex items-center justify-center px-6 py-24">
+        <div className="max-w-md w-full border border-slate-200 p-8 sm:p-10 text-center shadow-sm">
+          <div className="w-12 h-12 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-[#0284c7] mx-auto mb-4 font-mono font-bold text-lg">
+            !
+          </div>
+          <h1 className="text-xl font-bold text-slate-900 mb-2">
+            Service Specification Not Found
           </h1>
-          <p style={{ fontSize: "16px", marginBottom: "24px" }}>
-            The service page for "{slug}" could not be loaded.
+          <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+            The requested industrial capability profile for &ldquo;{slug}&rdquo; is currently offline or undergoing technical revision.
           </p>
-          <a href="/services" style={{ color: "#c8a96e", textDecoration: "underline" }}>
-            ← Back to Services
-          </a>
+          <div className="flex flex-col gap-2.5">
+            <Link
+              href="/#services-sec"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold uppercase tracking-wider transition-colors"
+            >
+              &larr; View Core Verticals
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center px-6 py-2.5 border border-slate-200 text-slate-700 hover:border-slate-400 text-xs font-bold uppercase tracking-wider transition-colors"
+            >
+              Contact Project Office
+            </Link>
+          </div>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <>
-      <style>{PAGE_STYLES}</style>
-      <main className="svc-page">
-        <HeroSection heroSection={heroSection} pageName={pageName} pageDescription={page?.description} />
-        <SummarySection secondHeroSection={secondHeroSection} />
-        <PortfolioSection portfolioSections={portfolioSections} />
-        <PricingSection pricingPlans={pricingPlans} />
-        <GallerySection galleryItems={galleryItems} />
-        <DetailsSection coverageSection={coverageSection} fullDetailsSection={fullDetailsSection} />
-        <CTASection pageName={pageName} />
-      </main>
-    </>
+    <main className="w-full bg-white text-slate-900 font-sans overflow-x-hidden">
+      <HeroSection
+        heroSection={heroSection}
+        pageName={pageName}
+        pageDescription={page?.description}
+      />
+      <SummarySection secondHeroSection={secondHeroSection} />
+      <PortfolioSection portfolioSections={portfolioSections} />
+      <PricingSection pricingPlans={pricingPlans} />
+      <GallerySection galleryItems={galleryItems} />
+      <DetailsSection
+        coverageSection={coverageSection}
+        fullDetailsSection={fullDetailsSection}
+      />
+      <CTASection pageName={pageName} />
+    </main>
   );
 }

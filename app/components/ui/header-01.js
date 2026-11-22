@@ -1,8 +1,8 @@
-"use client"
-import { Equal, X } from "@aliimam/icons"
-import * as React from "react"
-import { cn } from "@/lib/utils"
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
+"use client";
+
+import * as React from "react";
+import { Equal, X } from "@aliimam/icons";
+import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,455 +11,391 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "./navigation-menu"
+} from "./navigation-menu";
 
-const menuItems = [
-  { name: "About Us", href: "#about" },
-  { name: "Services", href: "#" },
-  { name: "Contact", href: "#" },
-]
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "https://achal-backend-trial.tannis.in";
 
+const DEFAULT_SERVICES = [
+  { name: "Civil Engineering", slug: "civil", desc: "Turnkey structural engineering, infrastructure & highway works." },
+  { name: "EV Infrastructure", slug: "ev", desc: "Level 3 DC high-capacity highway charging grids." },
+  { name: "Cargo & Logistics", slug: "cargo", desc: "Interstate bonded freight forwarding & real-time telemetry." },
+  { name: "Parking Solutions", slug: "parking", desc: "IoT automated multi-bay parking and revenue management." },
+  { name: "Restaurant Services", slug: "hospitality", desc: "Turnkey enterprise dining & institutional banquet operations." },
+];
 
-
-const SVC_ICONS = ["⚙", "🏗", "🚢", "🛣", "🏭", "🌐", "⚡", "🔧", "🏛", "🚛"]
-
-/* ── ServiceDropdownItem ──────────────────────────────────── */
-function ServiceDropdownItem({ title, href, description, index }) {
-  const icon = SVC_ICONS[index % SVC_ICONS.length]
-  return (
-    <li className="list-none">
-      <NavigationMenuLink asChild>
-        <a
-          href={href}
-          className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 cursor-pointer no-underline"
-        >
-          {/* Icon */}
-          <div className="w-8 h-8 rounded-lg shrink-0 bg-gradient-to-br from-[#0a1628] to-[#1a3a6b] flex items-center justify-center text-sm text-[#c8a96e] mt-0.5">
-            {icon}
-          </div>
-
-          {/* Body */}
-          <div className="min-w-0 flex-1">
-            <div className="text-base font-semibold text-[#0a1628] leading-snug mb-0.5 truncate font-[DM_Sans,sans-serif]">
-              {title}
-            </div>
-            {description && (
-              <p className="text-[13px] text-gray-500 leading-[1.45] line-clamp-2 font-light font-[DM_Sans,sans-serif]">
-                {description}
-              </p>
-            )}
-          </div>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  )
-}
-
-/* ── Menus ────────────────────────────────────────────────── */
-export function Menus({ isScrolled }) {
-  const [svcList, setSvcList] = React.useState([])
+export function Menus() {
+  const [svcList, setSvcList] = React.useState(DEFAULT_SERVICES);
 
   React.useEffect(() => {
-    let mounted = true
+    let mounted = true;
     async function load() {
       try {
-        const res = await fetch(`${API_BASE}/api/services`)
-        if (!mounted || !res.ok) return
-        const data = await res.json().catch(() => null)
-        if (!mounted || !data) return
-        if (Array.isArray(data)) setSvcList(data)
-        else if (typeof data === "object") setSvcList([data])
+        const res = await fetch(`${API_BASE}/api/services`);
+        if (!mounted || !res.ok) return;
+        const data = await res.json().catch(() => null);
+        if (!mounted || !data) return;
+        if (Array.isArray(data) && data.length) setSvcList(data);
       } catch (e) {
-        console.error("Failed to load services for menu", e)
+        // Fallback default services are used
       }
     }
-    load()
-    return () => { mounted = false }
-  }, [])
+    load();
+    return () => { mounted = false; };
+  }, []);
 
-  const linkClass = cn(
+  const navLinkStyle = cn(
     navigationMenuTriggerStyle(),
-    "bg-transparent text-base font-semibold transition-colors duration-300",
-    isScrolled ? "text-gray-800 hover:text-blue-600" : "text-white hover:text-white/80"
-  )
+    "bg-transparent text-xs font-bold uppercase tracking-wider text-slate-800 hover:text-[#0284c7] hover:bg-slate-100 focus:bg-slate-100 focus:text-[#0284c7] data-[state=open]:text-[#0284c7] transition-colors px-3 py-2 rounded-md cursor-pointer"
+  );
 
-  const triggerClass = cn(
-    "bg-transparent text-base font-semibold transition-colors duration-300",
-    isScrolled ? "text-gray-800 hover:text-blue-600" : "text-white hover:text-white/80"
-  )
-
-  const serviceList = svcList.length ? svcList : []
   return (
-    <div className="flex items-center gap-0">
-
-      {/* ── Left group: About, Services, Careers, Contact, Track ── */}
+    <div className="flex items-center gap-1">
+      {/* ── Standard Navigation Menu for Informational Links ── */}
       <NavigationMenu>
-        <NavigationMenuList>
-
-          {/* About Us */}
+        <NavigationMenuList className="gap-1 flex items-center m-0 p-0">
+          {/* 1. About Us */}
           <NavigationMenuItem>
-            <NavigationMenuLink asChild className={linkClass}>
+            <NavigationMenuLink asChild className={navLinkStyle}>
               <a href="/aboutUs">About Us</a>
             </NavigationMenuLink>
           </NavigationMenuItem>
 
-          {/* Services dropdown */}
+          {/* 2. Services Dropdown */}
           <NavigationMenuItem>
-            <NavigationMenuTrigger className={triggerClass}>
+            <NavigationMenuTrigger className={navLinkStyle}>
               Services
             </NavigationMenuTrigger>
-            <NavigationMenuContent
-              className=" bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden"
-            >
-              {/* 2-col service grid */}
-              <ul className=" w-xl p-5">
-                {serviceList.map((svcList, i) => (
-                  <ServiceDropdownItem
-                    key={svcList.slug || svcList.title || i}
-                    title={svcList.name || svcList.title}
-                    href={svcList.slug ? `/services/${svcList.slug}` : svcList.href}
-                    description={svcList.shortDescription || svcList.description}
-                    index={i}
-                  />
-                ))}
-              </ul>
+
+            <NavigationMenuContent className="!w-auto !max-w-none bg-transparent border-0 p-0 shadow-none">
+              <div className="w-[620px] bg-white border border-slate-200/90 rounded-2xl shadow-[0_20px_50px_rgba(10,25,47,0.18)] p-6">
+                {/* Header Strip */}
+                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#0284c7]" />
+                    <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-[#0284c7]">
+                      Core Industrial Verticals
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+                    Turnkey EPC &bull; Pan-India
+                  </span>
+                </div>
+
+                {/* Structured 2-Column Grid */}
+                <ul className="grid grid-cols-2 gap-3 m-0 p-0 list-none">
+                  {svcList.map((svc, i) => {
+                    const rawName = svc.name || svc.title || "";
+                    const formattedName = rawName
+                      .toLowerCase()
+                      .split(" ")
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(" ");
+
+                    const description = svc.shortDescription || svc.desc || svc.description || "Turnkey project execution & management.";
+
+                    return (
+                      <li key={svc.slug || i} className="list-none">
+                        <NavigationMenuLink asChild>
+                          <a
+                            href={svc.slug ? `/services/${svc.slug}` : (svc.href || "/")}
+                            className="group flex items-start gap-3.5 p-3 rounded-xl border border-transparent hover:border-slate-200 hover:bg-[#f8fafc] transition-all duration-150"
+                          >
+                            <div className="w-9 h-9 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:text-[#0284c7] group-hover:border-[#0284c7]/40 group-hover:bg-white transition-colors shrink-0 mt-0.5">
+                              <span className="text-xs font-mono font-bold">
+                                0{i + 1}
+                              </span>
+                            </div>
+
+                            <div className="min-w-0">
+                              <div className="text-[13px] font-bold text-slate-900 group-hover:text-[#0284c7] transition-colors leading-snug flex items-center gap-1">
+                                <span className="truncate">{formattedName}</span>
+                                <span className="text-slate-300 group-hover:text-[#0284c7] group-hover:translate-x-0.5 transition-all text-xs">
+                                  &rarr;
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-relaxed font-normal">
+                                {description}
+                              </p>
+                            </div>
+                          </a>
+                        </NavigationMenuLink>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {/* Footnote */}
+                <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="text-slate-500 font-medium">
+                    Need custom turnkey contract specifications?
+                  </span>
+                  <a
+                    href="/#services-sec"
+                    className="font-bold text-[#0284c7] hover:text-[#0369a1] flex items-center gap-1 transition-colors"
+                  >
+                    View All Capabilities &rarr;
+                  </a>
+                </div>
+              </div>
             </NavigationMenuContent>
           </NavigationMenuItem>
 
-          {/* Careers */}
+          {/* 3. Careers */}
           <NavigationMenuItem>
-            <NavigationMenuLink asChild className={linkClass}>
+            <NavigationMenuLink asChild className={navLinkStyle}>
               <a href="/careers">Careers</a>
             </NavigationMenuLink>
           </NavigationMenuItem>
 
-          {/* Contact */}
+          {/* 4. Contact */}
           <NavigationMenuItem>
-            <NavigationMenuLink asChild className={linkClass}>
+            <NavigationMenuLink asChild className={navLinkStyle}>
               <a href="/contact">Contact</a>
             </NavigationMenuLink>
           </NavigationMenuItem>
 
-          {/* Track Your Parcel */}
+          {/* 5. Track Your Parcel */}
           <NavigationMenuItem>
-            <NavigationMenuLink asChild className={linkClass}>
+            <NavigationMenuLink asChild className={navLinkStyle}>
               <a href="https://cargo.achalprojects.com/" target="_blank" rel="noopener noreferrer">
                 Track Your Parcel
               </a>
             </NavigationMenuLink>
           </NavigationMenuItem>
-
         </NavigationMenuList>
       </NavigationMenu>
 
-      {/* ── Right group: Login ── */}
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className={triggerClass}>
-              Login
-            </NavigationMenuTrigger>
-            <NavigationMenuContent
-              className="p-3 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden w-60"
-            >
-              <ul className="w-sm gap-0.5 m-0 p-0">
+      {/* ── LOGIN DROPDOWN (Direct sibling, cleanly anchored to button) ── */}
+      <div className="relative group ml-1">
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-800 hover:text-[#0284c7] hover:bg-slate-100 rounded-md transition-colors cursor-pointer"
+        >
+          <span>LOGIN</span>
+          <svg
+            className="w-3.5 h-3.5 text-slate-500 transition-transform duration-200 group-hover:rotate-180"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-                {/* Employee Login */}
-                <li className="list-none">
-                  <NavigationMenuLink asChild>
-                    <a
-                      href=" http://billing.goachal.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block px-4 py-3 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 no-underline"
-                    >
-                      <div className="flex items-center gap-2 text-base font-semibold text-[#0a1628] font-[DM_Sans,sans-serif]">
-                        <span>👤</span> Billing Software Login
-                      </div>
-                      <div className="text-[13px] text-gray-500 mt-0.5 font-light font-[DM_Sans,sans-serif]">
-                        Access your Billing portal
-                      </div>
-                    </a>
-                  </NavigationMenuLink>
-                </li>
+        {/* Anchored Card */}
+        <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 absolute top-full right-0 pt-2 z-50">
+          <div className="w-[320px] bg-white border border-slate-200/90 rounded-2xl shadow-[0_20px_50px_rgba(10,25,47,0.18)] p-4">
+            <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100">
+              <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#0284c7]">
+                Internal Portals
+              </span>
+              <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                Secure SSO
+              </span>
+            </div>
 
-                {/* Parking Login */}
-                <li className="list-none">
-                  <NavigationMenuLink asChild>
-                    <a
-                      href="http://parking.goachal.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block px-4 py-3 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 no-underline"
-                    >
-                      <div className="flex items-center gap-2 text-base font-semibold text-[#0a1628] font-[DM_Sans,sans-serif]">
-                        <span>🅿</span> Parking Login
-                      </div>
-                      <div className="text-[13px] text-gray-500 mt-0.5 font-light font-[DM_Sans,sans-serif]">
-                        Manage parking operations
-                      </div>
-                    </a>
-                  </NavigationMenuLink>
-                </li>
-                <li className="list-none">
-                  <NavigationMenuLink asChild>
-                    <a
-                      href="https://admin.goachal.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block px-4 py-3 rounded-xl border border-transparent hover:bg-[#f5f3ef] hover:border-[#ede9e2] hover:translate-x-0.5 transition-all duration-150 no-underline"
-                    >
-                      <div className="flex items-center gap-2 text-base font-semibold text-[#0a1628] font-[DM_Sans,sans-serif]">
-                        <span>👤</span> Admin Login
-                      </div>
-                      <div className="text-[13px] text-gray-500 mt-0.5 font-light font-[DM_Sans,sans-serif]">
-                        Access your Admin portal
-                      </div>
-                    </a>
-                  </NavigationMenuLink>
-                </li>
+            <div className="space-y-1.5">
+              {/* Billing */}
+              <a
+                href="https://billing.goachal.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/item flex items-start gap-3 p-2.5 rounded-xl border border-transparent hover:border-slate-200/80 hover:bg-[#f8fafc] transition-all"
+              >
+                <div className="w-9 h-9 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-700 group-hover/item:text-[#0284c7] group-hover/item:border-[#0284c7]/40 group-hover/item:bg-white transition-colors shrink-0 mt-0.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1.867 1.867 0 01.707.293l5.414 5.414a1.442 1.442 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold text-slate-900 group-hover/item:text-[#0284c7] transition-colors leading-snug flex items-center justify-between">
+                    <span>Billing Software Login</span>
+                    <span className="text-slate-300 group-hover/item:text-[#0284c7] group-hover/item:translate-x-0.5 transition-all text-xs">&rarr;</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-normal">
+                    Access invoices &amp; accounts
+                  </div>
+                </div>
+              </a>
 
+              {/* Parking */}
+              <a
+                href="https://parking.goachal.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/item flex items-start gap-3 p-2.5 rounded-xl border border-transparent hover:border-slate-200/80 hover:bg-[#f8fafc] transition-all"
+              >
+                <div className="w-9 h-9 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-700 group-hover/item:text-[#0284c7] group-hover/item:border-[#0284c7]/40 group-hover/item:bg-white transition-colors shrink-0 mt-0.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <rect x="5" y="4" width="14" height="16" rx="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 16V8h4a3 3 0 010 6H9" />
+                  </svg>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold text-slate-900 group-hover/item:text-[#0284c7] transition-colors leading-snug flex items-center justify-between">
+                    <span>Parking Login</span>
+                    <span className="text-slate-300 group-hover/item:text-[#0284c7] group-hover/item:translate-x-0.5 transition-all text-xs">&rarr;</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-normal">
+                    Manage parking telemetry
+                  </div>
+                </div>
+              </a>
 
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-
+              {/* Admin */}
+              <a
+                href="https://admin.goachal.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/item flex items-start gap-3 p-2.5 rounded-xl border border-transparent hover:border-slate-200/80 hover:bg-[#f8fafc] transition-all"
+              >
+                <div className="w-9 h-9 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-700 group-hover/item:text-[#0284c7] group-hover/item:border-[#0284c7]/40 group-hover/item:bg-white transition-colors shrink-0 mt-0.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold text-slate-900 group-hover/item:text-[#0284c7] transition-colors leading-snug flex items-center justify-between">
+                    <span>Admin Login</span>
+                    <span className="text-slate-300 group-hover/item:text-[#0284c7] group-hover/item:translate-x-0.5 transition-all text-xs">&rarr;</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-normal">
+                    Central corporate admin portal
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-/* ── Mobile Menu Component ────────────────────────────────── */
-function MobileMenu({ isScrolled, menuState, setMenuState, svcList }) {
-  const [expandedMenu, setExpandedMenu] = React.useState(null)
+export function Header() {
+  const [menuState, setMenuState] = React.useState(false);
 
   return (
-    <div
-      data-state={menuState ? "active" : undefined}
-      className="data-[state=active]:block border backdrop-blur-2xl lg:data-[state=active]:flex hidden w-full flex-col rounded-sm p-4 shadow-sm bg-white/95 lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none max-h-[calc(100vh-100px)] overflow-y-auto lg:overflow-visible"
-    >
-      <div className="lg:hidden block">
-        <ul className="space-y-4 text-base">
-          {/* About Us */}
-          <li>
-            <a
-              href="/aboutUs"
-              onClick={() => setMenuState(false)}
-              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
-            >
-              About Us
-            </a>
-          </li>
+    <header className="fixed top-0 left-0 right-0 z-50 py-3 sm:py-4 px-4 sm:px-8">
+      {/* ── Solid White Navbar Container ── */}
+      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-[0_4px_25px_rgba(0,0,0,0.18)] border border-slate-200/80 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
 
-          {/* Services with submenu */}
-          <li>
-            <button
-              onClick={() => setExpandedMenu(expandedMenu === "services" ? null : "services")}
-              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold w-full text-left flex items-center justify-between"
-            >
-              Services
-              <span className={`transition-transform ${expandedMenu === "services" ? "rotate-180" : ""}`}>
-                ▼
-              </span>
-            </button>
-            {expandedMenu === "services" && (
-              <ul className="mt-3 ml-4 space-y-2 border-l border-gray-200 pl-3">
-                {svcList.length > 0 ? (
-                  svcList.map((service, i) => (
-                    <li key={service.slug || service.title || i}>
-                      <a
-                        href={service.slug ? `/services/${service.slug}` : service.href}
-                        onClick={() => setMenuState(false)}
-                        className="text-gray-600 hover:text-blue-600 text-xs block duration-150"
-                      >
-                        {service.name || service.title}
-                      </a>
-                    </li>
-                  ))
-                ) : (
-                  <li className="text-gray-500 text-xs">Loading services...</li>
-                )}
-              </ul>
-            )}
-          </li>
+        {/* Logo */}
+        <a href="/" className="flex items-center gap-3 shrink-0">
+          <img
+            src="/final-logo.png"
+            alt="ACHAL"
+            className="h-10 w-auto object-contain"
+          />
+          <div className="flex flex-col">
+            <span className="font-extrabold text-base tracking-wider text-[#0a1628] leading-tight">
+              ACHAL
+            </span>
+            <span className="text-[9px] uppercase tracking-widest text-slate-500 font-semibold -mt-0.5">
+              International
+            </span>
+          </div>
+        </a>
 
-          {/* Careers */}
-          <li>
-            <a
-              href="/careers"
-              onClick={() => setMenuState(false)}
-              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
-            >
-              Careers
-            </a>
-          </li>
+        {/* Desktop Navbar Links */}
+        <div className="hidden lg:block">
+          <Menus />
+        </div>
 
-          {/* Contact */}
-          <li>
-            <a
-              href="/contact"
-              onClick={() => setMenuState(false)}
-              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
-            >
-              Contact
-            </a>
-          </li>
+        {/* Right CTA Button */}
+        <div className="hidden lg:flex items-center shrink-0">
+          <a
+            href="/contact"
+            className="px-5 py-2.5 rounded-lg bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold uppercase tracking-wider transition-all shadow-sm"
+          >
+            Get In Touch
+          </a>
+        </div>
 
-          {/* Track Your Parcel */}
-          <li>
+        {/* Mobile Hamburger Toggle */}
+        <button
+          onClick={() => setMenuState(!menuState)}
+          className="lg:hidden p-2 text-slate-800"
+          aria-label="Toggle menu"
+        >
+          {menuState ? <X className="size-6" /> : <Equal className="size-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Drawer */}
+      {menuState && (
+        <div className="lg:hidden mt-2 bg-white rounded-xl border border-slate-200 shadow-xl p-5 space-y-3">
+          <a
+            href="/aboutUs"
+            onClick={() => setMenuState(false)}
+            className="block text-slate-800 font-bold text-xs uppercase"
+          >
+            About Us
+          </a>
+          <a
+            href="/careers"
+            onClick={() => setMenuState(false)}
+            className="block text-slate-800 font-bold text-xs uppercase"
+          >
+            Careers
+          </a>
+          <a
+            href="/contact"
+            onClick={() => setMenuState(false)}
+            className="block text-slate-800 font-bold text-xs uppercase"
+          >
+            Contact
+          </a>
+
+          <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
             <a
-              href="https://cargo.goachal.com/"
+              href="https://cargo.achalprojects.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold"
+              className="text-center py-2.5 rounded-md bg-slate-100 text-slate-800 text-xs font-bold uppercase"
             >
               Track Your Parcel
             </a>
-          </li>
-
-          {/* Login with submenu */}
-          <li className="border-t border-gray-200 pt-4 mt-4">
-            <button
-              onClick={() => setExpandedMenu(expandedMenu === "login" ? null : "login")}
-              className="text-gray-800 hover:text-blue-600 text-sm block duration-150 font-semibold w-full text-left flex items-center justify-between"
+            <a
+              href="https://billing.goachal.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-center py-2 rounded-md border border-slate-200 text-slate-800 text-xs font-bold uppercase"
             >
-              Login
-              <span className={`transition-transform ${expandedMenu === "login" ? "rotate-180" : ""}`}>
-                ▼
-              </span>
-            </button>
-            {expandedMenu === "login" && (
-              <ul className="mt-3 ml-4 space-y-2 border-l border-gray-200 pl-3">
-                <li>
-                  <a
-                    href="https://billing.achalprojects.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMenuState(false)}
-                    className="text-gray-600 hover:text-blue-600 text-xs block duration-150"
-                  >
-                    👤 Billing Software Login
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://parking.achalprojects.com/Admin/login"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMenuState(false)}
-                    className="text-gray-600 hover:text-blue-600 text-xs block duration-150"
-                  >
-                    🅿 Parking Login
-                  </a>
-                </li>
-              </ul>
-            )}
-          </li>
-        </ul>
-      </div>
-    </div>
-  )
-}
-
-/* ── Header ───────────────────────────────────────────────── */
-const Header = () => {
-  const [menuState, setMenuState] = React.useState(false)
-  const [isScrolled, setIsScrolled] = React.useState(false)
-  const [svcList, setSvcList] = React.useState([])
-
-  React.useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 4)
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  React.useEffect(() => {
-    let mounted = true
-    async function load() {
-      try {
-        const res = await fetch(`${API_BASE}/api/services`)
-        if (!mounted || !res.ok) return
-        const data = await res.json().catch(() => null)
-        if (!mounted || !data) return
-        if (Array.isArray(data)) setSvcList(data)
-        else if (typeof data === "object") setSvcList([data])
-      } catch (e) {
-        console.error("Failed to load services for menu", e)
-      }
-    }
-    load()
-    return () => { mounted = false }
-  }, [])
-
-  return (
-    <header>
-      <nav
-        data-state={menuState && "active"}
-        className="fixed z-50 w-full px-3 md:px-4 transition-colors duration-300"
-      >
-        <div
-          className={cn(
-            "mx-auto mt-2 transition-all duration-300",
-            isScrolled && "bg-white max-w-7xl rounded-2xl border border-gray-200 px-3 shadow-sm"
-          )}
-        >
-          <div className="relative flex flex-wrap items-center justify-between gap-3 py-3">
-
-            {/* Logo */}
-            <div className="flex w-full justify-between lg:w-auto">
-              <a href="/" aria-label="home" className="flex gap-2 items-center">
-                <img
-                  src="/final-logo.png"
-                  alt="Logo"
-                  height={50}
-                  width={50}
-                  className="h-12 ml-10 z-10 w-full object-contain drop-shadow-[0_0_2px_white]"
-                />
-              </a>
-
-              {/* Mobile hamburger */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setMenuState(!menuState)}
-                  aria-label={menuState ? "Close Menu" : "Open Menu"}
-                  className="relative z-20 pr-4 block cursor-pointer p-2.5 lg:hidden"
-                >
-                  <Equal
-                    data-state={menuState ? "active" : undefined}
-                    className={cn(
-                      "data-[state=active]:rotate-180 scale-[1.2] data-[state=active]:scale-0 data-[state=active]:opacity-0 m-auto duration-200",
-                      isScrolled ? "text-gray-800" : "text-white"
-                    )}
-                  />
-                  <X
-                    data-state={menuState ? "active" : undefined}
-                    className={cn(
-                      "data-[state=active]:rotate-0 data-[state=active]:scale-[1.2] data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200",
-                      isScrolled ? "text-gray-800" : "text-white"
-                    )}
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* Desktop navigation — centered */}
-            <div className="absolute inset-0 m-auto hidden lg:block size-fit">
-              <Menus isScrolled={isScrolled} />
-            </div>
-
-            {/* Mobile menu drawer */}
-            <MobileMenu isScrolled={isScrolled} menuState={menuState} setMenuState={setMenuState} svcList={svcList} />
-
+              Billing Login
+            </a>
+            <a
+              href="https://parking.goachal.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-center py-2 rounded-md border border-slate-200 text-slate-800 text-xs font-bold uppercase"
+            >
+              Parking Login
+            </a>
+            <a
+              href="https://admin.goachal.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-center py-2 rounded-md border border-slate-200 text-slate-800 text-xs font-bold uppercase"
+            >
+              Admin Login
+            </a>
+            <a
+              href="/contact"
+              className="text-center py-2.5 rounded-md bg-[#0284c7] text-white text-xs font-bold uppercase"
+            >
+              Get In Touch
+            </a>
           </div>
         </div>
-      </nav>
+      )}
     </header>
-  )
+  );
 }
 
 export function ModeToggle() {
-  return null
+  return null;
 }
 
-export { Header }
+export default Header;

@@ -1,6 +1,8 @@
 "use client";
+
 import { useState, useEffect } from "react";
-import { Users, Target, Eye, Award, ArrowRight, Phone, Building2, TrendingUp, Loader } from "lucide-react";
+import { Target, Eye, ArrowRight, Phone, Mail, Loader, CheckCircle2 } from "lucide-react";
+
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://achal-backend-trial.tannis.in';
 
 export default function AboutPage() {
@@ -12,37 +14,27 @@ export default function AboutPage() {
     const fetchAboutData = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/about/public`);
-        if (!res.ok) throw new Error("Failed to fetch about data");
+        if (!res.ok) throw new Error("Failed to load corporate profile");
         const data = await res.json();
 
-        // Helper function to safely parse JSON strings
-        const safeJSONParse = (value, fallback = null) => {
+        const safeJSONParse = (value, fallback = []) => {
           if (!value) return fallback;
-          if (typeof value === 'object') return value;
+          if (Array.isArray(value) || typeof value === 'object') return value;
           if (typeof value === 'string') {
             try {
               return JSON.parse(value);
             } catch (e) {
-              console.warn("Failed to parse JSON field:", value.substring(0, 100), "...", e);
+              console.warn("Failed to parse JSON field:", value.substring(0, 100), e);
               return fallback;
             }
           }
           return fallback;
         };
 
-        // Parse JSON strings safely
-        if (data.team) {
-          data.team = safeJSONParse(data.team, []);
-        }
-        if (data.work) {
-          data.work = safeJSONParse(data.work, []);
-        }
-        if (data.partners) {
-          data.partners = safeJSONParse(data.partners, []);
-        }
-        if (data.stats) {
-          data.stats = safeJSONParse(data.stats, []);
-        }
+        if (data.team) data.team = safeJSONParse(data.team, []);
+        if (data.work) data.work = safeJSONParse(data.work, []);
+        if (data.partners) data.partners = safeJSONParse(data.partners, []);
+        if (data.stats) data.stats = safeJSONParse(data.stats, []);
 
         setAboutData(data);
       } catch (err) {
@@ -50,361 +42,357 @@ export default function AboutPage() {
         setError(err.message);
       } finally {
         setLoading(false);
-
       }
     };
     fetchAboutData();
   }, []);
 
   return (
-    <>
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
-        .playfair { font-family: 'Playfair Display', serif; }
-        .about-hero {
-          background: linear-gradient(135deg, #0a1628 0%, #1a3a6b 55%, #0d1f40 100%);
-          position: relative;
-          overflow: hidden;
-        }
-        .about-hero::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          opacity: .04;
-          background-image:
-            repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(200,169,110,.8) 60px, rgba(200,169,110,.8) 61px),
-            repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(200,169,110,.8) 60px, rgba(200,169,110,.8) 61px);
-        }
-        .about-hero::after {
-          content: '';
-          position: absolute;
-          bottom: -80px; right: -80px;
-          width: 500px; height: 500px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(200,169,110,.15) 0%, transparent 70%);
-          pointer-events: none;
-        }
-        .accent-bar {
-          width: 32px; height: 2px;
-          background: #c8a96e;
-          margin-bottom: 20px;
-        }
-        .team-card {
-          background: white;
-          border: 1px solid #e7e0d4;
-          padding: 32px 28px;
-          transition: all .3s;
-          position: relative;
-          overflow: hidden;
-        }
-        .team-card::after {
-          content: '';
-          position: absolute;
-          bottom: 0; left: 0; right: 0;
-          height: 3px;
-          background: #c8a96e;
-          transform: scaleX(0);
-          transition: transform .3s;
-        }
-        .team-card:hover::after { transform: scaleX(1); }
-        .team-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(10,22,40,.08); }
-        .work-card {
-          background: white;
-          border: 1px solid #e7e0d4;
-          overflow: hidden;
-          transition: all .3s;
-          position: relative;
-        }
-        .work-card::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(180deg, transparent 0%, rgba(10,22,40,.85) 100%);
-          opacity: 0;
-          transition: opacity .3s;
-          pointer-events: none;
-        }
-        .work-card:hover::before { opacity: 1; }
-        .work-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(10,22,40,.12); }
-        .stat-box {
-          background: white;
-          border: 1px solid #e7e0d4;
-          padding: 32px 28px;
-          text-align: center;
-          transition: all .25s;
-          position: relative;
-        }
-        .stat-box::after {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 3px;
-          background: #c8a96e;
-          transform: scaleX(0);
-          transition: transform .25s;
-        }
-        .stat-box:hover::after { transform: scaleX(1); }
-        .stat-box:hover { border-color: #c8a96e; }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up { animation: fadeUp .35s ease forwards; }
-      `}</style>
+    <main className="w-full bg-white text-slate-900 font-sans">
 
-      <div className="min-h-screen bg-amber-50" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-        {/* ── HERO ── */}
-        <section className="about-hero pt-28 pb-16 px-6 md:px-16">
-          <div className="relative max-w-7xl mx-auto">
-            {/* Section label */}
-            <div className="flex items-center gap-3 mb-6">
-              <span style={{ display: "block", width: 24, height: 1, background: "#c8a96e" }} />
-              <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".3em", color: "#c8a96e", textTransform: "uppercase" }}>
-                About Us
-              </span>
-            </div>
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-              <div>
-                <h1 className="playfair text-5xl md:text-6xl font-black text-white leading-tight mb-4">
-                  {loading ? (
-                    <>Building Excellence<br /><span style={{ color: "#c8a96e" }}>Since 2008.</span></>
-                  ) : aboutData?.title ? (
-                    <span dangerouslySetInnerHTML={{ __html: aboutData.title.replace(/\n/g, '<br />') }} />
-                  ) : (
-                    <>Building Excellence<br /><span style={{ color: "#c8a96e" }}>Since 2008.</span></>
-                  )}
-                </h1>
-                <p className="text-white/80 text-md leading-relaxed font-light">
-                  {loading ? "Loading..." : aboutData?.intro || "Delivering innovative construction and engineering solutions across Bihar and beyond."}
-                </p>
+      {/* ── 1. CORPORATE DOSSIER HERO (BALANCED 2-COLUMN FULL LAYOUT) ── */}
+      <section className="bg-[#0a192f] text-white py-20 md:py-28 px-6 md:px-16 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+            {/* Left Column (7 cols): Typography & Editorial Copy */}
+            <div className="lg:col-span-7">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-2.5 h-0.5 bg-[#0284c7]" />
+                <span className="text-xs font-bold uppercase tracking-wider text-[#38bdf8]">
+                  Corporate Profile &bull; Est. 2014
+                </span>
+              </div>
+
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight mb-6">
+                {loading ? (
+                  <>About Us</>
+                ) : aboutData?.title ? (
+                  <span dangerouslySetInnerHTML={{ __html: aboutData.title.replace(/\n/g, '<br />') }} />
+                ) : (
+                  <>About Us</>
+                )}
+              </h1>
+
+              <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal mb-8 max-w-2xl">
+                {loading
+                  ? "Connecting core civil infrastructure, multimodal logistics corridors, clean energy networks, and municipal mobility systems across India."
+                  : aboutData?.intro || "At Achal International, we are driven by a vision to deliver excellence across diverse sectors, including infrastructure development, logistics, and EV services. With a strong commitment to quality, innovation, and customer satisfaction, we aim to create impactful solutions that meet modern demands while maintaining global standards."}
+              </p>
+
+              {/* Corporate Identifiers Footer Bar */}
+              <div className="flex flex-wrap items-center gap-6 text-xs font-mono text-slate-400 border-t border-slate-800 pt-6">
+                <div>CIN: <span className="text-white font-semibold">U74999BR2014PTC022718</span></div>
+                <div className="hidden sm:inline text-slate-600">&bull;</div>
+                <div>Headquarters: <span className="text-white font-semibold">Patna, Bihar</span></div>
+                <div className="hidden sm:inline text-slate-600">&bull;</div>
+                <div>Operations: <span className="text-white font-semibold">Pan-India</span></div>
               </div>
             </div>
+
+            {/* Right Column (5 cols): Visual Asset & Operational Metrics */}
+            <div className="lg:col-span-5 flex flex-col gap-6">
+
+              {/* Architectural Image Card */}
+              <div className="relative border border-slate-700/80 overflow-hidden bg-slate-900 shadow-2xl">
+                <img
+                  src="/banner-1.png"
+                  alt="ACHAL Infrastructure Operations"
+                  className="w-full h-64 sm:h-72 object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f] via-transparent to-transparent opacity-90" />
+
+                <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between text-xs font-mono text-slate-300">
+                  <span className="uppercase tracking-wider">Turnkey EPC &bull; Multimodal</span>
+                  <span className="text-[#38bdf8] font-bold">Standard 01</span>
+                </div>
+              </div>
+
+              {/* 2-Box Metric Strip */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-slate-900/90 border border-slate-800 p-5">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-tight">
+                    10+ <span className="text-[#0284c7] text-lg font-bold">Years</span>
+                  </div>
+                  <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">
+                    Industry Experience
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/90 border border-slate-800 p-5">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-tight">
+                    5 <span className="text-[#0284c7] text-lg font-bold">Verticals</span>
+                  </div>
+                  <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">
+                    Core Sectors Served
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {loading ? (
+        <section className="py-24 px-6 md:px-16 text-center">
+          <Loader size={32} className="animate-spin text-[#0284c7] mx-auto mb-4" />
+          <p className="text-sm font-medium text-slate-500">Retrieving corporate profile...</p>
+        </section>
+      ) : error ? (
+        <section className="py-20 px-6 md:px-16">
+          <div className="max-w-3xl mx-auto p-6 bg-rose-50 border border-rose-200 text-rose-800 text-sm">
+            Unable to load profile data: {error}. Displaying institutional overview.
           </div>
         </section>
+      ) : (
+        <>
+          {/* ── 2. MISSION & VISION (ARCHITECTURAL DUAL SLABS) ── */}
+          {(aboutData?.mission || aboutData?.vision) && (
+            <section className="py-16 md:py-24 px-6 md:px-16 bg-white border-b border-slate-200">
+              <div className="max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        {loading ? (
-          <section className="px-6 md:px-16 py-16">
-            <div className="max-w-7xl mx-auto text-center">
-              <Loader size={32} className="animate-spin mx-auto mb-4" style={{ color: "#c8a96e" }} />
-              <p style={{ color: "#6b7280", fontSize: 14 }}>Loading content...</p>
-            </div>
-          </section>
-        ) : error ? (
-          <section className="px-6 md:px-16 py-16">
-            <div className="max-w-7xl mx-auto text-center">
-              <div style={{ background: "#fef2f2", border: "1px solid #fecaca", padding: "24px", color: "#b91c1c", fontSize: 14 }}>
-                Unable to load content: {error}
-              </div>
-            </div>
-          </section>
-        ) : (
-          <>
-            {/* ── MISSION & VISION ── */}
-            {(aboutData?.mission || aboutData?.vision) && (
-              <section className="px-6 md:px-16 py-16">
-                <div className="max-w-7xl mx-auto">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Mission */}
-                    {aboutData?.mission && (
-                      <div className="fade-up" style={{ background: "#0a1628", padding: "48px 40px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-                          <Target size={20} style={{ color: "#c8a96e" }} />
-                          <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".25em", color: "#c8a96e", textTransform: "uppercase" }}>
+                  {/* Mission */}
+                  {aboutData?.mission && (
+                    <div className="bg-[#0a192f] text-white p-8 md:p-12 border border-slate-800 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-2 mb-6">
+                          <Target size={18} className="text-[#38bdf8]" />
+                          <span className="text-xs font-bold uppercase tracking-wider text-[#38bdf8]">
                             Our Mission
                           </span>
                         </div>
-                        <div className="accent-bar" style={{ background: "rgba(200,169,110,.3)" }} />
-                        <h3 className="playfair text-2xl font-bold text-white mb-4">
-                          What Drives Us
+                        <h3 className="text-2xl font-bold tracking-tight text-white mb-4">
+                          Operational Discipline &amp; Industrial Execution
                         </h3>
-                        <p className="text-white/70 text-sm leading-relaxed">
+                        <p className="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
                           {aboutData.mission}
                         </p>
                       </div>
-                    )}
-                    {/* Vision */}
-                    {aboutData?.vision && (
-                      <div className="fade-up" style={{ background: "white", border: "1px solid #e7e0d4", padding: "48px 40px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-                          <Eye size={20} style={{ color: "#c8a96e" }} />
-                          <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".25em", color: "#c8a96e", textTransform: "uppercase" }}>
+
+                      <div className="pt-8 mt-8 border-t border-slate-800/80 text-xs font-mono text-slate-400 uppercase tracking-wider">
+                        Standard // Turnkey Delivery
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Vision */}
+                  {aboutData?.vision && (
+                    <div className="bg-[#f8fafc] text-slate-900 p-8 md:p-12 border border-slate-200 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-2 mb-6">
+                          <Eye size={18} className="text-[#0284c7]" />
+                          <span className="text-xs font-bold uppercase tracking-wider text-[#0284c7]">
                             Our Vision
                           </span>
                         </div>
-                        <div className="accent-bar" />
-                        <h3 className="playfair text-2xl font-bold text-slate-900 mb-4">
-                          Where We're Headed
+                        <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-4">
+                          Long-Horizon Infrastructure Leadership
                         </h3>
-                        <p className="text-slate-600 text-sm leading-relaxed">
+                        <p className="text-sm md:text-base text-slate-600 leading-relaxed font-normal">
                           {aboutData.vision}
                         </p>
                       </div>
-                    )}
-                  </div>
-                </div>
-              </section>
-            )}
 
-            {/* ── STATS ── */}
-            {aboutData?.stats && Array.isArray(aboutData.stats) && aboutData.stats.length > 0 && (
-              <section className="px-6 md:px-16 py-16" style={{ background: "white" }}>
-                <div className="max-w-7xl mx-auto">
-                  <div className="text-center mb-12">
-                    <div className="accent-bar mx-auto" />
-                    <h2 className="playfair text-4xl font-bold text-slate-900 mb-3">By The Numbers</h2>
-                    <p style={{ fontSize: 14, color: "#6b7280" }}>Our track record speaks for itself</p>
-                  </div>
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                    {aboutData.stats.map((stat, i) => (
-                      <div key={i} className="stat-box fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                        <div className="playfair" style={{ fontSize: 36, fontWeight: 900, color: "#00008B", marginBottom: 8 }}>
-                          {stat.value || stat.num}
-                        </div>
-                        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".15em", color: "#6b7280", textTransform: "uppercase" }}>
-                          {stat.label}
-                        </div>
+                      <div className="pt-8 mt-8 border-t border-slate-200 text-xs font-mono text-slate-500 uppercase tracking-wider">
+                        Horizon // Pan-India Impact
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
+                    </div>
+                  )}
 
-            {/* ── TEAM ── */}
-            {aboutData?.team && Array.isArray(aboutData.team) && aboutData.team.length > 0 && (
-              <section className="px-6 md:px-16 py-16">
-                <div className="max-w-7xl mx-auto">
-                  <div className="text-center mb-12">
-                    <div className="accent-bar mx-auto" />
-                    <h2 className="playfair text-4xl font-bold text-slate-900 mb-3">Meet Our Team</h2>
-                    <p style={{ fontSize: 14, color: "#6b7280" }}>The people behind our success</p>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── 3. PERFORMANCE METRICS ── */}
+          {aboutData?.stats && Array.isArray(aboutData.stats) && aboutData.stats.length > 0 && (
+            <section className="py-16 md:py-20 px-6 md:px-16 bg-[#f8fafc] border-b border-slate-200">
+              <div className="max-w-7xl mx-auto">
+                <div className="mb-12">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#0284c7] mb-2">
+                    Verified Metric Standards
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {aboutData.team.map((member, i) => (
-                      <div key={i} className="team-card fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+                    Industrial Scale in Numbers
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                  {aboutData.stats.map((stat, i) => (
+                    <div key={i} className="bg-white border border-slate-200 p-8 text-left hover:border-[#0284c7] transition-colors">
+                      <div className="text-3xl sm:text-4xl font-extrabold text-[#0a192f] mb-2 tracking-tight">
+                        {stat.value || stat.num}
+                      </div>
+                      <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        {stat.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── 4. KEY LEADERSHIP & SPECIALISTS ── */}
+          {aboutData?.team && Array.isArray(aboutData.team) && aboutData.team.length > 0 && (
+            <section className="py-20 md:py-24 px-6 md:px-16 bg-white border-b border-slate-200">
+              <div className="max-w-7xl mx-auto">
+                <div className="max-w-2xl mb-14">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#0284c7] mb-2">
+                    Executive Governance
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
+                    Core Technical Leadership
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {aboutData.team.map((member, i) => (
+                    <div key={i} className="border border-slate-200 bg-white p-7 flex flex-col justify-between hover:border-slate-400 transition-colors">
+                      <div>
                         {member.photo && (
-                          <div style={{ marginBottom: 10, border: "px solid #e7e0d4" }}>
-                            <img src={member.photo} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <div className="mb-6 h-64 overflow-hidden bg-slate-100 border border-slate-200">
+                            <img src={member.photo} alt={member.name} className="w-full h-full object-cover object-top" />
                           </div>
                         )}
-                        <h4 className="playfair text-xl font-bold text-slate-900 mb-1">{member.name}</h4>
-                        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".15em", color: "#c8a96e", textTransform: "uppercase", marginBottom: 12 }}>
+                        <h4 className="text-lg font-bold text-slate-900 mb-1">{member.name}</h4>
+                        <div className="text-xs font-bold uppercase tracking-wider text-[#0284c7] mb-4">
                           {member.role}
                         </div>
                         {member.bio && (
-                          <p style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.7 }}>
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                             {member.bio}
                           </p>
                         )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
 
-            {/* ── WORK / PROJECTS ── */}
-            {aboutData?.work && Array.isArray(aboutData.work) && aboutData.work.length > 0 && (
-              <section className="px-6 md:px-16 py-16" style={{ background: "white" }}>
-                <div className="max-w-7xl mx-auto">
-                  <div className="text-center mb-12">
-                    <div className="accent-bar mx-auto" />
-                    <h2 className="playfair text-4xl font-bold text-slate-900 mb-3">Our Work</h2>
-                    <p style={{ fontSize: 14, color: "#6b7280" }}>Projects we're proud of</p>
+                      <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
+                        <span>Corporate Directorate</span>
+                        <CheckCircle2 size={14} className="text-[#0284c7]" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── 5. PROVEN TRACK RECORD / PORTFOLIO ── */}
+          {aboutData?.work && Array.isArray(aboutData.work) && aboutData.work.length > 0 && (
+            <section className="py-20 md:py-24 px-6 md:px-16 bg-[#f8fafc] border-b border-slate-200">
+              <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#0284c7] mb-2">
+                      Executed Contracts
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
+                      Signature Deployments
+                    </h2>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {aboutData.work.map((project, i) => (
-                      <div key={i} className="work-card fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <p className="text-sm text-slate-500 max-w-md font-normal leading-relaxed">
+                    Representative multi-vertical works spanning transportation infrastructure, airport cargo handling, and green mobility.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {aboutData.work.map((project, i) => (
+                    <div key={i} className="border border-slate-200 bg-white overflow-hidden flex flex-col justify-between hover:border-[#0284c7] transition-colors">
+                      <div>
                         {project.image && (
-                          <div style={{ height: 240, overflow: "hidden" }}>
-                            <img src={project.image} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <div className="h-56 overflow-hidden bg-slate-100 border-b border-slate-200">
+                            <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
                           </div>
                         )}
-                        <div style={{ padding: "24px 28px" }}>
-                          <h4 className="playfair text-lg font-bold text-slate-900 mb-2">{project.title}</h4>
+                        <div className="p-7">
+                          <h4 className="text-lg font-bold text-slate-900 mb-2 leading-snug">{project.title}</h4>
                           {project.description && (
-                            <p style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.7, marginBottom: 16 }}>
+                            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
                               {project.description}
                             </p>
                           )}
-                          {project.link && (
-                            <a
-                              href={project.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ fontSize: 12, fontWeight: 600, color: "#c8a96e", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, textTransform: "uppercase", letterSpacing: ".1em" }}
-                            >
-                              View Project <ArrowRight size={14} />
-                            </a>
-                          )}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
 
-            {/* ── PARTNERS ── */}
-            {aboutData?.partners && Array.isArray(aboutData.partners) && aboutData.partners.length > 0 && (
-              <section className="px-6 md:px-16 py-16">
-                <div className="max-w-7xl mx-auto">
-                  <div className="text-center mb-12">
-                    <div className="accent-bar mx-auto" />
-                    <h2 className="playfair text-4xl font-bold text-slate-900 mb-3">Our Partners</h2>
-                    <p style={{ fontSize: 14, color: "#6b7280" }}>Trusted collaborations</p>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                    {aboutData.partners.map((partner, i) => (
-                      <div
-                        key={i}
-                        className="fade-up"
-                        style={{
-                          background: "white",
-                          border: "1px solid #e7e0d4",
-                          padding: "24px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          animationDelay: `${i * 0.05}s`
-                        }}
-                      >
-                        {partner.logo ? (
-                          <img src={partner.logo} alt={partner.name} style={{ maxWidth: "100%", maxHeight: 48, filter: "grayscale(1)", opacity: 0.6, transition: "all .3s" }} />
-                        ) : (
-                          <span style={{ fontSize: 12, fontWeight: 600, color: "#9ca3af", textAlign: "center" }}>{partner.name}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                      {project.link && (
+                        <div className="px-7 pb-7">
+                          <a
+                            href={project.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0284c7] hover:text-[#0369a1] transition-colors"
+                          >
+                            Technical Brief <ArrowRight size={14} />
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              </section>
-            )}
-          </>
-        )}
+              </div>
+            </section>
+          )}
 
-        {/* ── BOTTOM CTA BAR ── */}
-        <section style={{ background: "#0a1628", padding: "32px 64px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 20 }}>
+          {/* ── 6. INSTITUTIONAL ALLIANCES / PARTNERS ── */}
+          {aboutData?.partners && Array.isArray(aboutData.partners) && aboutData.partners.length > 0 && (
+            <section className="py-16 md:py-20 px-6 md:px-16 bg-white border-b border-slate-200">
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-12">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#0284c7] mb-2">
+                    Client &amp; Vendor Matrix
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
+                    Trusted Collaborations &amp; Alliances
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {aboutData.partners.map((partner, i) => (
+                    <div
+                      key={i}
+                      className="border border-slate-200 bg-slate-50/50 p-6 flex items-center justify-center min-h-[90px] text-center"
+                    >
+                      {partner.logo ? (
+                        <img src={partner.logo} alt={partner.name} className="max-h-10 w-auto opacity-75 hover:opacity-100 transition-opacity" />
+                      ) : (
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-700">{partner.name}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+        </>
+      )}
+
+      {/* ── 7. CORPORATE CONTACT STRIP ── */}
+      <section className="bg-[#0a192f] text-white py-10 px-6 md:px-16">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".25em", color: "rgba(200,169,110,.7)", textTransform: "uppercase", marginBottom: 4 }}>
-              Ready to work together?
+            <div className="text-xs font-bold uppercase tracking-wider text-[#38bdf8] mb-1">
+              Commercial Desk &amp; Tenders
             </div>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,.6)", margin: 0 }}>
-              Let&apos;s discuss your next project — our team is available Mon–Fri, 9 AM–6 PM IST.
+            <p className="text-sm text-slate-300">
+              Reviewing an EPC contract or freight proposal? Our project coordinators are available Mon–Fri, 9 AM–6 PM IST.
             </p>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <Phone size={16} style={{ color: "#c8a96e" }} />
-              <span style={{ fontSize: 15, fontWeight: 500, color: "white" }}>+91 (612) 796-5983</span>
-            </div>
-            <div style={{ width: 1, height: 24, background: "rgba(255,255,255,.1)" }} />
-            <a href="mailto:info@achalprojects.com" style={{ fontSize: 14, color: "#c8a96e", textDecoration: "none", fontWeight: 500 }}>
-              info@achalprojects.com
+
+          <div className="flex flex-wrap items-center gap-6">
+            <a href="tel:01206851294" className="flex items-center gap-2 text-sm font-semibold text-white hover:text-[#38bdf8] transition-colors">
+              <Phone size={16} className="text-[#0284c7]" /> 0120-6851294
+            </a>
+            <div className="hidden sm:block w-px h-5 bg-slate-700" />
+            <a href="mailto:info@goachal.com" className="flex items-center gap-2 text-sm font-semibold text-[#38bdf8] hover:underline">
+              <Mail size={16} /> info@goachal.com
             </a>
           </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </section>
+
+    </main>
   );
 }
