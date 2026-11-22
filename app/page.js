@@ -379,6 +379,29 @@ export default function Home() {
     };
   }, [mapLocations]);
 
+  // const appLinks = [
+  //   {
+  //     name: 'Achal Airline Partner',
+  //     Icon: Plane,
+  //     stores: [
+  //       { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achal.airlinepartner' },
+  //       { type: 'appstore', href: 'https://apps.apple.com/in/app/achal-airline-partner/id6817169392' },
+  //       // TODO: replace with the real Windows app link
+  //       { type: 'windows', href: 'https://cargo.achalprojects.com/uploads/windows.zip' },
+  //     ],
+  //   },
+
+  //   {
+  //     name: 'Achal Delivery Partner',
+  //     Icon: Truck,
+  //     stores: [
+  //       { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achalinternational.deliverypartner' },
+  //     ],
+  //   },
+
+  // ];
+
+
   const appLinks = [
     {
       name: 'Achal Airline Partner',
@@ -386,21 +409,18 @@ export default function Home() {
       stores: [
         { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achal.airlinepartner' },
         { type: 'appstore', href: 'https://apps.apple.com/in/app/achal-airline-partner/id6817169392' },
-        // TODO: replace with the real Windows app link
         { type: 'windows', href: 'https://cargo.achalprojects.com/uploads/windows.zip' },
       ],
     },
-
     {
       name: 'Achal Delivery Partner',
       Icon: Truck,
       stores: [
         { type: 'playstore', href: 'https://play.google.com/store/apps/details?id=com.achalinternational.deliverypartner' },
+        { type: 'appstore', href: 'https://apps.apple.com/in/app/achal-delivery-partner/id6834347463' },
       ],
     },
-
   ];
-
   return (
     <>
       <style>{`
